@@ -1,4 +1,4 @@
-package airdnb.demo;
+package airdnb.be;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
