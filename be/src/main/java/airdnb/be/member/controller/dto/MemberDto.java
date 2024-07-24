@@ -1,6 +1,6 @@
 package airdnb.be.member.controller.dto;
 
-import airdnb.be.member.Member;
+import airdnb.be.member.MemberEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public record MemberDto(
         @NotNull
         String phoneNumber
 ) {
-    public Member toMember() {
-        return new Member(name, email, phoneNumber);
+    public MemberEntity toMember() {
+        return new MemberEntity(name, email, phoneNumber);
     }
 }
