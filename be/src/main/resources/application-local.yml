@@ -16,25 +16,6 @@ spring:
       hibernate:
         format_sql: true
 
-  mail:
-    host: ${SMTP_HOST}
-    username: ${SMTP_USERNAME}
-    password: ${SMTP_PASSWORD}
-    port: 465
-    properties:
-      mail:
-        transport:
-          protocol: smtp
-        smtp:
-          auth: true     # SMTP 서버의 인증 여부
-          starttls:
-            enable: true # SMTP 통신을 TLS로 암호화하여 통신
-          ssl:
-            trust: smtp.naver.com  # SSL을 사용해서 SMTP서버 신뢰
-            enable: true  # SMTP통신이 SSL로 암호화
-        debug: true
-
-
 logging:
   level:
     airdnb: debug
