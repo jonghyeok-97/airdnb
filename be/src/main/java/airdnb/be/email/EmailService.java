@@ -7,7 +7,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final Environment env;
-    private final JavaMailSender javaMailSender = new JavaMailSenderImpl();
+    private final JavaMailSender javaMailSender;
 
     public void sendVerificationEmail(String memberEmail) {
         try {
