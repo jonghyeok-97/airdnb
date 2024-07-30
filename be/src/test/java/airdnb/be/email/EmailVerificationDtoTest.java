@@ -9,6 +9,7 @@ import jakarta.validation.ValidatorFactory;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -37,6 +38,25 @@ class EmailVerificationDtoTest {
     @ValueSource(strings = {"gr@mit@naver.com", "gromit@@naver.com"})
     void validateEmailFormat(String email) {
         EmailVerificationDto emailDto = new EmailVerificationDto(email);
+        Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
+
+        assertThat(violations).hasSize(1);
+    }
+
+    @DisplayName("이메일 형식에 \"\", \" \" 는 들어갈 수 없다")
+    @ParameterizedTest
+    @ValueSource(strings = {"", " "})
+    void validateEmpty(String email) {
+        EmailVerificationDto emailDto = new EmailVerificationDto(email);
+        Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
+
+        assertThat(violations).hasSize(1);
+    }
+
+    @DisplayName("이메일 형식에 null은 들어갈 수 없다")
+    @Test
+    void validateNull() {
+        EmailVerificationDto emailDto = new EmailVerificationDto(null);
         Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
 
         assertThat(violations).hasSize(1);
