@@ -14,28 +14,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
+    private static final String MAIE_SENDER = "spring.mail.username";
+    private static final String TITLE = "Airdnb 클론 프로젝트에서 보낸 인증번호 입니다";
+    private static final int UUID_PREFIX_START = 0;
+    private static final int UUID_PREFIX_END = 6;
+
     private final Environment env;
     private final JavaMailSender javaMailSender;
 
     public void sendVerificationEmail(String memberEmail) {
+        SimpleMailMessage message = createSimpleMessage(memberEmail);
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-
-            message.setFrom(env.getProperty("spring.mail.username"));
-            message.setTo(memberEmail);
-            message.setSubject("Airdnb 클론 프로젝트에서 보낸 인증번호 입니다");
-            message.setText(createRandomUUID());
-
             javaMailSender.send(message);
-        } catch (MailException e) {
-            // TODO: 메일 에러 핸들링하기
-            log.error("메일 보낼 때 에러 발생 : {}", e.getMessage());
+        } catch (MailException ex) {
+            log.error("메일 전송 불가 : {}", ex.getMessage());
         }
+    }
+
+    private SimpleMailMessage createSimpleMessage(String memberEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom(env.getProperty(MAIE_SENDER));
+        message.setTo(memberEmail);
+        message.setSubject(TITLE);
+        message.setText(createRandomUUID());
+
+        return message;
     }
 
     // 6자리만 인증번호로 채택
     private String createRandomUUID() {
         UUID uuid = UUID.randomUUID();
-        return uuid.toString().substring(0, 6);
+        return uuid.toString().substring(UUID_PREFIX_START, UUID_PREFIX_END);
     }
 }
