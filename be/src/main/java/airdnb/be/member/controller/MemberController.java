@@ -1,6 +1,7 @@
 package airdnb.be.member.controller;
 
 import airdnb.be.member.controller.request.EmailRequest;
+import airdnb.be.member.controller.request.MemberRequest;
 import airdnb.be.member.service.EmailService;
 import airdnb.be.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -38,5 +39,10 @@ public class MemberController {
     @PostMapping("/email")
     public void sendVerificationEmail(@RequestBody @Valid EmailRequest request) {
         emailService.sendVerificationEmail(request.email());
+    }
+
+    @PostMapping
+    public void addMember(@RequestBody @Valid MemberRequest request) {
+        memberService.addMember(request);
     }
 }
