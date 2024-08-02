@@ -1,9 +1,9 @@
-package airdnb.be.email;
+package airdnb.be.web.controller.member.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-public record EmailVerificationDto(
+public record EmailRequest(
 
         /**
          * @Email

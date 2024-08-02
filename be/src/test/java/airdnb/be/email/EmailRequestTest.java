@@ -2,6 +2,7 @@ package airdnb.be.email;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import airdnb.be.web.controller.member.request.EmailRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class EmailVerificationDtoTest {
+class EmailRequestTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -19,8 +20,8 @@ class EmailVerificationDtoTest {
     @ParameterizedTest
     @ValueSource(strings = {"gromit@naver.co.1r", "gromit@naver.co.k", "gromit@naver.co.", "gromit@naver.co.d "})
     void validateEmailDomainPart(String email) {
-        EmailVerificationDto emailDto = new EmailVerificationDto(email);
-        Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
+        EmailRequest emailDto = new EmailRequest(email);
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
 
         assertThat(violations).hasSize(1);
     }
@@ -29,8 +30,8 @@ class EmailVerificationDtoTest {
     @ParameterizedTest
     @ValueSource(strings = {"gr@mit@naver.com", "gromit@@naver.com"})
     void validateEmailFormat(String email) {
-        EmailVerificationDto emailDto = new EmailVerificationDto(email);
-        Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
+        EmailRequest emailDto = new EmailRequest(email);
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
 
         assertThat(violations).hasSize(1);
     }
@@ -39,8 +40,8 @@ class EmailVerificationDtoTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
     void validateEmpty(String email) {
-        EmailVerificationDto emailDto = new EmailVerificationDto(email);
-        Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
+        EmailRequest emailDto = new EmailRequest(email);
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
 
         assertThat(violations).hasSize(1);
     }
@@ -48,8 +49,8 @@ class EmailVerificationDtoTest {
     @DisplayName("이메일 형식에 null은 들어갈 수 없다")
     @Test
     void validateNull() {
-        EmailVerificationDto emailDto = new EmailVerificationDto(null);
-        Set<ConstraintViolation<EmailVerificationDto>> violations = validator.validate(emailDto);
+        EmailRequest emailDto = new EmailRequest(null);
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
 
         assertThat(violations).hasSize(1);
     }
