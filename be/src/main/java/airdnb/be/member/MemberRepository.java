@@ -1,5 +1,6 @@
-package airdnb.be.domain.member;
+package airdnb.be.member;
 
+import airdnb.be.member.entitiy.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

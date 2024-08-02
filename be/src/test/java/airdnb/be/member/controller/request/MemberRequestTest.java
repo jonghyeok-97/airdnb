@@ -1,4 +1,4 @@
-package airdnb.be.member.controller.dto;
+package airdnb.be.member.controller.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,11 +7,10 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class MemberDtoTest {
+class MemberRequestTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
@@ -20,10 +19,10 @@ class MemberDtoTest {
     @ValueSource(strings = {"", " "})
     void validateMemberName(String name) {
         // given
-        MemberDto memberDto = new MemberDto(name, "d@d", "010-1234-5678");
+        MemberRequest request = new MemberRequest(name, "d@d", "010-1234-5678");
 
         // when
-        Set<ConstraintViolation<MemberDto>> violations = validator.validate(memberDto);
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(request);
 
         // then
         assertThat(violations.size()).isEqualTo(1);
@@ -34,10 +33,10 @@ class MemberDtoTest {
     @ValueSource(strings = {"dkswhdgur", "@naver.com", "", " "})
     void validateMemberEmail(String email) {
         // given
-        MemberDto memberDto = new MemberDto("jong", email, "010-1234-5678");
+        MemberRequest request = new MemberRequest("jong", email, "010-1234-5678");
 
         // when
-        Set<ConstraintViolation<MemberDto>> violations = validator.validate(memberDto);
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(request);
 
         // then
         assertThat(violations.size()).isEqualTo(1);
@@ -48,10 +47,10 @@ class MemberDtoTest {
     @ValueSource(strings = {"010-113-1234", "", "010-1234-54676"})
     void validateMemberPhoneNumber(String phoneNumber) {
         // given
-        MemberDto memberDto = new MemberDto("jong", "d@d", phoneNumber);
+        MemberRequest request = new MemberRequest("jong", "d@d", phoneNumber);
 
         // when
-        Set<ConstraintViolation<MemberDto>> violations = validator.validate(memberDto);
+        Set<ConstraintViolation<MemberRequest>> violations = validator.validate(request);
 
         // then
         assertThat(violations.size()).isEqualTo(1);

@@ -1,4 +1,4 @@
-package airdnb.be.web.controller.member.request;
+package airdnb.be.member.controller.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

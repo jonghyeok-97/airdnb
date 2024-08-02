@@ -1,4 +1,4 @@
-package airdnb.be.email;
+package airdnb.be.member.service;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
 
     public void sendVerificationEmail(String memberEmail) {
-        SimpleMailMessage message = createSimpleMessage(memberEmail);
         try {
+            SimpleMailMessage message = createSimpleMessage(memberEmail);
             javaMailSender.send(message);
         } catch (MailException ex) {
             log.error("메일 전송 불가 : {}", ex.getMessage());

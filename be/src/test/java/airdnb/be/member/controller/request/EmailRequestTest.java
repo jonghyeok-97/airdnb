@@ -1,8 +1,7 @@
-package airdnb.be.email;
+package airdnb.be.member.controller.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import airdnb.be.web.controller.member.request.EmailRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
