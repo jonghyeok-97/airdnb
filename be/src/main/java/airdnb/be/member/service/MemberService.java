@@ -1,6 +1,6 @@
-package airdnb.be.member;
+package airdnb.be.member.service;
 
-import airdnb.be.member.controller.dto.MemberDto;
+import airdnb.be.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public void add(MemberDto dto) {
-        memberRepository.save(dto.toMember());
+    public boolean existsMemberByEmail(String email) {
+        return memberRepository.existsByEmail(email);
     }
 }
