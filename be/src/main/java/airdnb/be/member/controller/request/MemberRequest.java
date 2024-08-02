@@ -12,8 +12,8 @@ public record MemberRequest(
         @NotBlank
         String name,
 
-        @Email
-        @NotBlank
+        @Email(regexp = "^[^@]+@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+        @NotNull
         String email,
 
         @Pattern(regexp = "^010-\\d{4}-\\d{4}$")

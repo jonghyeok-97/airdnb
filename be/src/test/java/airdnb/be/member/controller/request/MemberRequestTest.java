@@ -19,7 +19,7 @@ class MemberRequestTest {
     @ValueSource(strings = {"", " "})
     void validateMemberName(String name) {
         // given
-        MemberRequest request = new MemberRequest(name, "d@d", "010-1234-5678");
+        MemberRequest request = new MemberRequest(name, "gromit123@naver.com", "010-1234-5678");
 
         // when
         Set<ConstraintViolation<MemberRequest>> violations = validator.validate(request);
@@ -47,7 +47,7 @@ class MemberRequestTest {
     @ValueSource(strings = {"010-113-1234", "", "010-1234-54676"})
     void validateMemberPhoneNumber(String phoneNumber) {
         // given
-        MemberRequest request = new MemberRequest("jong", "d@d", phoneNumber);
+        MemberRequest request = new MemberRequest("jong", "gromit1234@naver.com", phoneNumber);
 
         // when
         Set<ConstraintViolation<MemberRequest>> violations = validator.validate(request);
