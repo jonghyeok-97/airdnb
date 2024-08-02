@@ -34,4 +34,9 @@ public class MemberController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/email")
+    public void sendVerificationEmail(@RequestBody @Valid EmailRequest request) {
+        emailService.sendVerificationEmail(request.email());
+    }
 }
