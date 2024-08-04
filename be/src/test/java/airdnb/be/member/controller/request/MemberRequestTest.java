@@ -42,9 +42,9 @@ class MemberRequestTest {
         assertThat(violations.size()).isEqualTo(1);
     }
 
-    @DisplayName("회원가입시 폰번호 형식은 xxx-xxxx-xxxx 이다")
+    @DisplayName("회원가입시 폰번호 형식은 010-xxxx-xxxx 이다")
     @ParameterizedTest
-    @ValueSource(strings = {"010-113-1234", "", "010-1234-54676"})
+    @ValueSource(strings = {"010-113-1234", "", "010-1234-54676", "010-1234-547I"})
     void validateMemberPhoneNumber(String phoneNumber) {
         // given
         MemberRequest request = new MemberRequest("jong", "gromit1234@naver.com", phoneNumber);

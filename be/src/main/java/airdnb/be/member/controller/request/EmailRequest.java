@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 public record EmailRequest(
 
         /**
-         * @Email
+         * 모든 이메일에 인증 메일을 전송하지 않게 하여 서버의 부하를 낮추고자 함.
+         * Gmail 경우, 로컬에 + 에 포함 가능 -> 도메인 부분만 엄격하게 검증
+         *
          * 로컬 : @ 문자를 제외한 모든 문자가 하나 이상 포함
          * @ : 전체 문자에서 단 하나
          * 도메인
