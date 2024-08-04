@@ -1,5 +1,6 @@
 package airdnb.be.member.controller;
 
+import airdnb.be.member.controller.request.EmailAuthenticationRequest;
 import airdnb.be.member.controller.request.EmailRequest;
 import airdnb.be.member.controller.request.MemberRequest;
 import airdnb.be.member.service.EmailService;
@@ -25,7 +26,7 @@ public class MemberController {
     private final EmailService emailService;
 
     /**
-     * @return HttpStatus.OK 는 로그인 창 HttpStatus.NO_CONTENT 는 회원가입
+     * @return HttpStatus.OK(200) 는 로그인 창 HttpStatus.NO_CONTENT(204) 는 회원가입
      */
     @GetMapping("/exist")
     public ResponseEntity<Void> existsMemberByEmail(@RequestBody @Valid EmailRequest request) {
@@ -42,8 +43,8 @@ public class MemberController {
     }
 
     @PostMapping("/email")
-    public void sendVerificationEmail(@RequestBody @Valid EmailRequest request) {
-        emailService.sendVerificationEmail(request.email());
+    public void sendAuthenticationEmail(@RequestBody @Valid EmailRequest request) {
+        emailService.sendAuthenticationEmail(request.email());
     }
 
     @PostMapping
