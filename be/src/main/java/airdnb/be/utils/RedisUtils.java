@@ -14,4 +14,12 @@ public class RedisUtils {
     public void addData(String key, String value, Long expiredTime, TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, expiredTime, timeUnit);
     }
+
+    public boolean hasData(String key, String value) {
+        String redisValue = redisTemplate.opsForValue().get(key);
+        if (redisValue == null) {
+            return false;
+        }
+        return redisValue.equals(value);
+    }
 }

@@ -54,4 +54,11 @@ public class EmailService {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().substring(UUID_PREFIX_START, UUID_PREFIX_END);
     }
+
+    public void authenticateEmail(String authCode, String email) {
+        if (redisUtils.hasData(authCode, email)) {
+            return;
+        }
+        throw new BusinessException(ErrorCode.AUTH_CODE_MISMATCH);
+    }
 }

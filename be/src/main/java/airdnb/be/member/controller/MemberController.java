@@ -36,6 +36,11 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/email")
+    public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request) {
+        emailService.authenticateEmail(request.authCode(), request.email());
+    }
+
     @PostMapping("/email")
     public void sendVerificationEmail(@RequestBody @Valid EmailRequest request) {
         emailService.sendVerificationEmail(request.email());
