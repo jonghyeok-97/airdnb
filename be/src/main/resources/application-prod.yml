@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: be
+
+logging:
+  level:
+    airdnb: info
