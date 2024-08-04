@@ -5,7 +5,6 @@ import airdnb.be.exception.ErrorCode;
 import airdnb.be.member.MemberRepository;
 import airdnb.be.member.controller.request.MemberRequest;
 import airdnb.be.member.entitiy.Member;
-import airdnb.be.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
