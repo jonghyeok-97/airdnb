@@ -1,10 +1,10 @@
-package airdnb.be.member.controller;
+package airdnb.be.web.member;
 
-import airdnb.be.member.controller.request.EmailAuthenticationRequest;
-import airdnb.be.member.controller.request.EmailRequest;
-import airdnb.be.member.controller.request.MemberRequest;
-import airdnb.be.member.service.EmailService;
-import airdnb.be.member.service.MemberService;
+import airdnb.be.web.member.request.EmailAuthenticationRequest;
+import airdnb.be.web.member.request.EmailRequest;
+import airdnb.be.web.member.request.MemberSaveRequest;
+import airdnb.be.domain.member.service.EmailService;
+import airdnb.be.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public void addMember(@RequestBody @Valid MemberRequest request) {
-        memberService.addMember(request);
+    public void addMember(@RequestBody @Valid MemberSaveRequest request) {
+        memberService.addMember(request.toMember());
     }
 }

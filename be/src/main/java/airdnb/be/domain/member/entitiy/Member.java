@@ -1,4 +1,4 @@
-package airdnb.be.member.entitiy;
+package airdnb.be.domain.member.entitiy;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,5 +25,9 @@ public class Member {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

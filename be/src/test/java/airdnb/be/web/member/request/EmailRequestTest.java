@@ -1,4 +1,4 @@
-package airdnb.be.member.controller.request;
+package airdnb.be.web.member.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
