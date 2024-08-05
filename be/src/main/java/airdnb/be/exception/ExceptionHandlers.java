@@ -21,13 +21,17 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidEx(MethodArgumentNotValidException ex) {
         FieldError fieldError = Objects.requireNonNull(ex.getFieldError());
+        log.error("[클래스명]{}  [필드]{}  [거부값]{}", ex.getClass(), fieldError.getField(), fieldError.getRejectedValue());
 
         return ErrorResponse.of(HttpStatus.BAD_REQUEST, fieldError);
     }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessEx(BusinessException ex) {
-        return ResponseEntity.status(ex.getErrorCode().getStatus())
-                .body(ErrorResponse.of(ex.getErrorCode()));
+        ErrorCode errorCode = ex.getErrorCode();
+        log.error("[{}]", errorCode);
+
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(ErrorResponse.of(errorCode));
     }
 }
