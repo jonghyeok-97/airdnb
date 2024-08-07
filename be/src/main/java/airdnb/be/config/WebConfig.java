@@ -13,10 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoggingInterceptor())
                 .order(1)
                 .addPathPatterns("/**")
-                /*
-                 * ExceptionResolver 가 처리하지 못한 오류가 있을 때,
-                 * 부트가 기본 제공하는 /error 요청에 대해 인터셉터를 미 호출
-                 */
-                .excludePathPatterns("/error");
+                .excludePathPatterns("/error"); // ExceptionResolver 가 처리하지 못한 BasicErrorController 의 /error 요청시 인터셉터를 호출 X
     }
 }
