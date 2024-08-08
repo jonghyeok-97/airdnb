@@ -4,6 +4,7 @@ import airdnb.be.domain.member.service.EmailService;
 import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
+import airdnb.be.web.member.request.MemberLoginRequest;
 import airdnb.be.web.member.request.MemberSaveRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private static final String VERIFIED_MEMBER = "verified_member";
+    private static final String LOGIN_MEMBER = "login_member";
 
     private final MemberService memberService;
     private final EmailService emailService;
@@ -65,5 +67,15 @@ public class MemberController {
         }
         httpSession.invalidate();
         memberService.addMember(request.toMember());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
+        boolean canLogin = memberService.login(request.email(), request.password());
+        if (canLogin) {
+            httpSession.setAttribute(LOGIN_MEMBER, true);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

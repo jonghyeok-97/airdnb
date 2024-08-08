@@ -4,6 +4,7 @@ import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,5 +27,11 @@ public class MemberService {
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_MEMBER);
         }
         memberRepository.save(member);
+    }
+
+    public boolean login(String email, String password) {
+        return Optional.ofNullable(memberRepository.findMemberByEmail(email))
+                .map(member -> member.hasPassword(password))
+                .orElse(false);
     }
 }

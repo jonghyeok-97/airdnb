@@ -17,9 +17,12 @@ public record MemberSaveRequest(
 
         @Pattern(regexp = "^010-\\d{4}-\\d{4}$")
         @NotNull
-        String phoneNumber
+        String phoneNumber,
+
+        @NotBlank
+        String password
 ) {
     public Member toMember() {
-        return new Member(name, email, phoneNumber);
+        return new Member(name, email, phoneNumber, password);
     }
 }

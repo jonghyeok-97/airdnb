@@ -21,13 +21,20 @@ public class Member {
 
     private String phoneNumber;
 
-    public Member(String name, String email, String phoneNumber) {
+    private String password;
+
+    public Member(String name, String email, String phoneNumber, String password) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.password = password;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean hasPassword(String password) {
+        return this.password.equals(password);
     }
 }
