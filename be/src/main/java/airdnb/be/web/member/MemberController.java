@@ -1,10 +1,11 @@
 package airdnb.be.web.member;
 
+import airdnb.be.domain.member.service.EmailService;
+import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
 import airdnb.be.web.member.request.MemberSaveRequest;
-import airdnb.be.domain.member.service.EmailService;
-import airdnb.be.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
+
+    private static final String VERIFIED_MEMBER = "verified_member";
 
     private final MemberService memberService;
     private final EmailService emailService;
@@ -43,6 +46,7 @@ public class MemberController {
     @GetMapping("/email/authenticate")
     public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession httpSession) {
         emailService.authenticateEmail(request.authCode(), request.email());
+        httpSession.setAttribute(VERIFIED_MEMBER, true);
     }
 
     /*
@@ -54,7 +58,12 @@ public class MemberController {
     }
 
     @PostMapping
-    public void addMember(@RequestBody @Valid MemberSaveRequest request) {
+    public void addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession httpSession) {
+        Object sessionAttribute = httpSession.getAttribute(VERIFIED_MEMBER);
+        if (sessionAttribute == null) {
+            return;
+        }
+        httpSession.invalidate();
         memberService.addMember(request.toMember());
     }
 }
