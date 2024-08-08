@@ -37,12 +37,18 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/email")
-    public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request) {
+    /*
+    이메일 인증번호 확인
+     */
+    @GetMapping("/email/authenticate")
+    public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession httpSession) {
         emailService.authenticateEmail(request.authCode(), request.email());
     }
 
-    @PostMapping("/email")
+    /*
+    이메일 인증번호 보내기
+     */
+    @PostMapping("/email/authenticate")
     public void sendAuthenticationEmail(@RequestBody @Valid EmailRequest request) {
         emailService.sendAuthenticationEmail(request.email());
     }
