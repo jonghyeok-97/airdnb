@@ -1,11 +1,10 @@
-package airdnb.be.member.service;
+package airdnb.be.domain.member.service;
 
+import airdnb.be.domain.member.MemberRepository;
+import airdnb.be.domain.member.entitiy.Member;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import airdnb.be.member.MemberRepository;
-import airdnb.be.member.controller.request.MemberRequest;
-import airdnb.be.member.entitiy.Member;
-import airdnb.be.utils.RedisUtils;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +22,16 @@ public class MemberService {
     }
 
     @Transactional
-    public void addMember(MemberRequest request) {
-        if (memberRepository.existsByEmail(request.email())) {
+    public void addMember(Member member) {
+        if (memberRepository.existsByEmail(member.getEmail())) {
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_MEMBER);
         }
-        Member member = request.toMember();
         memberRepository.save(member);
+    }
+
+    public boolean login(String email, String password) {
+        return Optional.ofNullable(memberRepository.findMemberByEmail(email))
+                .map(member -> member.hasPassword(password))
+                .orElse(false);
     }
 }

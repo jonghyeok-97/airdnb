@@ -1,13 +1,12 @@
-package airdnb.be.member.controller.request;
+package airdnb.be.web.member.request;
 
-import airdnb.be.member.entitiy.Member;
+import airdnb.be.domain.member.entitiy.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-
-public record MemberRequest(
+public record MemberSaveRequest(
 
         @NotBlank
         String name,
@@ -18,9 +17,12 @@ public record MemberRequest(
 
         @Pattern(regexp = "^010-\\d{4}-\\d{4}$")
         @NotNull
-        String phoneNumber
+        String phoneNumber,
+
+        @NotBlank
+        String password
 ) {
     public Member toMember() {
-        return new Member(name, email, phoneNumber);
+        return new Member(name, email, phoneNumber, password);
     }
 }
