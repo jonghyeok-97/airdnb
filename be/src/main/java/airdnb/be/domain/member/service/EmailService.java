@@ -1,4 +1,4 @@
-package airdnb.be.member.service;
+package airdnb.be.domain.member.service;
 
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;

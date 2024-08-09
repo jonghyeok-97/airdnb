@@ -9,14 +9,24 @@ public record ErrorResponse (
         String message
 ){
     public static ErrorResponse of(ErrorCode errorCode) {
-        return new ErrorResponse(errorCode.getCode(), errorCode.getStatus().name(), errorCode.getMessage());
+        return new ErrorResponse(errorCode.getCode(), getStatusName(errorCode.getStatus()), errorCode.getMessage());
     }
 
     public static ErrorResponse of(HttpStatus httpStatus, FieldError fieldError) {
-        String code = String.format("0%s", httpStatus.value());
-        String status = httpStatus.name();
         String message = String.format("%s 필드 오류입니다. 들어온 값 : (%s)", fieldError.getField(), fieldError.getRejectedValue());
 
-        return new ErrorResponse(code, status, message);
+        return new ErrorResponse(getCode(httpStatus), getStatusName(httpStatus), message);
+    }
+
+    public static ErrorResponse of(HttpStatus httpStatus, String message) {
+        return new ErrorResponse(getCode(httpStatus), getStatusName(httpStatus), message);
+    }
+
+    private static String getCode(HttpStatus httpStatus) {
+        return String.format("0%s", httpStatus.value());
+    }
+
+    private static String getStatusName(HttpStatus httpStatus) {
+        return httpStatus.name();
     }
 }

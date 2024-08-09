@@ -1,5 +1,6 @@
 package airdnb.be.utils;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -16,10 +17,8 @@ public class RedisUtils {
     }
 
     public boolean hasData(String key, String value) {
-        String redisValue = redisTemplate.opsForValue().get(key);
-        if (redisValue == null) {
-            return false;
-        }
-        return redisValue.equals(value);
+        return Optional.ofNullable(redisTemplate.opsForValue().get(key))
+                .map(redisValue -> redisValue.equals(value))
+                .orElse(false);
     }
 }
