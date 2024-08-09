@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private static final String VERIFIED_MEMBER = "verified_member";
-    private static final String LOGIN_MEMBER = "login_member";
+    public static final String LOGIN_MEMBER = "login_member";
 
     private final MemberService memberService;
     private final EmailService emailService;
