@@ -63,19 +63,18 @@ public class MemberController {
     public void addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession httpSession) {
         Object sessionAttribute = httpSession.getAttribute(VERIFIED_MEMBER);
         if (sessionAttribute == null) {
-            return;
+            throw new HttpClientErrorException("인증되지 않은 회원입니다", HttpStatus.BAD_REQUEST, "BAD_REQUEST", null, null, null);
         }
         httpSession.invalidate();
         memberService.addMember(request.toMember());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
-        boolean canLogin = memberService.login(request.email(), request.password());
-        if (canLogin) {
+    public void login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
+        boolean login = memberService.login(request.email(), request.password());
+        if (login) {
             httpSession.setAttribute(LOGIN_MEMBER, true);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        throw new HttpClientErrorException("아이디와 비밀번호가 일치하지 않습니다", HttpStatus.BAD_REQUEST, "BAD_REQUEST", null, null, null);
     }
 }

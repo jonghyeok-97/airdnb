@@ -16,6 +16,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandlers {
 
     /**
+     * @param ex 사용자에 의해 자주 생기는 오류를 로그 레벨 WARN 으로 처리
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpClientErrorEx(HttpClientErrorException ex) {
+        log.warn("message: {}, statusText: {}", ex.getMessage(), ex.getStatusText(), ex);
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+
+        return ErrorResponse.of(status, ex.getMessage());
+    }
+
+    /**
      * 헤더의 미디어타입과 컨트롤러 argument 클래스 타입에 따라 선택된 HttpMessageConverter가 요청 본문을 읽을 수 없을 때
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
