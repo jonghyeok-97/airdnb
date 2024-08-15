@@ -63,4 +63,19 @@ public class EmailService {
         }
         throw new BusinessException(ErrorCode.AUTH_MISMATCH);
     }
+
+    public void setVerifiedEmail(String email, Object sessionAttribute) {
+        if (sessionAttribute == null) {
+            throw new BusinessException(ErrorCode.AUTH_MISMATCH);
+        }
+        redisUtils.addData(email, (String) sessionAttribute);
+    }
+
+    public void verifiedEmail(String email, Object sessionAttribute) {
+        if (sessionAttribute != null && redisUtils.hasData(email, (String) sessionAttribute)) {
+            redisUtils.deleteData(email);
+            return;
+        }
+        throw new BusinessException(ErrorCode.AUTH_MISMATCH);
+    }
 }
