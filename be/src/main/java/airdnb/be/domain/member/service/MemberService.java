@@ -34,7 +34,7 @@ public class MemberService {
 
     public void login(String email, String password) {
         Optional.ofNullable(memberRepository.findMemberByEmail(email))
-                .map(member -> member.hasPassword(password))
+                .filter(member -> member.hasPassword(password))
                 .orElseThrow(() -> {
                     log.warn("'{}'의 로그인 정보가 정확하지 않습니다", email);
                     return new BusinessException(ErrorCode.CANNOT_LOGIN);
