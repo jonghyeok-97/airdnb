@@ -16,23 +16,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandlers {
 
     /**
-     * @param ex 사용자에 의해 자주 생기는 오류를 로그 레벨 WARN 으로 처리
-     */
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleHttpClientErrorEx(HttpClientErrorException ex) {
-        log.warn("message: {}, statusText: {}", ex.getMessage(), ex.getStatusText(), ex);
-        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
-
-        return ErrorResponse.of(status, ex.getMessage());
-    }
-
-    /**
      * 헤더의 미디어타입과 컨트롤러 argument 클래스 타입에 따라 선택된 HttpMessageConverter가 요청 본문을 읽을 수 없을 때
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableEx(HttpMessageNotReadableException ex) {
+        log.warn("class:{}", ex.getClass(), ex);
+
         return ErrorResponse.of(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
@@ -42,39 +32,39 @@ public class ExceptionHandlers {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidEx(MethodArgumentNotValidException ex) {
-        FieldError fieldError = Objects.requireNonNull(ex.getFieldError());
-        log.error("[클래스명]{}  [필드]{}  [거부값]{}", ex.getClass(), fieldError.getField(), fieldError.getRejectedValue());
+        log.warn("class:{}", ex.getClass(), ex);
 
+        FieldError fieldError = Objects.requireNonNull(ex.getFieldError());
         return ErrorResponse.of(HttpStatus.BAD_REQUEST, fieldError);
     }
 
+    /**
+     * log level 이 ErrorCode 마다 다르기 때문에 log 는 에러가 발생한 곳에서 작성
+     */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessEx(BusinessException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        log.error("[{}]", errorCode);
 
         return ResponseEntity.status(errorCode.getStatus())
                 .body(ErrorResponse.of(errorCode));
     }
 
     /**
-     * DefaultHandlerExceptionResolver 에 의해 처리되는 예외도 @ExceptionHandler 로 잡은 이유
-     *
-     * 어떤 오류로 인해 api 처리가 되지 않았는지 알 수 있다고 생각
-     *
-     * - 기본 에러 응답 메시지
-     * {
-     *     "timestamp": "2024-08-07T08:08:19.683+00:00",
-     *     "status": 400,
-     *     "error": "Bad Request",
-     *     "path": "/member/exist"
-     * }
-     * - MethodArgumentNotValid -> api 처리중, 바디의 값의 검증에서 오류임을 확인
-     * {
-     *     "code": "0400",
-     *     "status": "BAD_REQUEST",
-     *     "message": "email 필드 오류입니다. 들어온 값 : (*@2@naver.com)"
-     * }
-     *
+     DefaultHandlerExceptionResolver 에 의해 처리되는 예외도 @ExceptionHandler 로 잡은 이유
+     -> 클라이언트에게 어떤 오류로 인해 api 처리가 안됐음을 알려주어 협업 능률이 향상된다고 생각함
+
+     - 기본 에러 응답 메시지
+     {
+     "timestamp": "2024-08-07T08:08:19.683+00:00",
+     "status": 400,
+     "error": "Bad Request",
+     "path": "/member/exist"
+     }
+     - MethodArgumentNotValid -> api 처리중, 바디의 값의 검증에서 오류임을 확인
+     {
+     "code": "0400",
+     "status": "BAD_REQUEST",
+     "message": "email 필드 오류입니다. 들어온 값 : (*@2@naver.com)"
+     }
      */
 }

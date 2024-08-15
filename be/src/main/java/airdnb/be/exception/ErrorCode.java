@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     // 회원
     ALREADY_EXISTS_MEMBER("1000", HttpStatus.BAD_REQUEST, "이미 존재하는 회원입니다."),
+    CANNOT_LOGIN("1001", HttpStatus.BAD_REQUEST, "아이디나 비밀번호가 틀렸습니다"),
 
     // 인증
     AUTH_MISMATCH("1100", HttpStatus.BAD_REQUEST, "인증 되지 않았습니다"),
