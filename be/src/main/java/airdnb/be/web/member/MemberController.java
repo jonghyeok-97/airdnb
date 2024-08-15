@@ -46,9 +46,10 @@ public class MemberController {
     이메일 인증번호 확인
      */
     @GetMapping("/email/authenticate")
-    public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession httpSession) {
-        emailService.authenticateEmail(request.authCode(), request.email());
-        httpSession.setAttribute(VERIFIED_MEMBER, true);
+    public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
+        emailService.authenticateEmail(request.authCode(), request.email()); // 인증번호 확인
+        session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
+        emailService.setVerifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
     }
 
     /*
@@ -60,14 +61,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public void addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession httpSession) {
-        Object sessionAttribute = httpSession.getAttribute(VERIFIED_MEMBER);
-        if (sessionAttribute == null) {
-            log.warn("'{}'는 인증되지 않은 회원입니다", request.email());
-            throw new BusinessException(ErrorCode.AUTH_MISMATCH);
-        }
-        emailService.authenticateEmail(request.authCode(), request.email());
-        httpSession.invalidate();
+    public void addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
+        emailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
+        session.invalidate();
         memberService.addMember(request.toMember());
     }
 
