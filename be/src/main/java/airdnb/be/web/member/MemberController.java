@@ -63,8 +63,10 @@ public class MemberController {
     public void addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession httpSession) {
         Object sessionAttribute = httpSession.getAttribute(VERIFIED_MEMBER);
         if (sessionAttribute == null) {
-            throw new HttpClientErrorException("인증되지 않은 회원입니다", HttpStatus.BAD_REQUEST, "BAD_REQUEST", null, null, null);
+            log.warn("'{}'는 인증되지 않은 회원입니다", request.email());
+            throw new BusinessException(ErrorCode.AUTH_MISMATCH);
         }
+        emailService.authenticateEmail(request.authCode(), request.email());
         httpSession.invalidate();
         memberService.addMember(request.toMember());
     }

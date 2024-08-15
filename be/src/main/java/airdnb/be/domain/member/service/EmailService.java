@@ -61,6 +61,6 @@ public class EmailService {
         if (redisUtils.hasData(authCode, email)) {
             return;
         }
-        throw new BusinessException(ErrorCode.AUTH_CODE_MISMATCH);
+        throw new BusinessException(ErrorCode.AUTH_MISMATCH);
     }
 }
