@@ -12,7 +12,7 @@ public enum ErrorCode {
     ALREADY_EXISTS_MEMBER("1000", HttpStatus.BAD_REQUEST, "이미 존재하는 회원입니다."),
 
     // 인증
-    AUTH_CODE_MISMATCH("1100", HttpStatus.BAD_REQUEST, "인증 번호가 일치하지 않습니다"),
+    AUTH_MISMATCH("1100", HttpStatus.BAD_REQUEST, "인증 되지 않았습니다"),
     ;
 
     private final String code;
