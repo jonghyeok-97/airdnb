@@ -20,10 +20,7 @@ public record MemberSaveRequest(
         String phoneNumber,
 
         @NotBlank
-        String password,
-
-        @NotNull
-        String authCode
+        String password
 ) {
     public Member toMember() {
         return new Member(name, email, phoneNumber, password);

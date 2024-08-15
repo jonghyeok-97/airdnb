@@ -69,10 +69,7 @@ public class MemberController {
 
     @PostMapping("/login")
     public void login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
-        boolean login = memberService.login(request.email(), request.password());
-        if (login) {
-            httpSession.setAttribute(LOGIN_MEMBER, true);
-        }
-        throw new HttpClientErrorException("아이디와 비밀번호가 일치하지 않습니다", HttpStatus.BAD_REQUEST, "BAD_REQUEST", null, null, null);
+        memberService.login(request.email(), request.password());
+        httpSession.setAttribute(LOGIN_MEMBER, true);
     }
 }

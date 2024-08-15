@@ -19,7 +19,7 @@ class MemberSaveRequestTest {
     @ValueSource(strings = {"", " "})
     void validateMemberName(String name) {
         // given
-        MemberSaveRequest request = new MemberSaveRequest(name, "gromit123@naver.com", "010-1234-5678");
+        MemberSaveRequest request = new MemberSaveRequest(name, "gromit123@naver.com", "010-1234-5678", "password");
 
         // when
         Set<ConstraintViolation<MemberSaveRequest>> violations = validator.validate(request);
@@ -33,7 +33,7 @@ class MemberSaveRequestTest {
     @ValueSource(strings = {"dkswhdgur", "@naver.com", "", " "})
     void validateMemberEmail(String email) {
         // given
-        MemberSaveRequest request = new MemberSaveRequest("jong", email, "010-1234-5678");
+        MemberSaveRequest request = new MemberSaveRequest("jong", email, "010-1234-5678", "password");
 
         // when
         Set<ConstraintViolation<MemberSaveRequest>> violations = validator.validate(request);
@@ -47,7 +47,7 @@ class MemberSaveRequestTest {
     @ValueSource(strings = {"010-113-1234", "", "010-1234-54676", "010-1234-547I"})
     void validateMemberPhoneNumber(String phoneNumber) {
         // given
-        MemberSaveRequest request = new MemberSaveRequest("jong", "gromit1234@naver.com", phoneNumber);
+        MemberSaveRequest request = new MemberSaveRequest("jong", "gromit1234@naver.com", phoneNumber, "password");
 
         // when
         Set<ConstraintViolation<MemberSaveRequest>> violations = validator.validate(request);
