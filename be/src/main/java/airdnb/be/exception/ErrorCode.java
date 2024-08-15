@@ -14,7 +14,9 @@ public enum ErrorCode {
 
     // 인증
     AUTH_MISMATCH("1100", HttpStatus.BAD_REQUEST, "인증 되지 않았습니다"),
-    ;
+
+    // 외부 API
+    MAIL_SERVER_ERROR("2000", HttpStatus.INTERNAL_SERVER_ERROR, "내부 오류입니다. 이용에 불편을 드려서 죄송합니다");
 
     private final String code;
     private final HttpStatus status;

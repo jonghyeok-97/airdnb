@@ -8,9 +8,12 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -29,15 +32,18 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final RedisUtils redisUtils;
 
+    @Retryable(retryFor = MailSendException.class, backoff = @Backoff(delay = 1000))
     public void sendAuthenticationEmail(String memberEmail) {
-        try {
-            String randomUUID = createRandomUUID();
-            SimpleMailMessage message = createSimpleMessage(memberEmail, randomUUID);
-            javaMailSender.send(message);
-            redisUtils.addData(randomUUID, memberEmail, UUID_TTL, UUID_TTL_UNIT);
-        } catch (MailException ex) {
-            log.error("메일 전송 불가 : {}", ex.getMessage());
-        }
+        String randomUUID = createRandomUUID();
+        SimpleMailMessage message = createSimpleMessage(memberEmail, randomUUID);
+        javaMailSender.send(message);
+        redisUtils.addData(randomUUID, memberEmail, UUID_TTL, UUID_TTL_UNIT);
+    }
+
+    @Recover
+    private void occurMailServerError() {
+        log.error("메일 서버에 메일을 보낼 수 없습니다");
+        throw new BusinessException(ErrorCode.MAIL_SERVER_ERROR);
     }
 
     private SimpleMailMessage createSimpleMessage(String memberEmail, String randomUUID) {
