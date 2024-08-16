@@ -39,6 +39,8 @@ dependencies {
 
 	implementation 'org.springframework.retry:spring-retry'
 	implementation 'org.springframework:spring-aspects'
+
+	implementation 'org.hibernate.orm:hibernate-spatial'
 }
 
 tasks.named('test') {
