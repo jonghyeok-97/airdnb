@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StayService {
 
     private final StayRepository stayRepository;
@@ -26,5 +27,10 @@ public class StayService {
                 });
 
         stayRepository.save(stay);
+    }
+
+    public Stay getStay(Long stayId) {
+        return stayRepository.findById(stayId)
+                .orElseThrow();
     }
 }
