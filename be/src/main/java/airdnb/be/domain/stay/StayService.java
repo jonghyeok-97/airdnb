@@ -33,4 +33,9 @@ public class StayService {
         return stayRepository.findById(stayId)
                 .orElseThrow();
     }
+
+    @Transactional
+    public void deleteStay(Long stayId) {
+        stayRepository.deleteById(stayId);
+    }
 }
