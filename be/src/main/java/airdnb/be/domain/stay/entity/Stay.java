@@ -24,7 +24,7 @@ import org.locationtech.jts.geom.Point;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Stay {
+public class Stay extends BaseTimeEntity {
 
     private static final int LON_LAN_SRID  = 4326; // X좌표 경도, Y좌표 위도
 
