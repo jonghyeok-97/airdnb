@@ -1,6 +1,7 @@
 package airdnb.be.domain.stay.entity;
 
-import jakarta.persistence.CascadeType;
+import airdnb.be.domain.base.entity.BaseTimeEntity;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -8,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -74,9 +74,9 @@ public class Stay extends BaseTimeEntity {
         this.images = createStayImages(images);
     }
 
-    private List<StayImage> createStayImages(List<String> images) {
+    private List<Image> createStayImages(List<String> images) {
         return images.stream()
-                .map(StayImage::new)
+                .map(Image::new)
                 .collect(Collectors.toList());
     }
 
