@@ -1,7 +1,7 @@
 package airdnb.be.web.stay.response;
 
 import airdnb.be.domain.stay.entity.Stay;
-import airdnb.be.domain.stay.entity.StayImage;
+import airdnb.be.domain.stay.entity.Image;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,9 +40,9 @@ public record StayResponse(
         );
     }
 
-    private static List<String> getURLs(List<StayImage> images) {
+    private static List<String> getURLs(List<Image> images) {
         return images.stream()
-                .map(StayImage::getUrl)
+                .map(Image::getUrl)
                 .collect(Collectors.toList());
     }
 }

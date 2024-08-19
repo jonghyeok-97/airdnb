@@ -2,6 +2,7 @@ package airdnb.be.domain.stay.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -53,9 +54,12 @@ public class Stay {
     @Column(nullable = false)
     private Point point;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "stay_id")
-    private List<StayImage> images = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(
+            name = "stay_image",
+            joinColumns = @JoinColumn(name = "stayId")
+    )
+    private List<Image> images = new ArrayList<>();
 
     public Stay(Long memberId, String title, String description, LocalTime checkInTime, LocalTime checkOutTime,
                 BigDecimal feePerNight, Integer guestCount, Double longitude, Double latitude, List<String> images) {
