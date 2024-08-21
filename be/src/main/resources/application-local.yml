@@ -1,17 +1,37 @@
 spring:
-  application:
-    name: be
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/airbnb
     username: team04
     password: 1234
 
+  sql:
+    init:
+      mode: always
+
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
+
+--- # test
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: never
