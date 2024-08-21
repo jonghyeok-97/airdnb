@@ -2,5 +2,6 @@ spring:
   profiles:
     active: local, email
 
-server:
-  port: 8080
+
+
+
