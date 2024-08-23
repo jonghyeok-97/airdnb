@@ -23,13 +23,13 @@ public class StayController {
     private final StayService stayService;
 
     @PostMapping
-    public void addStay(@RequestBody @Valid StayAddRequest request) {
-        stayService.addStay(request.toStay());
+    public Long addStay(@RequestBody @Valid StayAddRequest request) {
+        return stayService.addStay(request.toStay());
     }
 
     @GetMapping({"/{stayId}"})
     public StayResponse getStay(@PathVariable Long stayId) {
-        return StayResponse.from(stayService.getStay(stayId));
+        return stayService.getStay(stayId);
     }
 
     @DeleteMapping("/{stayId}")
