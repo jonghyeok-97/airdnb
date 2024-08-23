@@ -61,10 +61,10 @@ public class MemberController {
     }
 
     @PostMapping
-    public void addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
+    public Long addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
         emailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
         session.invalidate();
-        memberService.addMember(request.toMember());
+        return memberService.addMember(request.toMember());
     }
 
     @PostMapping("/login")

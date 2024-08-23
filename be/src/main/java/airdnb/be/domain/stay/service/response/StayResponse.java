@@ -1,4 +1,4 @@
-package airdnb.be.web.stay.response;
+package airdnb.be.domain.stay.service.response;
 
 import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.domain.stay.entity.Image;

@@ -24,12 +24,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void addMember(Member member) {
+    public Long addMember(Member member) {
         if (memberRepository.existsByEmail(member.getEmail())) {
             log.warn("message: {}은 이미 회원가입이 되어있습니다", member.getEmail());
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_MEMBER);
         }
-        memberRepository.save(member);
+        Member saved = memberRepository.save(member);
+        return saved.getId();
     }
 
     public void login(String email, String password) {
