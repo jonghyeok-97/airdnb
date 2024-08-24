@@ -1,13 +1,14 @@
+--- # test
 spring:
+  config:
+    activate:
+      on-profile: test
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/airbnb
+    url: jdbc:mysql://localhost:3306/airbnb_test
     username: team04
     password: 1234
-
-  sql:
-    init:
-      mode: always
 
   jpa:
     hibernate:
@@ -16,4 +17,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: never
