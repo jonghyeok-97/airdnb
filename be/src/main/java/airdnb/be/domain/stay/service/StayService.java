@@ -3,6 +3,7 @@ package airdnb.be.domain.stay.service;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
+import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
@@ -22,14 +23,16 @@ public class StayService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long addStay(Stay stay) {
+    public Long addStay(StayAddServiceRequest serviceRequest) {
+        Stay stay = serviceRequest.toStay();
+
         memberRepository.findById(stay.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("'{}' 은 존재하지 않는 회원입니다.", stay.getMemberId());
                     return new BusinessException(ErrorCode.NOT_EXIST_MEMBER);
                 });
-
         Stay saved = stayRepository.save(stay);
+
         return saved.getStayId();
     }
 
