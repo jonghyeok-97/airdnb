@@ -1,6 +1,6 @@
 package airdnb.be.web.stay.request;
 
-import airdnb.be.domain.stay.entity.Stay;
+import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -45,8 +45,9 @@ public record StayAddRequest(
         @NotNull
         @Size(min = 5, message = "이미지는 최소 5개여야 합니다.")
         List<String> images
+
 ) {
-        public Stay toStay() {
-                return new Stay(memberId, title, description, checkInTime, checkOutTime, feePerNight, guestCount, longitude, latitude, images);
+        public StayAddServiceRequest toServiceRequest() {
+                return new StayAddServiceRequest(memberId, title, description, checkInTime, checkOutTime, feePerNight, guestCount, longitude, latitude, images);
         }
 }
