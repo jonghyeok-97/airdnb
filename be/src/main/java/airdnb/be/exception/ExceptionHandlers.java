@@ -1,12 +1,11 @@
 package airdnb.be.exception;
 
-import java.util.Objects;
+import airdnb.be.api.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,13 +28,13 @@ public class ExceptionHandlers {
     /**
      * Valid/Validated 로 인한 검증에 의해 필드에 바인딩이 실패 했을 떄
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMethodArgumentNotValidEx(MethodArgumentNotValidException ex) {
-        log.warn("class:{}", ex.getClass(), ex);
+    public ApiResponse<Void> handleBindException(BindException e) {
+        String message = e.getAllErrors().get(0).getDefaultMessage();
+        log.warn("message : {}", message, e);
 
-        FieldError fieldError = Objects.requireNonNull(ex.getFieldError());
-        return ErrorResponse.of(HttpStatus.BAD_REQUEST, fieldError);
+        return ApiResponse.badRequest(message);
     }
 
     /**
