@@ -1,9 +1,11 @@
 package airdnb.be.web.stay;
 
-import airdnb.be.domain.stay.StayService;
+import airdnb.be.api.ApiResponse;
+import airdnb.be.domain.stay.service.StayService;
 import airdnb.be.web.stay.request.StayAddRequest;
-import airdnb.be.web.stay.response.StayResponse;
+import airdnb.be.domain.stay.service.response.StayResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,8 +25,10 @@ public class StayController {
     private final StayService stayService;
 
     @PostMapping
-    public Long addStay(@RequestBody @Valid StayAddRequest request) {
-        return stayService.addStay(request.toStay());
+    public ApiResponse<Long> addStay(@RequestBody @Valid StayAddRequest request) {
+
+        Long stayId = stayService.addStay(request.toStay());
+        return ApiResponse.ok(stayId);
     }
 
     @GetMapping({"/{stayId}"})

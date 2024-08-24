@@ -22,7 +22,7 @@ public class StayService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void addStay(Stay stay) {
+    public Long addStay(Stay stay) {
         memberRepository.findById(stay.getMemberId())
                 .orElseThrow(() -> {
                     log.warn("'{}' 은 존재하지 않는 회원입니다.", stay.getMemberId());
