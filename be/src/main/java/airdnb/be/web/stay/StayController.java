@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +27,7 @@ public class StayController {
 
     @PostMapping
     public ApiResponse<Long> addStay(@RequestBody @Valid StayAddRequest request) {
-
-        Long stayId = stayService.addStay(request.toStay());
+        Long stayId = stayService.addStay(request.toServiceRequest());
         return ApiResponse.ok(stayId);
     }
 
@@ -39,5 +39,10 @@ public class StayController {
     @DeleteMapping("/{stayId}")
     public void deleteStay(@PathVariable Long stayId) {
         stayService.deleteStay(stayId);
+    }
+
+    @PutMapping("/{stayId}/image")
+    public void deleteStayImage(@PathVariable Long stayId, @RequestBody List<String> imageUrls) {
+        stayService.updateStayImage(stayId, imageUrls);
     }
 }
