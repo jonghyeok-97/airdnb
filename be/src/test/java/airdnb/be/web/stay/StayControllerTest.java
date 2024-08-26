@@ -48,7 +48,7 @@ class StayControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
-                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").isNumber());
@@ -67,7 +67,7 @@ class StayControllerTest {
                         get("/stay/1")
                 ).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist());
@@ -89,7 +89,7 @@ class StayControllerTest {
                         get("/stay" + "/" + targetId)
                 ).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist());
