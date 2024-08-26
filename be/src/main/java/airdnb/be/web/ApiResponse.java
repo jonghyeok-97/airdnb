@@ -1,4 +1,4 @@
-package airdnb.be.api;
+package airdnb.be.web;
 
 import airdnb.be.exception.ErrorCode;
 import lombok.Getter;

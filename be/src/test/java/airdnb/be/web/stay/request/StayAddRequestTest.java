@@ -97,7 +97,7 @@ class StayAddRequestTest {
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value("0400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("제목을 넣어주세요."))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -128,7 +128,7 @@ class StayAddRequestTest {
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value("0400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("이미지는 최소 5개여야 합니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -160,7 +160,7 @@ class StayAddRequestTest {
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value("0400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("1박당 요금은 최소 10000원 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -192,7 +192,7 @@ class StayAddRequestTest {
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value("0400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("숙박 인원 수는 최소 1명입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -224,7 +224,7 @@ class StayAddRequestTest {
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value("0400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("경도는 -180도 이상, 180도 이하입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
@@ -284,7 +284,7 @@ class StayAddRequestTest {
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value("0400"))
                 .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.message").value("위도는 -90도 이상, 90도 이하입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());

@@ -1,6 +1,6 @@
 package airdnb.be.web.stay;
 
-import airdnb.be.api.ApiResponse;
+import airdnb.be.web.ApiResponse;
 import airdnb.be.domain.stay.service.StayService;
 import airdnb.be.web.stay.request.StayAddRequest;
 import airdnb.be.domain.stay.service.response.StayResponse;
