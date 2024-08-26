@@ -32,13 +32,15 @@ public class StayController {
     }
 
     @GetMapping({"/{stayId}"})
-    public StayResponse getStay(@PathVariable Long stayId) {
-        return stayService.getStay(stayId);
+    public ApiResponse<StayResponse> getStay(@PathVariable Long stayId) {
+        return ApiResponse.ok(stayService.getStay(stayId));
     }
 
     @DeleteMapping("/{stayId}")
-    public void deleteStay(@PathVariable Long stayId) {
+    public ApiResponse<Void> deleteStay(@PathVariable Long stayId) {
         stayService.deleteStay(stayId);
+
+        return ApiResponse.ok();
     }
 
     @PutMapping("/{stayId}/image")
