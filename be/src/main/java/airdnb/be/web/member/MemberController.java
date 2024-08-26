@@ -1,10 +1,10 @@
 package airdnb.be.web.member;
 
-import airdnb.be.api.ApiResponse;
-import airdnb.be.domain.member.service.EmailService;
-import airdnb.be.domain.member.service.MemberService;
+import airdnb.be.web.ApiResponse;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
+import airdnb.be.domain.member.service.EmailService;
+import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.MemberLoginRequest;
 import airdnb.be.web.member.request.MemberSaveRequest;
 import jakarta.servlet.http.HttpSession;
