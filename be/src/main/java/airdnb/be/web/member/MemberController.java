@@ -1,5 +1,6 @@
 package airdnb.be.web.member;
 
+import airdnb.be.api.ApiResponse;
 import airdnb.be.domain.member.service.EmailService;
 import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
@@ -11,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,42 +34,49 @@ public class MemberController {
      * @return HttpStatus.OK(200) 는 로그인 창 HttpStatus.NO_CONTENT(204) 는 회원가입
      */
     @GetMapping("/exist")
-    public ResponseEntity<Void> existsMemberByEmail(@RequestBody @Valid EmailRequest request) {
+    public ApiResponse<Void> existsMemberByEmail(@RequestBody @Valid EmailRequest request) {
         boolean existsMember = memberService.existsMemberByEmail(request.email());
         if (existsMember) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ApiResponse.ok();
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ApiResponse.status(HttpStatus.NO_CONTENT);
     }
 
     /*
     이메일 인증번호 확인
      */
     @GetMapping("/email/authenticate")
-    public void authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
+    public ApiResponse<Void> authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
         emailService.authenticateEmail(request.authCode(), request.email()); // 인증번호 확인
         session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
         emailService.setVerifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
+
+        return ApiResponse.ok();
     }
 
     /*
     이메일 인증번호 보내기
      */
     @PostMapping("/email/authenticate")
-    public void sendAuthenticationEmail(@RequestBody @Valid EmailRequest request) {
+    public ApiResponse<Void> sendAuthenticationEmail(@RequestBody @Valid EmailRequest request) {
         emailService.sendAuthenticationEmail(request.email());
+
+        return ApiResponse.ok();
     }
 
     @PostMapping
-    public Long addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
+    public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
         emailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
         session.invalidate();
-        return memberService.addMember(request.toMember());
+
+        return ApiResponse.ok(memberService.addMember(request.toMember()));
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
+    public ApiResponse<Void> login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
         memberService.login(request.email(), request.password());
         httpSession.setAttribute(LOGIN_MEMBER, true);
+
+        return ApiResponse.ok();
     }
 }
