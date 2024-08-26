@@ -26,6 +26,10 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
+    public static <T> ApiResponse<T> status(HttpStatus status) {
+        return new ApiResponse<>(status, status.name(), null);
+    }
+
     public static <T> ApiResponse<T> badRequest(String message) {
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, message, null);
     }
