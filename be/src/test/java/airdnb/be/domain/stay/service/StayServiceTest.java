@@ -130,6 +130,26 @@ class StayServiceTest {
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
     }
 
+    @DisplayName("저장된 숙소의 Id로 숙소를 삭제한다.")
+    @Test
+    void deleteStay() {
+        // given
+        Member member1 = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
+        Member member2 = new Member("이름2", "email2@naver.com", "010-1111-1112", "password");
+        memberRepository.saveAll(List.of(member1, member2));
+        List<Member> members = memberRepository.saveAll(List.of(member1, member2));
+        Member member = members.get(0);
+
+        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(member.getId());
+        Long savedStayId = stayService.addStay(serviceRequest);
+
+        // when
+        stayService.deleteStay(savedStayId);
+
+        // when then
+        assertThat(stayRepository.findAll()).hasSize(0);
+    }
+
     private StayAddServiceRequest createStayAddServiceRequest(Long memberId) {
         return new StayAddServiceRequest(
                 memberId,
