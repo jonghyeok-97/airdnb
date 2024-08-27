@@ -1,5 +1,6 @@
 package airdnb.be.web.member;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -10,7 +11,6 @@ import airdnb.be.web.member.request.EmailRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -37,8 +37,8 @@ class MemberControllerTest {
     void existsMemberByEmail() throws Exception {
         // given
         EmailRequest request = new EmailRequest("123@naver.com");
-        Mockito.when(memberService.existsMemberByEmail(request.email()))
-                        .thenReturn(true);
+        given(memberService.existsMemberByEmail(request.email()))
+                        .willReturn(true);
 
         // when then
         mockMvc.perform(
@@ -57,8 +57,8 @@ class MemberControllerTest {
     void notExistsMemberByEmail() throws Exception {
         // given
         EmailRequest request = new EmailRequest("123@naver.com");
-        Mockito.when(memberService.existsMemberByEmail(request.email()))
-                .thenReturn(false);
+        given(memberService.existsMemberByEmail(request.email()))
+                .willReturn(false);
 
         // when then
         mockMvc.perform(
