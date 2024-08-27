@@ -1,5 +1,7 @@
 package airdnb.be.web.stay;
 
+import static org.mockito.BDDMockito.doNothing;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,7 +17,6 @@ import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,7 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles(value = "test")
-@WebMvcTest(StayController.class)
+@WebMvcTest(controllers = StayController.class)
 class StayControllerTest {
 
     @Autowired
@@ -59,8 +60,8 @@ class StayControllerTest {
     void getStay() throws Exception {
         //given
         StayResponse stayResponse = null;
-        Mockito.when(stayService.getStay(1L))
-                .thenReturn(stayResponse);
+        given(stayService.getStay(1L))
+                .willReturn(stayResponse);
 
         // when then
         mockMvc.perform(
@@ -79,8 +80,7 @@ class StayControllerTest {
         //given
         Long targetId = 3L;
 
-        StayResponse stayResponse = null;
-        Mockito.doNothing()
+        doNothing()
                 .when(stayService)
                 .deleteStay(targetId);
 
