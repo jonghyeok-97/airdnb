@@ -69,12 +69,12 @@ public class MemberController {
         emailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
         session.invalidate();
 
-        return ApiResponse.ok(memberService.addMember(request.toMember()));
+        return ApiResponse.ok(memberService.addMember(request.toServiceRequest()));
     }
 
     @PostMapping("/login")
     public ApiResponse<Void> login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
-        memberService.login(request.email(), request.password());
+        memberService.login(request.toServiceRequest());
         httpSession.setAttribute(LOGIN_MEMBER, true);
 
         return ApiResponse.ok();
