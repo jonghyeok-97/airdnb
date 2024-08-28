@@ -1,10 +1,10 @@
 package airdnb.be.domain.mail;
 
 import airdnb.be.client.MailClient;
+import airdnb.be.client.RedisUtils;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import airdnb.be.utils.RedisUtils;
-import java.util.UUID;
+import airdnb.be.utils.RandomUUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    private static final int UUID_PREFIX_START = 0;
-    private static final int UUID_PREFIX_END = 6;
     private static final Long UUID_TTL = 5L;
     private static final TimeUnit UUID_TTL_UNIT = TimeUnit.MINUTES;
 
@@ -32,7 +30,7 @@ public class EmailService {
      */
     @Retryable(retryFor = MailSendException.class, backoff = @Backoff(delay = 1000))
     public void sendAuthenticationEmail(String memberEmail) {
-        String uuid = createRandomUUID();
+        String uuid = RandomUUID.createSixDigitUUID();
         mailClient.sendAuthenticationMail(memberEmail, uuid);
         redisUtils.addData(uuid, memberEmail, UUID_TTL, UUID_TTL_UNIT);
     }
@@ -65,9 +63,5 @@ public class EmailService {
         throw new BusinessException(ErrorCode.AUTH_MISMATCH);
     }
 
-    // 6자리만 인증번호로 채택
-    private String createRandomUUID() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString().substring(UUID_PREFIX_START, UUID_PREFIX_END);
-    }
+
 }
