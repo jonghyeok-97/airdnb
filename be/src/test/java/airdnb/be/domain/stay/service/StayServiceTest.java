@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
 import airdnb.be.domain.stay.StayRepository;
+import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
@@ -45,18 +46,17 @@ class StayServiceTest {
     @Test
     void addStay() {
         // given
-        Member member1 = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
-        Member member2 = new Member("이름2", "email2@naver.com", "010-1111-1112", "password");
-        List<Member> members = memberRepository.saveAll(List.of(member1, member2));
-        Member member = members.get(0);
+        Member member = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
+        Member savedMember = memberRepository.save(member);
 
-        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(member.getId());
+        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(savedMember.getId());
 
         // when
-        Long stayId = stayService.addStay(serviceRequest);
+        Long savedStayId = stayService.addStay(serviceRequest);
+        Stay stay = stayRepository.findById(savedStayId).orElseThrow();
 
         // then
-        assertThat(stayId).isEqualTo(1L);
+        assertThat(savedStayId).isEqualTo(stay.getStayId());
     }
 
     @DisplayName("가입하지 않은 회원이 숙소를 등록하면 예외가 발생한다")

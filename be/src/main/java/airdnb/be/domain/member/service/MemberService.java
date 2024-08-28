@@ -2,6 +2,8 @@ package airdnb.be.domain.member.service;
 
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
+import airdnb.be.domain.member.service.request.MemberLoginServiceRequest;
+import airdnb.be.domain.member.service.request.MemberSaveServiceRequest;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import java.util.Optional;
@@ -24,20 +26,20 @@ public class MemberService {
     }
 
     @Transactional
-    public Long addMember(Member member) {
-        if (existsMemberByEmail(member.getEmail())) {
-            log.warn("message: {}은 이미 회원가입이 되어있습니다", member.getEmail());
+    public Long addMember(MemberSaveServiceRequest serviceRequest) {
+        if (existsMemberByEmail(serviceRequest.email())) {
+            log.warn("message: {}은 이미 회원가입이 되어있습니다", serviceRequest.email());
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_MEMBER);
         }
-        Member saved = memberRepository.save(member);
+        Member saved = memberRepository.save(serviceRequest.toMember());
         return saved.getId();
     }
 
-    public void login(String email, String password) {
-        Optional.ofNullable(memberRepository.findMemberByEmail(email))
-                .filter(member -> member.hasPassword(password))
+    public void login(MemberLoginServiceRequest serviceRequest) {
+        Optional.ofNullable(memberRepository.findMemberByEmail(serviceRequest.email()))
+                .filter(member -> member.hasPassword(serviceRequest.password()))
                 .orElseThrow(() -> {
-                    log.warn("'{}'의 로그인 정보가 정확하지 않습니다", email);
+                    log.warn("'{}'의 로그인 정보가 정확하지 않습니다", serviceRequest.email());
                     return new BusinessException(ErrorCode.CANNOT_LOGIN);
                 });
     }
