@@ -25,7 +25,7 @@ public class MemberService {
 
     @Transactional
     public Long addMember(Member member) {
-        if (memberRepository.existsByEmail(member.getEmail())) {
+        if (existsMemberByEmail(member.getEmail())) {
             log.warn("message: {}은 이미 회원가입이 되어있습니다", member.getEmail());
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_MEMBER);
         }
