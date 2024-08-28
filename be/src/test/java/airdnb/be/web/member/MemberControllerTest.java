@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import airdnb.be.domain.member.service.EmailService;
+import airdnb.be.domain.mail.EmailService;
 import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.EmailRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
