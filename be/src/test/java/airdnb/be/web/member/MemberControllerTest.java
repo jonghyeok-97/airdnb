@@ -5,32 +5,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import airdnb.be.domain.mail.EmailService;
-import airdnb.be.domain.member.service.MemberService;
+import airdnb.be.ControllerTestSupport;
 import airdnb.be.web.member.request.EmailRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = MemberController.class)
-class MemberControllerTest {
-
-    @MockBean
-    private MemberService memberService;
-
-    @MockBean
-    private EmailService emailService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private MockMvc mockMvc;
+class MemberControllerTest extends ControllerTestSupport {
 
     @DisplayName("회원이 존재하면 메시지 바디는 OK_200 이다.")
     @Test
