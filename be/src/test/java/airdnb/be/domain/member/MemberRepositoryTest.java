@@ -2,6 +2,7 @@ package airdnb.be.domain.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.member.entitiy.Member;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -10,12 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class MemberRepositoryTest {
+class MemberRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberRepository memberRepository;

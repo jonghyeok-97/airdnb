@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
 import airdnb.be.domain.member.service.request.MemberLoginServiceRequest;
@@ -15,12 +16,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class MemberServiceTest {
+class MemberServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberService memberService;

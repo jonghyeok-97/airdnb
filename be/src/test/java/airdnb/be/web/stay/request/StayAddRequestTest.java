@@ -6,9 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import airdnb.be.domain.stay.service.StayService;
-import airdnb.be.web.stay.StayController;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import airdnb.be.ControllerTestSupport;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -20,26 +18,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = StayController.class)
-class StayAddRequestTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private StayService stayService;
+class StayAddRequestTest extends ControllerTestSupport {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
 
     @DisplayName("신규 숙소를 등록할 때 "
             + "회원 식별자, 제목, 체크인시간, 체크아웃시간, 1박당 요금, 숙박 인원수, 위도, 경도, 이미지에는 "

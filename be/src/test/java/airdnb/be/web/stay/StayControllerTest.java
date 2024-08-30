@@ -8,34 +8,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import airdnb.be.domain.stay.service.StayService;
+import airdnb.be.ControllerTestSupport;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.web.stay.request.StayAddRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 
-@ActiveProfiles(value = "test")
-@WebMvcTest(controllers = StayController.class)
-class StayControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private StayService stayService;
+class StayControllerTest extends ControllerTestSupport {
 
     @DisplayName("신규 숙소를 등록한다.")
     @Test
