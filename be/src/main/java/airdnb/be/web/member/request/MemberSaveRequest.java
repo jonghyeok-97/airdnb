@@ -1,5 +1,6 @@
 package airdnb.be.web.member.request;
 
+import airdnb.be.customBeanValid.ValidEmail;
 import airdnb.be.domain.member.service.request.MemberSaveServiceRequest;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +12,7 @@ public record MemberSaveRequest(
         @NotBlank
         String name,
 
-        @Email(regexp = "^[^@]+@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")
+        @ValidEmail(message = "유효한 이메일이 아닙니다.")
         @NotNull
         String email,
 
