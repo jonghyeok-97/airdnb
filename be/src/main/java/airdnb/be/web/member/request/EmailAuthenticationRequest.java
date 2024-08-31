@@ -1,6 +1,7 @@
 package airdnb.be.web.member.request;
 
 import airdnb.be.customBeanValid.ValidEmail;
+import airdnb.be.domain.mail.request.EmailAuthenticationServiceRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,4 +14,7 @@ public record EmailAuthenticationRequest(
         @NotBlank
         String authCode
 ) {
+        public EmailAuthenticationServiceRequest toServiceRequest() {
+                return new EmailAuthenticationServiceRequest(email, authCode);
+        }
 }
