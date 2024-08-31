@@ -3,14 +3,14 @@ package airdnb.be.client;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class RedisClient {
 
-    private final RedisOperations<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void addData(String key, String value, Long expiredTime, TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, expiredTime, timeUnit);
