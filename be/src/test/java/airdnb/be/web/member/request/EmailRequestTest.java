@@ -19,9 +19,13 @@ class EmailRequestTest {
     @ParameterizedTest
     @ValueSource(strings = {"gromit@naver.co.1r", "gromit@naver.co.k", "gromit@naver.co.", "gromit@naver.co.d "})
     void validateEmailDomainPart(String email) {
-        EmailRequest emailDto = new EmailRequest(email);
-        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
+        // given
+        EmailRequest request = new EmailRequest(email);
 
+        // when
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(request);
+
+        // then
         assertThat(violations).hasSize(1);
     }
 
@@ -29,9 +33,13 @@ class EmailRequestTest {
     @ParameterizedTest
     @ValueSource(strings = {"gr@mit@naver.com", "gromit@@naver.com"})
     void validateEmailFormat(String email) {
-        EmailRequest emailDto = new EmailRequest(email);
-        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
+        // given
+        EmailRequest request = new EmailRequest(email);
 
+        // when
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(request);
+
+        // then
         assertThat(violations).hasSize(1);
     }
 
@@ -39,18 +47,26 @@ class EmailRequestTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
     void validateEmpty(String email) {
-        EmailRequest emailDto = new EmailRequest(email);
-        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
+        // given
+        EmailRequest request = new EmailRequest(email);
 
+        // when
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(request);
+
+        // then
         assertThat(violations).hasSize(1);
     }
 
     @DisplayName("이메일 형식에 null은 들어갈 수 없다")
     @Test
     void validateNull() {
-        EmailRequest emailDto = new EmailRequest(null);
-        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(emailDto);
+        // given
+        EmailRequest request = new EmailRequest(null);
 
+        // when
+        Set<ConstraintViolation<EmailRequest>> violations = validator.validate(request);
+
+        // then
         assertThat(violations).hasSize(1);
     }
 }
