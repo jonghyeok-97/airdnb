@@ -29,10 +29,12 @@ public class MailService {
      * @apiNote  메일 예외 발생 시, 1초마다 총 3회 재시도. 재시도 다 실패하면 로그 레벨 error 발생
      */
     @Retryable(retryFor = MailSendException.class, backoff = @Backoff(delay = 1000))
-    public void sendAuthenticationEmail(String memberEmail) {
-        String uuid = RandomUUID.createSixDigitUUID();
-        mailClient.sendAuthenticationMail(memberEmail, uuid);
-        redisClient.addData(uuid, memberEmail, UUID_TTL, UUID_TTL_UNIT);
+    public void sendAuthenticationMail(EmailAuthenticationServiceRequest request) {
+        String email = request.email();
+        String authenticationCode = request.authenticationCode();
+
+        mailClient.sendAuthenticationMail(email, authenticationCode);
+        redisClient.addData(authenticationCode, email, UUID_TTL, UUID_TTL_UNIT);
     }
 
     @Recover
@@ -41,8 +43,11 @@ public class MailService {
         throw new BusinessException(ErrorCode.MAIL_SERVER_ERROR);
     }
 
-    public void authenticateEmail(String authCode, String email) {
-        if (redisClient.hasData(authCode, email)) {
+    /**
+     * @apiNote 사용자가 인증코드 확인을 요청했을 때
+     */
+    public void authenticateMail(EmailAuthenticationServiceRequest request) {
+        if (redisClient.hasData(request.authenticationCode(), request.email())) {
             return;
         }
         throw new BusinessException(ErrorCode.AUTH_MISMATCH);

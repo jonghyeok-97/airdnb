@@ -1,5 +1,7 @@
 package airdnb.be.web.member;
 
+import airdnb.be.domain.mail.request.EmailAuthenticationServiceRequest;
+import airdnb.be.utils.RandomUUID;
 import airdnb.be.web.ApiResponse;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
@@ -47,9 +49,9 @@ public class MemberController {
      */
     @GetMapping("/email/authenticate")
     public ApiResponse<Void> authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
-        mailService.authenticateEmail(request.authCode(), request.email()); // 인증번호 확인
+        mailService.authenticateMail(request.toServiceRequest()); // 인증번호 확인
         session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
-        mailService.setVerifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
+        mailService.setVerifiedMail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
 
         return ApiResponse.ok();
     }
@@ -59,14 +61,15 @@ public class MemberController {
      */
     @PostMapping("/email/authenticate")
     public ApiResponse<Void> sendAuthenticationEmail(@RequestBody @Valid EmailRequest request) {
-        mailService.sendAuthenticationEmail(request.email());
+        String uuid = RandomUUID.createSixDigitUUID();
+        mailService.sendAuthenticationMail(new EmailAuthenticationServiceRequest(request.email(), uuid));
 
         return ApiResponse.ok();
     }
 
     @PostMapping
     public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
-        mailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
+        mailService.verifiedMail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
         session.invalidate();
 
         return ApiResponse.ok(memberService.addMember(request.toServiceRequest()));
