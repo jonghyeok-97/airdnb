@@ -3,7 +3,7 @@ package airdnb.be.web.member;
 import airdnb.be.web.ApiResponse;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
-import airdnb.be.domain.mail.EmailService;
+import airdnb.be.domain.mail.MailService;
 import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.MemberLoginRequest;
 import airdnb.be.web.member.request.MemberSaveRequest;
@@ -28,7 +28,7 @@ public class MemberController {
     public static final String LOGIN_MEMBER = "login_member";
 
     private final MemberService memberService;
-    private final EmailService emailService;
+    private final MailService mailService;
 
     /**
      * @return HttpStatus.OK(200) 는 로그인 창 HttpStatus.NO_CONTENT(204) 는 회원가입
@@ -47,9 +47,9 @@ public class MemberController {
      */
     @GetMapping("/email/authenticate")
     public ApiResponse<Void> authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
-        emailService.authenticateEmail(request.authCode(), request.email()); // 인증번호 확인
+        mailService.authenticateEmail(request.authCode(), request.email()); // 인증번호 확인
         session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
-        emailService.setVerifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
+        mailService.setVerifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
 
         return ApiResponse.ok();
     }
@@ -59,14 +59,14 @@ public class MemberController {
      */
     @PostMapping("/email/authenticate")
     public ApiResponse<Void> sendAuthenticationEmail(@RequestBody @Valid EmailRequest request) {
-        emailService.sendAuthenticationEmail(request.email());
+        mailService.sendAuthenticationEmail(request.email());
 
         return ApiResponse.ok();
     }
 
     @PostMapping
     public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
-        emailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
+        mailService.verifiedEmail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
         session.invalidate();
 
         return ApiResponse.ok(memberService.addMember(request.toServiceRequest()));
