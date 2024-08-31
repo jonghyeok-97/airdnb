@@ -1,7 +1,7 @@
 package airdnb.be.domain.mail;
 
 import airdnb.be.client.MailClient;
-import airdnb.be.client.RedisUtils;
+import airdnb.be.client.RedisClient;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import airdnb.be.utils.RandomUUID;
@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class EmailService {
+public class MailService {
 
     private static final Long UUID_TTL = 5L;
     private static final TimeUnit UUID_TTL_UNIT = TimeUnit.MINUTES;
 
     private final MailClient mailClient;
-    private final RedisUtils redisUtils;
+    private final RedisClient redisClient;
 
     /**
      * @apiNote  메일 예외 발생 시, 1초마다 총 3회 재시도. 재시도 다 실패하면 로그 레벨 error 발생
@@ -32,7 +32,7 @@ public class EmailService {
     public void sendAuthenticationEmail(String memberEmail) {
         String uuid = RandomUUID.createSixDigitUUID();
         mailClient.sendAuthenticationMail(memberEmail, uuid);
-        redisUtils.addData(uuid, memberEmail, UUID_TTL, UUID_TTL_UNIT);
+        redisClient.addData(uuid, memberEmail, UUID_TTL, UUID_TTL_UNIT);
     }
 
     @Recover
@@ -42,7 +42,7 @@ public class EmailService {
     }
 
     public void authenticateEmail(String authCode, String email) {
-        if (redisUtils.hasData(authCode, email)) {
+        if (redisClient.hasData(authCode, email)) {
             return;
         }
         throw new BusinessException(ErrorCode.AUTH_MISMATCH);
@@ -52,12 +52,12 @@ public class EmailService {
         if (sessionAttribute == null) {
             throw new BusinessException(ErrorCode.AUTH_MISMATCH);
         }
-        redisUtils.addData(email, (String) sessionAttribute);
+        redisClient.addData(email, (String) sessionAttribute);
     }
 
     public void verifiedEmail(String email, Object sessionAttribute) {
-        if (sessionAttribute != null && redisUtils.hasData(email, (String) sessionAttribute)) {
-            redisUtils.deleteData(email);
+        if (sessionAttribute != null && redisClient.hasData(email, (String) sessionAttribute)) {
+            redisClient.deleteData(email);
             return;
         }
         throw new BusinessException(ErrorCode.AUTH_MISMATCH);
