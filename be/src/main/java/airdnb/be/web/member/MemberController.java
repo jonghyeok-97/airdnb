@@ -49,11 +49,13 @@ public class MemberController {
      */
     @GetMapping("/email/authenticate")
     public ApiResponse<Void> authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
-        mailService.authenticateMail(request.toServiceRequest()); // 인증번호 확인
-        session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
-        mailService.setVerifiedMail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
+        if (mailService.isValidMail(request.toServiceRequest())) {  // 인증번호 확인
+            session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
+            mailService.setVerifiedMail(request.email(), (String) session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
 
-        return ApiResponse.ok();
+            return ApiResponse.ok();
+        }
+        return ApiResponse.status(HttpStatus.BAD_REQUEST);
     }
 
     /*
@@ -69,7 +71,7 @@ public class MemberController {
 
     @PostMapping
     public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
-        mailService.verifiedMail(request.email(), session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
+        mailService.checkVerifiedMail(request.email(), (String) session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
         session.invalidate();
 
         return ApiResponse.ok(memberService.addMember(request.toServiceRequest()));
