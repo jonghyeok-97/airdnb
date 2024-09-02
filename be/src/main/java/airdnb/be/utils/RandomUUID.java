@@ -1,7 +1,10 @@
 package airdnb.be.utils;
 
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RandomUUID {
 
     private static final int UUID_PREFIX_START = 0;
