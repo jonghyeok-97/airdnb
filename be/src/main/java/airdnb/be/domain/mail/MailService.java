@@ -34,6 +34,7 @@ public class MailService {
         String authenticationCode = request.authenticationCode();
 
         mailClient.sendAuthenticationMail(email, authenticationCode);
+        // 인증코드가 중복될 경우가 없기 때문에 key 로 설정
         redisClient.addData(authenticationCode, email, UUID_TTL, UUID_TTL_UNIT);
     }
 
@@ -48,26 +49,5 @@ public class MailService {
      */
     public boolean isValidMail(EmailAuthenticationServiceRequest request) {
         return redisClient.hasData(request.authenticationCode(), request.email());
-    }
-
-    /**
-     * @apiNote 사용자가 메일을 인증했을 때, 검증된 이메일을 세션 추가
-     */
-    public void setVerifiedMail(String mail, String sessionAttribute) {
-        if (sessionAttribute == null) {
-            throw new BusinessException(ErrorCode.AUTH_MISMATCH);
-        }
-        redisClient.addData(mail, sessionAttribute);
-    }
-
-    /**
-     * @apiNote 회원가입 할 때, 검증된 이메일로 회원가입하는지 확인
-     */
-    public void checkVerifiedMail(String mail, String sessionAttribute) {
-        if (sessionAttribute != null && redisClient.hasData(mail, sessionAttribute)) {
-            redisClient.deleteData(mail);
-            return;
-        }
-        throw new BusinessException(ErrorCode.AUTH_MISMATCH);
     }
 }
