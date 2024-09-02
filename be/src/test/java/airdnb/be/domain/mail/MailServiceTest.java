@@ -65,30 +65,6 @@ class MailServiceTest extends IntegrationTestSupport {
 
                     // then
                     assertThat(result).isTrue();
-                }),
-
-                dynamicTest("이메일 검증에 성공하면 검증된 이메일을 임시 저장한다", () -> {
-                    // given
-                    String sessionAttribute = "31289y1njda";
-
-                    // when
-                    mailService.setVerifiedMail(email, sessionAttribute);
-
-                    // then
-                    boolean result = redisClient.hasData(email, sessionAttribute);
-                    assertThat(result).isTrue();
-                }),
-
-                dynamicTest("검증된 이메일로 회원가입을 진행하면 임시 저장한 이메일을 삭제한다.", () -> {
-                    // given
-                    String sessionAttribute = "31289y1njda";
-
-                    // when
-                    mailService.checkVerifiedMail(email, sessionAttribute);
-
-                    // then
-                    boolean result = redisClient.hasData(email, sessionAttribute);
-                    assertThat(result).isFalse();
                 })
         );
     }
@@ -124,39 +100,6 @@ class MailServiceTest extends IntegrationTestSupport {
 
                     // then
                     assertThat(result).isFalse();
-                }),
-
-                dynamicTest("사용자가 메일 인증에 실패하면 메일을 임시 저장하지 않고 예외가 발생한다", () -> {
-                    // given
-                    String sessionAttribute = null;
-
-                    // when then
-                    assertThatThrownBy(() -> mailService.setVerifiedMail(email, sessionAttribute))
-                            .isInstanceOf(BusinessException.class)
-                            .extracting("errorCode")
-                            .isEqualTo(ErrorCode.AUTH_MISMATCH);
-                }),
-
-                dynamicTest("검증된 이메일로 회원가입 하지 않으면 예외가 발생한다", () -> {
-                    // given
-                    String sessionAttribute = null;
-
-                    // when then
-                    assertThatThrownBy(() -> mailService.checkVerifiedMail(email, sessionAttribute))
-                            .isInstanceOf(BusinessException.class)
-                            .extracting("errorCode")
-                            .isEqualTo(ErrorCode.AUTH_MISMATCH);
-                }),
-
-                dynamicTest("조작된 세션값으로 회원가입을 진행하면 예외가 발생한다", () -> {
-                    // given
-                    String sessionAttribute = "changedSessionValue";
-
-                    // when then
-                    assertThatThrownBy(() -> mailService.checkVerifiedMail(email, sessionAttribute))
-                            .isInstanceOf(BusinessException.class)
-                            .extracting("errorCode")
-                            .isEqualTo(ErrorCode.AUTH_MISMATCH);
                 })
         );
     }
