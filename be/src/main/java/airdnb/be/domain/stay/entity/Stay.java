@@ -4,6 +4,7 @@ import airdnb.be.domain.base.entity.BaseTimeEntity;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,16 +18,11 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Stay extends BaseTimeEntity {
-
-    private static final int LON_LAN_SRID  = 4326; // X좌표 경도, Y좌표 위도
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +48,8 @@ public class Stay extends BaseTimeEntity {
     private Integer guestCount;
 
     @Column(nullable = false)
-    private Point point;
+    @Embedded
+    private StayCoordinate stayCoordinate;
 
     @ElementCollection
     @CollectionTable(
@@ -70,7 +67,7 @@ public class Stay extends BaseTimeEntity {
         this.checkOutTime = checkOutTime;
         this.feePerNight = feePerNight;
         this.guestCount = guestCount;
-        this.point = createPoint(longitude, latitude);
+        this.stayCoordinate = new StayCoordinate(longitude, latitude);
         this.images = createStayImages(images);
     }
 
@@ -78,13 +75,5 @@ public class Stay extends BaseTimeEntity {
         return images.stream()
                 .map(Image::new)
                 .collect(Collectors.toList());
-    }
-
-    private Point createPoint(Double longitude, Double latitude) {
-        GeometryFactory factory = new GeometryFactory();
-        Coordinate coordinate = new Coordinate(longitude, latitude);
-        Point point = factory.createPoint(coordinate);
-        point.setSRID(LON_LAN_SRID);
-        return point;
     }
 }
