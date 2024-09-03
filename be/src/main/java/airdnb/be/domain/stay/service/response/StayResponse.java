@@ -1,12 +1,12 @@
 package airdnb.be.domain.stay.service.response;
 
-import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.domain.stay.entity.Image;
+import airdnb.be.domain.stay.entity.Stay;
+import airdnb.be.domain.stay.entity.StayCoordinate;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.locationtech.jts.geom.Point;
 
 public record StayResponse(
 
@@ -24,7 +24,7 @@ public record StayResponse(
 ) {
 
     public static StayResponse from(Stay stay) {
-        Point point = stay.getPoint();
+        StayCoordinate stayCoordinate = stay.getStayCoordinate();
         return new StayResponse(
                 stay.getStayId(),
                 stay.getMemberId(),
@@ -34,8 +34,8 @@ public record StayResponse(
                 stay.getCheckOutTime(),
                 stay.getFeePerNight(),
                 stay.getGuestCount(),
-                point.getX(),
-                point.getY(),
+                stayCoordinate.getX(),
+                stayCoordinate.getY(),
                 getURLs(stay.getImages())
         );
     }
