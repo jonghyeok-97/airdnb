@@ -48,11 +48,11 @@ public class MemberController {
     이메일 인증번호 확인
      */
     @GetMapping("/email/authenticate")
-    public ApiResponse<Void> authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request, HttpSession session) {
-        if (mailService.isValidMail(request.toServiceRequest())) {  // 인증번호 확인
-            session.setAttribute(VERIFIED_MEMBER, true); // 세션 설정
-            mailService.setVerifiedMail(request.email(), (String) session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일 추가
-
+    public ApiResponse<Void> authenticateEmail(@RequestBody @Valid EmailAuthenticationRequest request,
+                                               HttpServletRequest servletRequest) {
+        if (mailService.isValidMail(request.toServiceRequest())) {  // 메일 인증 번호 확인
+            HttpSession session = servletRequest.getSession(); // 세션이 있으면 세션 반환, 없으면 새로운 세션 생성
+            session.setAttribute(MAIL_VERIFIED_MEMBER, true);
             return ApiResponse.ok();
         }
         return ApiResponse.status(HttpStatus.BAD_REQUEST);
