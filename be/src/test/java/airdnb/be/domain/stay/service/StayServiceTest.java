@@ -6,8 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
+import airdnb.be.domain.stay.StayImageRepository;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
+import airdnb.be.domain.stay.entity.StayImage;
 import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
@@ -29,10 +31,17 @@ class StayServiceTest extends IntegrationTestSupport {
     private StayRepository stayRepository;
 
     @Autowired
+    private StayImageRepository stayImageRepository;
+
+    @Autowired
     private MemberRepository memberRepository;
 
     private final Long notExistId = 10000L;
 
+    /**
+     * AllInBatch - 테이블 자체를 날리는 것 -> 외래키 제약 조건을 고려야 함.
+     * deleteAll - 데이터를 지울 때 모든 데이터를 조회한 후, 데이터를 1개씩 지움. sql이 깔끔하지 않음(내 생각) + 성능문제
+     */
     @AfterEach
     void tearDown() {
         stayRepository.deleteAllInBatch();
@@ -50,10 +59,13 @@ class StayServiceTest extends IntegrationTestSupport {
 
         // when
         Long savedStayId = stayService.addStay(serviceRequest);
-        Stay stay = stayRepository.findById(savedStayId).orElseThrow();
 
         // then
+        Stay stay = stayRepository.findById(savedStayId).orElseThrow();
+        List<StayImage> stayImages = stayImageRepository.findStayImagesByStayId(savedStayId);
+
         assertThat(savedStayId).isEqualTo(stay.getStayId());
+        assertThat(stayImages).hasSize(5);
     }
 
     @DisplayName("가입하지 않은 회원이 숙소를 등록하면 예외가 발생한다")
@@ -92,7 +104,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // then
         assertThat(stayResponse)
                 .extracting("memberId", "title", "description", "checkInTime", "checkOutTime", "feePerNight"
-                        , "guestCount", "longitude", "latitude", "imageUrls")
+                        , "guestCount", "longitude", "latitude")
                 .containsExactly(
                         member.getId(),
                                 "제목",
@@ -102,8 +114,7 @@ class StayServiceTest extends IntegrationTestSupport {
                                 new BigDecimal("30000.00"),
                                 3,
                                 104.2,
-                                58.3,
-                                List.of("url1", "url2", "url3", "url4", "url5")
+                                58.3
                 );
     }
 

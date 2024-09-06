@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -51,15 +50,8 @@ public class Stay extends BaseTimeEntity {
     @Embedded
     private StayCoordinate stayCoordinate;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "stay_image",
-            joinColumns = @JoinColumn(name = "stayId")
-    )
-    private List<Image> images = new ArrayList<>();
-
     public Stay(Long memberId, String title, String description, LocalTime checkInTime, LocalTime checkOutTime,
-                BigDecimal feePerNight, Integer guestCount, Double longitude, Double latitude, List<String> images) {
+                BigDecimal feePerNight, Integer guestCount, Double longitude, Double latitude) {
         this.memberId = memberId;
         this.title = title;
         this.description = description;
@@ -68,7 +60,6 @@ public class Stay extends BaseTimeEntity {
         this.feePerNight = feePerNight;
         this.guestCount = guestCount;
         this.stayCoordinate = new StayCoordinate(longitude, latitude);
-        this.images = createStayImages(images);
     }
 
     private List<Image> createStayImages(List<String> images) {
