@@ -1,14 +1,18 @@
 package airdnb.be.web.member;
 
+import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static airdnb.be.utils.SessionConst.MAIL_VERIFIED_MEMBER;
+
+import airdnb.be.domain.mail.MailService;
 import airdnb.be.domain.mail.request.EmailAuthenticationServiceRequest;
+import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.utils.RandomUUID;
 import airdnb.be.web.ApiResponse;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
-import airdnb.be.domain.mail.MailService;
-import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.request.MemberLoginRequest;
 import airdnb.be.web.member.request.MemberSaveRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
-
-    private static final String VERIFIED_MEMBER = "verified_member";
-    public static final String LOGIN_MEMBER = "login_member";
 
     private final MemberService memberService;
     private final MailService mailService;
@@ -70,17 +71,22 @@ public class MemberController {
     }
 
     @PostMapping
-    public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request, HttpSession session) {
-        mailService.checkVerifiedMail(request.email(), (String) session.getAttribute(VERIFIED_MEMBER)); // 검증된 이메일로 요청이 왔는지 확인
+    public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request,
+                                       HttpServletRequest servletRequest) {
+        HttpSession session = servletRequest.getSession(false);
+        if (session == null || !((boolean) session.getAttribute(MAIL_VERIFIED_MEMBER))) {
+            return ApiResponse.status(HttpStatus.BAD_REQUEST);
+        }
+        memberService.addMember(request.toServiceRequest());
         session.invalidate();
-
-        return ApiResponse.ok(memberService.addMember(request.toServiceRequest()));
+        return ApiResponse.ok();
     }
 
     @PostMapping("/login")
-    public ApiResponse<Void> login(@RequestBody @Valid MemberLoginRequest request, HttpSession httpSession) {
+    public ApiResponse<Void> login(@RequestBody @Valid MemberLoginRequest request,
+                                   HttpServletRequest servletRequest) {
         memberService.login(request.toServiceRequest());
-        httpSession.setAttribute(LOGIN_MEMBER, true);
+        servletRequest.getSession().setAttribute(LOGIN_MEMBER, true);
 
         return ApiResponse.ok();
     }
