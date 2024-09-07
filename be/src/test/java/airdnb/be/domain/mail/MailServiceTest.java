@@ -53,7 +53,7 @@ class MailServiceTest extends IntegrationTestSupport {
                             .sendAuthenticationMail(eq(request.email()), eq(request.authenticationCode()));
                 }),
 
-                dynamicTest("타겟 메일과 인증 코드가 저장된다", () -> {
+                dynamicTest("타겟 메일과 인증 코드가 서버 내부에 저장된다", () -> {
                     // then
                     boolean result = redisClient.hasData(request.authenticationCode(), request.email());
                     assertThat(result).isTrue();
