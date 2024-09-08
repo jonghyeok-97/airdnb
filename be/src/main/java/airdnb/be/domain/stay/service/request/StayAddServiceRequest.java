@@ -20,6 +20,16 @@ public record StayAddServiceRequest(
 
 ) {
     public Stay toStay() {
-        return new Stay(memberId, title, description, checkInTime, checkOutTime, feePerNight, guestCount, longitude, latitude);
+        return new Stay(
+                memberId,
+                title,
+                description,
+                checkInTime,
+                checkOutTime,
+                feePerNight,
+                guestCount,
+                longitude,
+                latitude,
+                images);
     }
 }

@@ -1,8 +1,10 @@
 package airdnb.be.domain.stay.service.response;
 
 import airdnb.be.domain.stay.entity.Stay;
+import airdnb.be.domain.stay.entity.StayImage;
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.List;
 
 public record StayResponse(
 
@@ -13,9 +15,10 @@ public record StayResponse(
         LocalTime checkInTime,
         LocalTime checkOutTime,
         BigDecimal feePerNight,
-        Integer guestCount,
-        Double longitude,
-        Double latitude
+        int guestCount,
+        double longitude,
+        double latitude,
+        List<String> imageUrls
 
 ) {
     public static StayResponse from(Stay stay) {
@@ -29,7 +32,10 @@ public record StayResponse(
                 stay.getFeePerNight(),
                 stay.getGuestCount(),
                 stay.getStayCoordinate().getX(),
-                stay.getStayCoordinate().getY()
+                stay.getStayCoordinate().getY(),
+                stay.getStayImages().stream()
+                        .map(StayImage::getUrl)
+                        .toList()
         );
     }
 }
