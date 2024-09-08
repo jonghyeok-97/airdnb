@@ -6,10 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
-import airdnb.be.domain.stay.StayImageRepository;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
-import airdnb.be.domain.stay.entity.StayImage;
 import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
@@ -21,6 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 class StayServiceTest extends IntegrationTestSupport {
 
@@ -31,16 +30,11 @@ class StayServiceTest extends IntegrationTestSupport {
     private StayRepository stayRepository;
 
     @Autowired
-    private StayImageRepository stayImageRepository;
-
-    @Autowired
     private MemberRepository memberRepository;
-
-    private final Long notExistId = 10000L;
 
     /**
      * AllInBatch - 테이블 자체를 날리는 것 -> 외래키 제약 조건을 고려야 함.
-     * deleteAll - 데이터를 지울 때 모든 데이터를 조회한 후, 데이터를 1개씩 지움. sql이 깔끔하지 않음(내 생각) + 성능문제
+     * deleteAll - 데이터를 지울 때 모든 데이터를 조회한 후, 데이터를 1개씩 지움. sql이 깔끔하지 않음(생각) + 성능문제
      */
     @AfterEach
     void tearDown() {
@@ -52,31 +46,25 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void addStay() {
         // given
-        Member member = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
-        Member savedMember = memberRepository.save(member);
+        Member member = saveMember();
 
-        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(savedMember.getId());
+        StayAddServiceRequest serviceRequest = createServiceRequest(member.getId());
 
         // when
         Long savedStayId = stayService.addStay(serviceRequest);
 
         // then
-        Stay stay = stayRepository.findById(savedStayId).orElseThrow();
-        List<StayImage> stayImages = stayImageRepository.findStayImagesByStayId(savedStayId);
+        Stay foundStay = stayRepository.findById(savedStayId).orElseThrow();
 
-        assertThat(savedStayId).isEqualTo(stay.getStayId());
-        assertThat(stayImages).hasSize(5);
+        assertThat(savedStayId).isEqualTo(foundStay.getStayId());
     }
 
     @DisplayName("가입하지 않은 회원이 숙소를 등록하면 예외가 발생한다")
     @Test
     void addStayWithMemberId() {
         // given
-        Member member1 = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
-        Member member2 = new Member("이름2", "email2@naver.com", "010-1111-1112", "password");
-        memberRepository.saveAll(List.of(member1, member2));
-
-        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(notExistId);
+        Long notExistMemberId = 10000L;
+        StayAddServiceRequest serviceRequest = createServiceRequest(notExistMemberId);
 
         // when then
         assertThatThrownBy(() -> stayService.addStay(serviceRequest))
@@ -85,54 +73,48 @@ class StayServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.NOT_EXIST_MEMBER);
     }
 
-    @DisplayName("저장된 숙소의 Id로 숙소를 찾는다.")
+    @DisplayName("저장된 숙소Id로 숙소를 찾는다.")
     @Test
     void getStay() {
         // given
-        Member member1 = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
-        Member member2 = new Member("이름2", "email2@naver.com", "010-1111-1112", "password");
-        memberRepository.saveAll(List.of(member1, member2));
-        List<Member> members = memberRepository.saveAll(List.of(member1, member2));
-        Member member = members.get(0);
+        Member member = saveMember();
 
-        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(member.getId());
-        Long savedStayId = stayService.addStay(serviceRequest);
+        Stay saved = stayRepository.save(createStay(member.getId()));
 
         // when
-        StayResponse stayResponse = stayService.getStay(savedStayId);
+        StayResponse stayResponse = stayService.getStay(saved.getStayId());
 
         // then
         assertThat(stayResponse)
                 .extracting("memberId", "title", "description", "checkInTime", "checkOutTime", "feePerNight"
-                        , "guestCount", "longitude", "latitude")
+                        , "guestCount", "longitude", "latitude", "imageUrls")
                 .containsExactly(
                         member.getId(),
-                                "제목",
-                                "설명",
-                                LocalTime.of(15, 0),
-                                LocalTime.of(11, 0),
-                                new BigDecimal("30000.00"),
-                                3,
-                                104.2,
-                                58.3
+                        "제목",
+                        "설명",
+                        LocalTime.of(15, 0),
+                        LocalTime.of(11, 0),
+                        new BigDecimal("30000.00"),
+                        3,
+                        104.2,
+                        58.3,
+                        List.of("url1", "url2", "url3", "url4", "url5")
                 );
     }
 
-    @DisplayName("저장되지 않은 숙소의 Id로 숙소를 찾으면 예외가 발생한다.")
+    @DisplayName("등록되지 않은 숙소Id로 숙소를 찾으면 예외가 발생한다.")
     @Test
     void getStayWithoutNotExistStay() {
         // given
-        Member member1 = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
-        Member member2 = new Member("이름2", "email2@naver.com", "010-1111-1112", "password");
-        memberRepository.saveAll(List.of(member1, member2));
-        List<Member> members = memberRepository.saveAll(List.of(member1, member2));
-        Member member = members.get(0);
+        Member member = saveMember();
 
-        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(member.getId());
-        stayService.addStay(serviceRequest);
+        Stay stay = createStay(member.getId());
+        stayRepository.save(stay);
+
+        Long notExistStayId = 1000L;
 
         // when then
-        assertThatThrownBy(() -> stayService.getStay(notExistId))
+        assertThatThrownBy(() -> stayService.getStay(notExistStayId))
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
@@ -142,23 +124,58 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void deleteStay() {
         // given
-        Member member1 = new Member("이름1", "email1@naver.com", "010-1111-1111", "password");
-        Member member2 = new Member("이름2", "email2@naver.com", "010-1111-1112", "password");
-        memberRepository.saveAll(List.of(member1, member2));
-        List<Member> members = memberRepository.saveAll(List.of(member1, member2));
-        Member member = members.get(0);
+        Member member = saveMember();
 
-        StayAddServiceRequest serviceRequest = createStayAddServiceRequest(member.getId());
-        Long savedStayId = stayService.addStay(serviceRequest);
+        Stay stay = createStay(member.getId());
+        Stay saved = stayRepository.save(stay);
 
         // when
-        stayService.deleteStay(savedStayId);
+        stayService.deleteStay(saved.getStayId());
 
-        // when then
+        // then
         assertThat(stayRepository.findAll()).hasSize(0);
     }
 
-    private StayAddServiceRequest createStayAddServiceRequest(Long memberId) {
+    @DisplayName("숙소 이미지를 수정 한다")
+    @Test
+    void changeStayImage() {
+        // given
+        Member member = saveMember();
+
+        Stay stay = createStay(member.getId());
+        Stay saved = stayRepository.save(stay);
+
+        List<String> target = List.of("1", "2", "3", "4", "5", "6");
+
+        // when
+        StayResponse stayResponse = stayService.changeStayImage(saved.getStayId(), target);
+
+        // then
+        assertThat(stayResponse.imageUrls())
+                .containsExactlyInAnyOrderElementsOf(target);
+    }
+
+    private Member saveMember() {
+        return memberRepository.save(
+                new Member("이름1", "email1@naver.com", "010-1111-1111", "password"));
+    }
+
+    private Stay createStay(Long memberId) {
+        return new Stay(
+                memberId,
+                "제목",
+                "설명",
+                LocalTime.of(15, 0),
+                LocalTime.of(11, 0),
+                new BigDecimal(30000),
+                3,
+                104.2,
+                58.3,
+                List.of("url1", "url2", "url3", "url4", "url5")
+        );
+    }
+
+    private StayAddServiceRequest createServiceRequest(Long memberId) {
         return new StayAddServiceRequest(
                 memberId,
                 "제목",
