@@ -4,6 +4,7 @@ import static org.mockito.BDDMockito.doNothing;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,7 +21,7 @@ import org.springframework.http.MediaType;
 
 class StayControllerTest extends ControllerTestSupport {
 
-    @DisplayName("신규 숙소를 등록한다.")
+    @DisplayName("숙소 등록에 성공하면 200_OK 이다.")
     @Test
     void createStay() throws Exception {
         // given
@@ -32,23 +33,46 @@ class StayControllerTest extends ControllerTestSupport {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
                 ).andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").isNumber());
     }
 
-    @DisplayName("숙소를 조회한다.")
+    @DisplayName("숙소 1건 조회에 성공하면 200_OK 이다.")
     @Test
     void getStay() throws Exception {
         //given
-        StayResponse stayResponse = null;
-        given(stayService.getStay(1L))
+        Long stayId = 1L;
+        StayResponse stayResponse = createStayResponse(stayId);
+        given(stayService.getStay(stayId))
                 .willReturn(stayResponse);
 
         // when then
         mockMvc.perform(
-                        get("/stay/1")
+                        get("/stay/{stayId}", stayId)
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").exists());
+    }
+
+    @DisplayName("숙소 삭제에 성공하면 200_OK 이다.")
+    @Test
+    void deleteStay() throws Exception {
+        //given
+        Long stayId = 3L;
+
+        doNothing()
+                .when(stayService)
+                .deleteStay(stayId);
+
+        // when then
+        mockMvc.perform(
+                        get("/stay/{stayId}", stayId)
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
@@ -57,25 +81,28 @@ class StayControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
-    @DisplayName("숙소를 삭제한다.")
+    @DisplayName("숙소 이미지 업데이트에 성공하면 200_OK 이다.")
     @Test
-    void deleteStay() throws Exception {
+    void changeStayImage() throws Exception {
         //given
-        Long targetId = 3L;
+        Long stayId = 3L;
+        List<String> imageUrls = List.of();
 
-        doNothing()
-                .when(stayService)
-                .deleteStay(targetId);
+        StayResponse stayResponse = createStayResponse(stayId);
+        given(stayService.changeStayImage(stayId, List.of()))
+                .willReturn(stayResponse);
 
         // when then
         mockMvc.perform(
-                        get("/stay" + "/" + targetId)
+                        put("/stay/{stayId}/image", stayId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(imageUrls))
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").doesNotExist());
+                .andExpect(jsonPath("$.data").exists());
     }
 
     private StayAddRequest createStayAddRequest(Long memberId) {
@@ -90,6 +117,22 @@ class StayControllerTest extends ControllerTestSupport {
                 104.2,
                 58.3,
                 List.of("url1", "url2", "url3", "url4", "url5")
+        );
+    }
+
+    private StayResponse createStayResponse(Long stayId) {
+        return new StayResponse(
+                stayId,
+                1L,
+                "제목",
+                "설명",
+                LocalTime.of(15, 0),
+                LocalTime.of(11, 0),
+                new BigDecimal(50000),
+                3,
+                108.4,
+                45,
+                List.of()
         );
     }
 }

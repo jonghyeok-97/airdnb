@@ -43,8 +43,14 @@ public class StayController {
         return ApiResponse.ok();
     }
 
+    /**
+     * put : 전체 리소스 변경, 멱등
+     * patch : 부분 리소스 변경, 구현에 따라 멱등x
+     */
     @PutMapping("/{stayId}/image")
-    public void deleteStayImage(@PathVariable Long stayId, @RequestBody List<String> imageUrls) {
-        stayService.updateStayImage(stayId, imageUrls);
+    public ApiResponse<StayResponse> changeStayImage(@PathVariable Long stayId, @RequestBody List<String> imageUrls) {
+        StayResponse stayResponse = stayService.changeStayImage(stayId, imageUrls);
+
+        return ApiResponse.ok(stayResponse);
     }
 }
