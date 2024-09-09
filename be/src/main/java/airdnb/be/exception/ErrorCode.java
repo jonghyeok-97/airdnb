@@ -18,6 +18,7 @@ public enum ErrorCode {
 
     // 숙소
     NOT_EXIST_STAY("1200", HttpStatus.BAD_REQUEST, "존재하지 않는 숙소입니다."),
+    CANNOT_CAPABLE_GUEST("1201", HttpStatus.BAD_REQUEST, "수용할 수 없는 인원입니다."),
 
     // 외부 API
     MAIL_SERVER_ERROR("2000", HttpStatus.INTERNAL_SERVER_ERROR, "내부 오류입니다. 이용에 불편을 드려서 죄송합니다");
