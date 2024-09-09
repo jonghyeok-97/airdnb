@@ -154,6 +154,24 @@ class StayServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrderElementsOf(target);
     }
 
+    @DisplayName("숙소 이미지 수정할 때, 숙소ID가 없으면 예외가 발생한다.")
+    @Test
+    void changeStayImageWithException() {
+        // given
+        Member member = saveMember();
+
+        Stay stay = createStay(member.getId());
+        Stay saved = stayRepository.save(stay);
+
+        List<String> target = List.of("1", "2", "3", "4", "5", "6");
+
+        // when then
+        assertThatThrownBy(() -> stayService.changeStayImage(saved.getStayId(), target))
+                .isInstanceOf(BusinessException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.NOT_EXIST_STAY);
+    }
+
     private Member saveMember() {
         return memberRepository.save(
                 new Member("이름1", "email1@naver.com", "010-1111-1111", "password"));
