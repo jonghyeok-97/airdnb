@@ -3,7 +3,7 @@ package airdnb.be.domain.stay.entity;
 import airdnb.be.domain.base.entity.BaseTimeEntity;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import airdnb.be.reservation.Reservation;
+import airdnb.be.domain.reservation.entity.Reservation;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -36,7 +36,7 @@ public class Stay extends BaseTimeEntity {
     private Long stayId;
 
     @Column(nullable = false)
-    private Long memberId;
+    private Long hostId;
 
     private String title;
 
@@ -78,9 +78,9 @@ public class Stay extends BaseTimeEntity {
             foreignKey = @ForeignKey(name = "stay_id"))
     private List<StayImage> stayImages = new ArrayList<>();
 
-    public Stay(Long memberId, String title, String description, LocalTime checkInTime, LocalTime checkOutTime,
+    public Stay(Long hostId, String title, String description, LocalTime checkInTime, LocalTime checkOutTime,
                 BigDecimal feePerNight, int guestCount, double longitude, double latitude, List<String> images) {
-        this.memberId = memberId;
+        this.hostId = hostId;
         this.title = title;
         this.description = description;
         this.checkInTime = checkInTime;
