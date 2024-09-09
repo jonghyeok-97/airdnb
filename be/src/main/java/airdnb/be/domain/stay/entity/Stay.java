@@ -1,6 +1,9 @@
 package airdnb.be.domain.stay.entity;
 
 import airdnb.be.domain.base.entity.BaseTimeEntity;
+import airdnb.be.exception.BusinessException;
+import airdnb.be.exception.ErrorCode;
+import airdnb.be.reservation.Reservation;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -12,7 +15,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,6 +88,32 @@ public class Stay extends BaseTimeEntity {
         this.feePerNight = feePerNight;
         this.guestCount = guestCount;
         this.stayCoordinate = new StayCoordinate(longitude, latitude);
+        this.stayImages = images.stream()
+                .map(StayImage::new)
+                .collect(Collectors.toList());
+    }
+
+    public Reservation createReservation(Long guestId, LocalDate checkInDate, LocalDate checkOutDate, int guestCount) {
+        validateCapable(guestCount);
+        return new Reservation(
+                this.stayId,
+                guestId,
+                LocalDateTime.of(checkInDate, checkInTime),
+                LocalDateTime.of(checkOutDate, checkOutTime),
+                guestCount,
+                calculateTotalFee(checkInDate, checkOutDate));
+    }
+
+    private void validateCapable(int guestCount) {
+        if (this.guestCount < guestCount) {
+            throw new BusinessException(ErrorCode.CANNOT_CAPABLE_GUEST);
+        }
+    }
+
+    private BigDecimal calculateTotalFee(LocalDate checkInDate, LocalDate checkOutDate) {
+        long perNightCount = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+
+        return feePerNight.multiply(BigDecimal.valueOf(perNightCount));
     }
 
     public void changeStayImages(List<String> images) {
