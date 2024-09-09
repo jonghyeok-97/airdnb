@@ -82,7 +82,7 @@ class MemberServiceTest extends IntegrationTestSupport {
         Member foundMember = memberRepository.findById(savedMemberId).orElseThrow();
 
         // then
-        assertThat(foundMember.getId()).isPositive();
+        assertThat(foundMember.getMemberId()).isPositive();
         assertThat(foundMember)
                 .extracting("name", "email", "phoneNumber")
                 .containsExactly(

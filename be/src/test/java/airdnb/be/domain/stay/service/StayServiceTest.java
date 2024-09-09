@@ -47,7 +47,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // given
         Member member = saveMember();
 
-        StayAddServiceRequest serviceRequest = createServiceRequest(member.getId());
+        StayAddServiceRequest serviceRequest = createServiceRequest(member.getMemberId());
 
         // when
         Long savedStayId = stayService.addStay(serviceRequest);
@@ -78,7 +78,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // given
         Member member = saveMember();
 
-        Stay saved = stayRepository.save(createStay(member.getId()));
+        Stay saved = stayRepository.save(createStay(member.getMemberId()));
 
         // when
         StayResponse stayResponse = stayService.getStay(saved.getStayId());
@@ -88,7 +88,7 @@ class StayServiceTest extends IntegrationTestSupport {
                 .extracting("memberId", "title", "description", "checkInTime", "checkOutTime", "feePerNight"
                         , "guestCount", "longitude", "latitude", "imageUrls")
                 .containsExactly(
-                        member.getId(),
+                        member.getMemberId(),
                         "제목",
                         "설명",
                         LocalTime.of(15, 0),
@@ -107,7 +107,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // given
         Member member = saveMember();
 
-        Stay stay = createStay(member.getId());
+        Stay stay = createStay(member.getMemberId());
         stayRepository.save(stay);
 
         Long notExistStayId = 1000L;
@@ -125,7 +125,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // given
         Member member = saveMember();
 
-        Stay stay = createStay(member.getId());
+        Stay stay = createStay(member.getMemberId());
         Stay saved = stayRepository.save(stay);
 
         // when
@@ -141,7 +141,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // given
         Member member = saveMember();
 
-        Stay stay = createStay(member.getId());
+        Stay stay = createStay(member.getMemberId());
         Stay saved = stayRepository.save(stay);
 
         List<String> target = List.of("1", "2", "3", "4", "5", "6");
@@ -160,7 +160,7 @@ class StayServiceTest extends IntegrationTestSupport {
         // given
         Member member = saveMember();
 
-        Stay stay = createStay(member.getId());
+        Stay stay = createStay(member.getMemberId());
         Stay saved = stayRepository.save(stay);
 
         List<String> target = List.of("1", "2", "3", "4", "5", "6");

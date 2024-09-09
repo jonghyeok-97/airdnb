@@ -38,7 +38,7 @@ public class Member extends BaseTimeEntity {
         this.password = password;
     }
 
-    public Long getId() {
+    public Long getMemberId() {
         return memberId;
     }
 

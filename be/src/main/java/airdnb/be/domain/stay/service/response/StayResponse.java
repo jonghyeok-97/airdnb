@@ -24,7 +24,7 @@ public record StayResponse(
     public static StayResponse from(Stay stay) {
         return new StayResponse(
                 stay.getStayId(),
-                stay.getMemberId(),
+                stay.getHostId(),
                 stay.getTitle(),
                 stay.getDescription(),
                 stay.getCheckInTime(),

@@ -23,12 +23,12 @@ public class StayService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long addStay(StayAddServiceRequest serviceRequest) {
-        Stay stay = serviceRequest.toStay();
+    public Long addStay(StayAddServiceRequest request) {
+        Stay stay = request.toStay();
 
-        memberRepository.findById(stay.getMemberId())
+        memberRepository.findById(stay.getHostId())
                 .orElseThrow(() -> {
-                    log.warn("'{}' 은 존재하지 않는 회원입니다.", stay.getMemberId());
+                    log.warn("'{}' 은 존재하지 않는 회원입니다.", stay.getHostId());
                     return new BusinessException(ErrorCode.NOT_EXIST_MEMBER);
                 });
 

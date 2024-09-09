@@ -35,7 +35,7 @@ public class Reservation {
     @Column(nullable = false)
     private int guestCount;
 
-    @Column(nullable = false)
+    @Column(nullable = false) // 소수부 자리 2자리
     private BigDecimal totalFee;
 
     public Reservation(Long stayId, Long guestId, LocalDateTime checkIn, LocalDateTime checkOut,

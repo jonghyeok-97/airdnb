@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import airdnb.be.reservation.Reservation;
+import airdnb.be.domain.reservation.entity.Reservation;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,7 +78,7 @@ class StayTest {
                 2);
 
         // then
-        assertThat(reservation.getTotalFee()).isEqualTo(new BigDecimal(30000 * 3));
+        assertThat(reservation.getTotalFee()).isEqualTo(feePerNight.multiply(BigDecimal.valueOf(3)));
     }
 
     private Stay createStay(LocalTime checkInTime, LocalTime checkOutTime, int guestCount, BigDecimal feePerNight) {

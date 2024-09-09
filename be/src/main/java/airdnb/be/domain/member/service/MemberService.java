@@ -32,7 +32,7 @@ public class MemberService {
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_MEMBER);
         }
         Member saved = memberRepository.save(request.toMember());
-        return saved.getId();
+        return saved.getMemberId();
     }
 
     public void login(MemberLoginServiceRequest request) {
