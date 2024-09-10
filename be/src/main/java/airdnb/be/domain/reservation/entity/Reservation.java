@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +37,7 @@ public class Reservation {
     @Column(nullable = false)
     private int guestCount;
 
-    @Column(nullable = false) // 소수부 자리 2자리
+    @Column(nullable = false)
     private BigDecimal totalFee;
 
     public Reservation(Long stayId, Long guestId, LocalDateTime checkIn, LocalDateTime checkOut,
@@ -46,5 +48,14 @@ public class Reservation {
         this.checkOut = checkOut;
         this.guestCount = guestCount;
         this.totalFee = totalFee;
+    }
+
+    /**
+     * @return 9/1 ~ 9/5 일 때, 예약될 날짜로 9/1 ~ 9/4 을 생성한다.
+     */
+    public List<ReservationDate> createReservationDate() {
+        return checkIn.toLocalDate().datesUntil(checkOut.toLocalDate())
+                .map(checkInDate -> new ReservationDate(stayId, checkInDate))
+                .collect(Collectors.toList());
     }
 }
