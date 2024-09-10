@@ -1,4 +1,4 @@
-package airdnb.be.domain.stay;
+package airdnb.be.domain.reservation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

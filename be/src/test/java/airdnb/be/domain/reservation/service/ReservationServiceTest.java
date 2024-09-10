@@ -1,11 +1,14 @@
 package airdnb.be.domain.reservation.service;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
+import airdnb.be.domain.reservation.ReservationDateRepository;
 import airdnb.be.domain.reservation.ReservationRepository;
+import airdnb.be.domain.reservation.entity.ReservationDate;
 import airdnb.be.domain.reservation.service.request.ReservationAddServiceRequest;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
@@ -36,11 +39,15 @@ class ReservationServiceTest extends IntegrationTestSupport {
     @Autowired
     private ReservationService reservationService;
 
+    @Autowired
+    private ReservationDateRepository reservationDateRepository;
+
     @AfterEach
     void tearDown() {
         memberRepository.deleteAllInBatch();
         stayRepository.deleteAllInBatch();
         reservationRepository.deleteAllInBatch();
+        reservationDateRepository.deleteAllInBatch();
     }
 
     @DisplayName("회원가입하지 않은 사람은 숙소를 예약할 수 없다.")
@@ -84,7 +91,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
     }
 
-    @DisplayName("숙소를 예약한다")
+    @DisplayName("숙소를 예약하면 1건의 예약과 예약 기간의 수 만큼 생성된다")
     @Test
     void reserveStay() {
         // given
@@ -97,7 +104,6 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 LocalDate.of(2024, 11, 9),
                 LocalDate.of(2024, 11, 11),
                 3);
-        ;
 
         // when
         ReservationResponse response = reservationService.reserve(request);
@@ -109,10 +115,38 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .multiply(BigDecimal.valueOf(2))
                 .setScale(2);
 
+        assertThat(reservationDateRepository.findAll()).hasSize(2);
+        assertThat(reservationRepository.findAll()).hasSize(1);
         assertThat(response.reservationId()).isNotNull();
         assertThat(response)
                 .extracting("stayId", "guestId", "checkIn", "checkOut", "totalFee")
                 .containsExactly(stay.getStayId(), member.getMemberId(), checkIn, checkOut, totalFee);
+    }
+
+    @DisplayName("해당 숙소에 중복 예약을 하면 예외가 발생한다")
+    @Test
+    void failWithDuplicatedDates() {
+        // given
+        Member member = saveMember();
+        Stay stay = saveStay(member.getMemberId());
+
+        ReservationAddServiceRequest request = new ReservationAddServiceRequest(
+                stay.getStayId(),
+                member.getMemberId(),
+                LocalDate.of(2024, 11, 9),
+                LocalDate.of(2024, 11, 11),
+                3);
+
+        List<ReservationDate> reserved = List.of(
+                new ReservationDate(stay.getStayId(), LocalDate.of(2024, 11, 10)),
+                new ReservationDate(stay.getStayId(), LocalDate.of(2024, 11, 11)));
+        reservationDateRepository.saveAll(reserved);
+
+        // when then
+        assertThatThrownBy(() -> reservationService.reserve(request))
+                .isInstanceOf(BusinessException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.ALREADY_EXISTS_RESERVATION);
     }
 
     private Stay saveStay(Long memberId) {

@@ -59,10 +59,10 @@ public class Stay extends BaseTimeEntity {
     private StayCoordinate stayCoordinate;
 
     /**
-     * 값 컬렉션 (선택)
+     * 값 컬렉션 -> 선택
      * 숙소 저장 : insert쿼리 5개 ok
      * 업데이트 : 숙소 1개에 해당하는 5개 이미지 삭제, 6개 이미지 insert
-     * 이미지의 경로를 추적할 필요성 못느낌
+     * 이미지의 경로는 업데이트하면 무조건 달라지기 때문에 추적할 필요 없음
      *
      * OneToMany
      * 숙소 저장 : insert쿼리 5개, update 쿼리 5개 -> 이상하다고 판단

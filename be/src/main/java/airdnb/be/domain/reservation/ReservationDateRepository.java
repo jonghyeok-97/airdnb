@@ -1,4 +1,4 @@
-package airdnb.be.domain.stay;
+package airdnb.be.domain.reservation;
 
 import airdnb.be.domain.reservation.entity.ReservationDate;
 import java.util.List;

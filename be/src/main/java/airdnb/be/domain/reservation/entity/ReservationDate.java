@@ -10,11 +10,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@EqualsAndHashCode(exclude = {"reservationDateId", "status"}, callSuper = false)
 @Entity
 public class ReservationDate extends BaseTimeEntity {
 
