@@ -17,8 +17,3 @@ spring:
   sql:
     init:
       mode: never
-
-  data:
-    redis:
-      port: 6370
-      host: localhost

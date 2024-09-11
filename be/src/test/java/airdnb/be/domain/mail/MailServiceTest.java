@@ -74,7 +74,7 @@ class MailServiceTest extends IntegrationTestSupport {
     Collection<DynamicTest> sendAuthenticationMailFail() {
         // given
         String email = "gromit@naver.com";
-        String authenticationCode = "3gkdn4";
+        String authenticationCode = "3gkdn45";
         EmailAuthenticationServiceRequest request = new EmailAuthenticationServiceRequest(email, authenticationCode);
 
         willThrow(MailSendException.class)
@@ -89,6 +89,7 @@ class MailServiceTest extends IntegrationTestSupport {
                             .extracting("errorCode")
                             .isEqualTo(ErrorCode.MAIL_SERVER_ERROR);
                 }),
+
                 dynamicTest("메일 보내기 재시도는 총 3번 했다", () -> {
                     // then
                     verify(mailClient, times(3)).sendAuthenticationMail(anyString(), anyString());

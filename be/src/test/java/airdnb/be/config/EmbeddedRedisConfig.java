@@ -6,23 +6,14 @@ import jakarta.annotation.PreDestroy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 import redis.embedded.RedisServer;
 
 @Configuration
 public class EmbeddedRedisConfig extends IntegrationTestSupport {
 
-    @Value("${spring.data.redis.port}")
-    private int port;
-
-    @Value("${spring.data.redis.host}")
-    private String host;
+    private final int port = 6379;
 
     private RedisServer redisServer;
 
@@ -32,18 +23,6 @@ public class EmbeddedRedisConfig extends IntegrationTestSupport {
         int port = isRedisRunning() ? findAvaliablePort() : this.port;
         this.redisServer = new RedisServer(port);
         redisServer.start();
-    }
-
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(host, port);
-    }
-
-    @Bean
-    public RedisTemplate<String, Object> redisOperations(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        return redisTemplate;
     }
 
     @PreDestroy
@@ -64,7 +43,7 @@ public class EmbeddedRedisConfig extends IntegrationTestSupport {
     }
 
     private boolean isRedisRunning() throws IOException{
-        return isRunning(executeGrepProcessCommand(port));
+        return isRunning(executeGrepProcessCommand(this.port));
     }
 
     private boolean isRunning(Process process) {
@@ -75,8 +54,7 @@ public class EmbeddedRedisConfig extends IntegrationTestSupport {
             while ((line = input.readLine()) != null) {
                 pidInfo.append(line);
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         return StringUtils.hasLength(pidInfo.toString());
     }

@@ -158,15 +158,10 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void changeStayImageWithException() {
         // given
-        Member member = saveMember();
-
-        Stay stay = createStay(member.getMemberId());
-        Stay saved = stayRepository.save(stay);
-
-        List<String> target = List.of("1", "2", "3", "4", "5", "6");
+        Long notExistStayId = 1000L;
 
         // when then
-        assertThatThrownBy(() -> stayService.changeStayImage(saved.getStayId(), target))
+        assertThatThrownBy(() -> stayService.changeStayImage(notExistStayId, List.of()))
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);

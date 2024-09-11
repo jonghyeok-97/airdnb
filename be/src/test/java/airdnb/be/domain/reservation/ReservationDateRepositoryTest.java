@@ -6,6 +6,7 @@ import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.reservation.entity.ReservationDate;
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,11 @@ class ReservationDateRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private ReservationDateRepository reservationDateRepository;
+
+    @AfterEach
+    void tearDown() {
+        reservationDateRepository.deleteAllInBatch();
+    }
 
     @DisplayName("숙소Id로 예약된 날짜를 찾는다.")
     @Test
