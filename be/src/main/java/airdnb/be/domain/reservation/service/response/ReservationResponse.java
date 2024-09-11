@@ -1,4 +1,4 @@
-package airdnb.be.web.reservation.response;
+package airdnb.be.domain.reservation.service.response;
 
 import airdnb.be.domain.reservation.entity.Reservation;
 import java.math.BigDecimal;
