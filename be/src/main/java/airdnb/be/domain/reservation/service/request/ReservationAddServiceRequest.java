@@ -8,7 +8,7 @@ public record ReservationAddServiceRequest(
         Long guestId,
         LocalDate checkInDate,
         LocalDate checkOutDate,
-        Integer guestCount
+        int guestCount
 
 ) {
 }

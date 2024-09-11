@@ -1,5 +1,6 @@
 package airdnb.be.web.reservation.request;
 
+import airdnb.be.domain.reservation.service.request.ReservationAddServiceRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
@@ -22,4 +23,13 @@ public record ReservationAddRequest(
         int guestCount
 
 ) {
+        public ReservationAddServiceRequest toServiceRequest() {
+                return new ReservationAddServiceRequest(
+                        stayId,
+                        guestId,
+                        checkInDate,
+                        checkOutDate,
+                        guestCount
+                );
+        }
 }
