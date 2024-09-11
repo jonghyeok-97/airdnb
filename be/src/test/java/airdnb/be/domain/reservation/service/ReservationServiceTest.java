@@ -10,11 +10,11 @@ import airdnb.be.domain.reservation.ReservationDateRepository;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.ReservationDate;
 import airdnb.be.domain.reservation.service.request.ReservationAddServiceRequest;
+import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -79,8 +79,8 @@ class ReservationServiceTest extends IntegrationTestSupport {
     void cannotReserveNotExistStay() {
         // given
         Member member = saveMember();
-
         Long notExistStayId = 1000L;
+
         ReservationAddServiceRequest request = new ReservationAddServiceRequest(
                 notExistStayId,
                 member.getMemberId(),
@@ -127,7 +127,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .containsExactly(stay.getStayId(), member.getMemberId(), checkIn, checkOut, totalFee);
     }
 
-    @DisplayName("해당 숙소에 중복 예약을 하면 예외가 발생한다")
+    @DisplayName("같은 숙소에 예약 날짜가 겹치면 예외가 발생한다")
     @Test
     void failWithDuplicatedDates() {
         // given
@@ -144,6 +144,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
         List<ReservationDate> reserved = List.of(
                 new ReservationDate(stay.getStayId(), LocalDate.of(2024, 11, 10)),
                 new ReservationDate(stay.getStayId(), LocalDate.of(2024, 11, 11)));
+
         reservationDateRepository.saveAll(reserved);
 
         // when then
