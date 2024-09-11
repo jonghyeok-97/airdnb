@@ -10,7 +10,7 @@ import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import airdnb.be.web.reservation.response.ReservationResponse;
+import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
