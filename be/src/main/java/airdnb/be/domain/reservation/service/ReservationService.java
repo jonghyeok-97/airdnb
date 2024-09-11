@@ -28,13 +28,9 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse reserve(ReservationAddServiceRequest request) {
-        // 예약하는 사람이 회원가입 했는지 확인
-        memberRepository.findById(request.guestId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
-
-        // 숙소 있는지 확인
-        Stay stay = stayRepository.findById(request.stayId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_STAY));
+        // 예약하는 사람과 숙소 있는지 확인
+        checkExistMember(request.guestId());
+        Stay stay = checkExistStay(request.stayId());
 
         // 예약 생성
         Reservation reservation = stay.createReservation(
@@ -47,15 +43,8 @@ public class ReservationService {
         // 예약될 날짜들 생성
         List<ReservationDate> reservationDates = reservation.createReservationDate();
 
-        // 해당 숙소에 예약이 가능한지 체크
-        List<ReservationDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(
-                stay.getStayId());
-
-        boolean isReserved = reservationDates.stream()
-                .anyMatch(reservedDates::contains);
-
         // 예약하려는 날짜에 예약이 되어 있다면
-        if (isReserved) {
+        if (isReserved(reservationDates, stay)) {
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_RESERVATION);
         }
 
@@ -64,5 +53,23 @@ public class ReservationService {
         Reservation saved = reservationRepository.save(reservation);
 
         return ReservationResponse.from(saved);
+    }
+
+    private boolean isReserved(List<ReservationDate> reservationDates, Stay stay) {
+        List<ReservationDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(
+                stay.getStayId());
+
+        return reservationDates.stream()
+                .anyMatch(reservedDates::contains);
+    }
+
+    private Stay checkExistStay(Long stayId) {
+        return stayRepository.findById(stayId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_STAY));
+    }
+
+    private void checkExistMember(Long memberId) {
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
     }
 }

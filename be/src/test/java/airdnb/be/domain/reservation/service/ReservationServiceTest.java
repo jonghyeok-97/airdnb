@@ -20,6 +20,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -147,6 +151,66 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.ALREADY_EXISTS_RESERVATION);
+    }
+
+    @DisplayName("한 숙소에 겹친 날짜를 동시에 예약할 수 없다.")
+    @Test
+    void reserveConcurrency() throws InterruptedException {
+        // given
+        Member member = saveMember();
+        Stay stay = saveStay(member.getMemberId());
+
+        ReservationAddServiceRequest request1 = new ReservationAddServiceRequest(
+                stay.getStayId(),
+                member.getMemberId(),
+                LocalDate.of(2024, 11, 9),
+                LocalDate.of(2024, 11, 14),
+                3);
+
+        ReservationAddServiceRequest request2 = new ReservationAddServiceRequest(
+                stay.getStayId(),
+                member.getMemberId(),
+                LocalDate.of(2024, 11, 11),
+                LocalDate.of(2024, 11, 13),
+                3);
+
+        int requestCount = 30;
+        AtomicInteger successCount = new AtomicInteger();
+        AtomicInteger failCount = new AtomicInteger();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(requestCount);
+        CountDownLatch latch = new CountDownLatch(requestCount);
+
+        // when
+        for (int i = 0; i < requestCount; i++) {
+            if (i % 2 == 0) {
+                executorService.execute(() -> {
+                    try {
+                        reservationService.reserve(request1);
+                        successCount.incrementAndGet();
+                    } catch (Exception e) {
+                        failCount.incrementAndGet();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            } else {
+                executorService.execute(() -> {
+                    try {
+                        reservationService.reserve(request2);
+                        successCount.incrementAndGet();
+                    } catch (Exception e) {
+                        failCount.incrementAndGet();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+        }
+        latch.await();
+
+        // then
+        assertThat(successCount.get()).isEqualTo(1);
     }
 
     private Stay saveStay(Long memberId) {

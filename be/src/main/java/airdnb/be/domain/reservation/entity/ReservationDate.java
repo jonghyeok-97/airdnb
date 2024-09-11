@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -17,6 +19,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(exclude = {"reservationDateId", "status"}, callSuper = false)
+@Table(uniqueConstraints = @UniqueConstraint(
+        columnNames = {"stayId", "reservationDate"},
+        name = "stay_id_reservation_date"
+))
 @Entity
 public class ReservationDate extends BaseTimeEntity {
 
