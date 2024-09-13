@@ -85,7 +85,7 @@ class StayServiceTest extends IntegrationTestSupport {
 
         // then
         assertThat(stayResponse)
-                .extracting("memberId", "title", "description", "checkInTime", "checkOutTime", "feePerNight"
+                .extracting("hostId", "title", "description", "checkInTime", "checkOutTime", "feePerNight"
                         , "guestCount", "longitude", "latitude", "imageUrls")
                 .containsExactly(
                         member.getMemberId(),
