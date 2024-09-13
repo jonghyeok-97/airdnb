@@ -1,0 +1,24 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Airbnb 클론 API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Stay-API]]
+== Stay API
+
+[[stay-create]]
+=== 신규 숙소 등록
+
+==== HTTP Request
+include::{snippets}/stay-create/http-request.adoc[]
+include::{snippets}/stay-create/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/stay-create/http-response.adoc[]
+include::{snippets}/stay-create/response-fields.adoc[]
