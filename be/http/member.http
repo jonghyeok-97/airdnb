@@ -1,0 +1,7 @@
+GET localhost:8080/member/email/authenticate
+Content-Type: application/json
+
+{
+  "email": "123@naver.com",
+  "authCode": "3655"
+}
