@@ -12,13 +12,4 @@ endif::[]
 [[Stay-API]]
 == Stay API
 
-[[stay-create]]
-=== 신규 숙소 등록
-
-==== HTTP Request
-include::{snippets}/stay-create/http-request.adoc[]
-include::{snippets}/stay-create/request-fields.adoc[]
-
-==== HTTP Response
-include::{snippets}/stay-create/http-response.adoc[]
-include::{snippets}/stay-create/response-fields.adoc[]
+include::stay/stay.adoc[]
