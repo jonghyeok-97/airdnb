@@ -1,0 +1,18 @@
+POST localhost:8080/stay
+Content-Type: application/json
+
+{
+  "memberId": "1",
+  "title": "제목2",
+  "description": "설명2",
+  "checkInTime": "01:01",
+  "checkOutTime": "12:00",
+  "feePerNight" : "20000",
+  "guestCount" :"1",
+  "longitude" : 104.5,
+  "latitude" : 46.5,
+  "images" : ["1", "2", "#", "4", "5"]
+}
+
+###
+GET localhost:8080/stay/1

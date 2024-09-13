@@ -31,7 +31,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     @Test
     void createStayWithoutNull() throws Exception {
         // given
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 null,
                 "설명",
                 null,
@@ -44,13 +44,13 @@ class StayAddRequestTest extends ControllerTestSupport {
         );
 
         // when then
-        Set<ConstraintViolation<StayAddRequest>> validate = validator.validate(stayAddRequest);
+        Set<ConstraintViolation<StayAddRequest>> validate = validator.validate(request);
 
         assertThat(validate.size()).isEqualTo(8);
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                 ).andDo(print())
                 .andExpect(status().isBadRequest());
     }
@@ -60,7 +60,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     @ValueSource(strings = {"", " "})
     void createStayWithoutTitle(String title) throws Exception {
         // given
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 title,
                 "설명",
                 LocalTime.of(15, 0),
@@ -76,7 +76,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -91,7 +91,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithImageMoreThanFive() throws Exception {
         // given
         List<String> target = List.of("url1", "url2", "url3", "url4");
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -107,7 +107,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -123,7 +123,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithFeePerNightMoreThan10000(int feePerNight) throws Exception {
         // given
         BigDecimal target = new BigDecimal(feePerNight);
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -139,7 +139,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -155,7 +155,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithGuestCountMoreThan1(int guestCount) throws Exception {
         // given
         int target = guestCount;
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -171,7 +171,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -187,7 +187,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithLongitude(double longitude) throws Exception {
         // given
         double target = longitude;
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -203,7 +203,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -219,7 +219,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithLongitude2(double longitude) throws Exception {
         // given
         double target = longitude;
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -235,7 +235,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isOk());
@@ -247,7 +247,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithLatitude(double latitude) throws Exception {
         // given
         double target = latitude;
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -263,7 +263,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isBadRequest())
@@ -279,7 +279,7 @@ class StayAddRequestTest extends ControllerTestSupport {
     void createStayWithLatitude2(double latitude) throws Exception {
         // given
         double target = latitude;
-        StayAddRequest stayAddRequest = new StayAddRequest(
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -295,7 +295,7 @@ class StayAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isOk());

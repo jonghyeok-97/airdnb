@@ -1,0 +1,10 @@
+POST localhost:8080/reservation
+Content-Type: application/json
+
+{
+  "stayId": 1,
+  "guestId": 1,
+  "checkInDate": "2024-09-12",
+  "checkOutDate": "2024-09-15",
+  "guestCount": 1
+}
