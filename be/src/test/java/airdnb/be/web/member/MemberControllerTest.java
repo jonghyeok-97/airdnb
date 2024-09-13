@@ -5,6 +5,8 @@ import static airdnb.be.utils.SessionConst.MAIL_VERIFIED_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -14,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 
 import airdnb.be.ControllerTestSupport;
+import airdnb.be.exception.BusinessException;
+import airdnb.be.exception.ErrorCode;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
 import airdnb.be.web.member.request.MemberLoginRequest;
@@ -185,6 +189,10 @@ class MemberControllerTest extends ControllerTestSupport {
         MemberLoginRequest request = new MemberLoginRequest(
                 "123@naver.com", "비밀번호");
 
+        willDoNothing()
+                .given(memberService)
+                .login(request.toServiceRequest());
+
         // when then
         mockMvc.perform(
                         post("/member/login")
@@ -196,5 +204,29 @@ class MemberControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(request().sessionAttribute(LOGIN_MEMBER, true));
+    }
+
+    @DisplayName("로그인에 실패하면 세션이 없고, ErrorCode 를 반환한다.")
+    @Test
+    void loginFail() throws Exception {
+        // given
+        MemberLoginRequest request = new MemberLoginRequest(
+                "123@naver.com", "비밀번호");
+
+        willThrow(new BusinessException(ErrorCode.NOT_EXIST_MEMBER))
+                .given(memberService)
+                .login(request.toServiceRequest());
+
+        // when then
+        mockMvc.perform(
+                        post("/member/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(jsonPath("$.code").value("1002"))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 회원입니다"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(request().sessionAttributeDoesNotExist(LOGIN_MEMBER));
     }
 }
