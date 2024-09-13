@@ -84,10 +84,9 @@ public class MemberController {
 
     @PostMapping("/login")
     public ApiResponse<Void> login(@RequestBody @Valid MemberLoginRequest request,
-                                   HttpServletRequest servletRequest) {
+                                   HttpSession httpSession) {
         memberService.login(request.toServiceRequest());
-        servletRequest.getSession().setAttribute(LOGIN_MEMBER, true);
-
+        httpSession.setAttribute(LOGIN_MEMBER, true);
         return ApiResponse.ok();
     }
 }
