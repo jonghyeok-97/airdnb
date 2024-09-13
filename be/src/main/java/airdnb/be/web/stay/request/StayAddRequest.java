@@ -17,10 +17,10 @@ public record StayAddRequest(
 
         String description,
 
-        @NotNull
+        @NotNull(message = "체크인 시간은 필수입니다.")
         LocalTime checkInTime,
 
-        @NotNull
+        @NotNull(message = "체크아웃 시간은 필수입니다.")
         LocalTime checkOutTime,
 
         @NotNull
