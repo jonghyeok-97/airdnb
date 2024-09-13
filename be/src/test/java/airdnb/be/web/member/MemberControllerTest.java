@@ -4,6 +4,7 @@ import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static airdnb.be.utils.SessionConst.MAIL_VERIFIED_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
@@ -156,6 +157,8 @@ class MemberControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.message").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(request().sessionAttributeDoesNotExist(MAIL_VERIFIED_MEMBER));
+
+        verify(memberService, times(0)).addMember(request.toServiceRequest());
     }
 
     @DisplayName("회원가입 할 때, 이메일 검증을 했으면 OK_200 이며 세션이 삭제된다.")
@@ -164,6 +167,9 @@ class MemberControllerTest extends ControllerTestSupport {
         // given
         MemberSaveRequest request = new MemberSaveRequest(
                 "이름", "123@naver.com", "010-1234-5678", "비밀번호");
+
+        given(memberService.addMember(request.toServiceRequest()))
+                .willReturn(anyLong());
 
         // when then
         MvcResult mvcResult = mockMvc.perform(
