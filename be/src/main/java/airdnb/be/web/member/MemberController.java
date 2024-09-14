@@ -85,8 +85,8 @@ public class MemberController {
     @PostMapping("/login")
     public ApiResponse<Void> login(@RequestBody @Valid MemberLoginRequest request,
                                    HttpSession httpSession) {
-        memberService.login(request.toServiceRequest());
-        httpSession.setAttribute(LOGIN_MEMBER, true);
+        Long memberId = memberService.login(request.toServiceRequest());
+        httpSession.setAttribute(LOGIN_MEMBER, memberId);
         return ApiResponse.ok();
     }
 }
