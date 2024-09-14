@@ -1,6 +1,6 @@
 package airdnb.be.web.member.request;
 
-import airdnb.be.customBeanValid.ValidEmail;
+import airdnb.be.annotation.validation.ValidEmail;
 import jakarta.validation.constraints.NotNull;
 
 public record EmailRequest(
