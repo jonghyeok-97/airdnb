@@ -35,11 +35,12 @@ public class MemberService {
         return saved.getMemberId();
     }
 
-    public void login(MemberLoginServiceRequest request) {
-        Optional.ofNullable(memberRepository.findMemberByEmail(request.email()))
+    public Long login(MemberLoginServiceRequest request) {
+        return Optional.ofNullable(memberRepository.findMemberByEmail(request.email()))
                 .filter(member -> member.hasPassword(request.password()))
+                .map(Member::getMemberId)
                 .orElseThrow(() -> {
-                    log.warn("'{}'의 로그인 정보가 정확하지 않습니다", request.email());
+                    log.warn("'{}'가 로그인에 실패했습니다.", request.email());
                     return new BusinessException(ErrorCode.CANNOT_LOGIN);
                 });
     }

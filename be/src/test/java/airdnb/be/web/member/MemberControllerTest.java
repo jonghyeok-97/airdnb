@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -195,9 +194,8 @@ class MemberControllerTest extends ControllerTestSupport {
         MemberLoginRequest request = new MemberLoginRequest(
                 "123@naver.com", "비밀번호");
 
-        willDoNothing()
-                .given(memberService)
-                .login(request.toServiceRequest());
+        given(memberService.login(request.toServiceRequest()))
+                .willReturn(1L);
 
         // when then
         mockMvc.perform(
@@ -209,7 +207,7 @@ class MemberControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
-                .andExpect(request().sessionAttribute(LOGIN_MEMBER, true));
+                .andExpect(request().sessionAttribute(LOGIN_MEMBER, 1L));
     }
 
     @DisplayName("로그인에 실패하면 세션이 없고, ErrorCode 를 반환한다.")
