@@ -1,4 +1,4 @@
-package airdnb.be.customBeanValid;
+package airdnb.be.annotation.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
