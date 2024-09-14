@@ -1,11 +1,11 @@
-package airdnb.be.customBeanValid;
+package airdnb.be.annotation.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class ValidEmailValidator implements ConstraintValidator<ValidEmail, String> {
 
-    String regexp;
+    private String regexp;
 
     @Override
     public void initialize(ValidEmail constraintAnnotation) {

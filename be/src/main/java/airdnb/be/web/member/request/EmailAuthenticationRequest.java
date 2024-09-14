@@ -1,6 +1,6 @@
 package airdnb.be.web.member.request;
 
-import airdnb.be.customBeanValid.ValidEmail;
+import airdnb.be.annotation.validation.ValidEmail;
 import airdnb.be.domain.mail.request.EmailAuthenticationServiceRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
