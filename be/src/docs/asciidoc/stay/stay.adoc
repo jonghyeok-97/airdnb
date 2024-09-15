@@ -14,8 +14,9 @@ include::{snippets}/stay-create/response-fields.adoc[]
 === 숙소 단건 조회
 ==== HTTP Request
 include::{snippets}/get-stay-one/http-request.adoc[]
+include::{snippets}/get-stay-one/path-parameters.adoc[]
 
 ==== HTTP Response
 include::{snippets}/get-stay-one/http-response.adoc[]
-include::{snippets}/get-stay-one/response-fields.adoc[]
-
+include::{snippets}/common-api-response/common-response-fields.adoc[]
+include::{snippets}/get-stay-one/response-fields-beneath-data.adoc[]
