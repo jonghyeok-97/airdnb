@@ -140,6 +140,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 .andDo(document("get-stay-one",
                         preprocessResponse(prettyPrint()),
                         pathParameters(
+                                attributes(key("url").value("/stay/{stayId}")),
                                 parameterWithName("stayId").description("조회할 숙소 ID")
                         ),
                         responseFields(
