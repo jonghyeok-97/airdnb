@@ -11,5 +11,4 @@ endif::[]
 
 [[Stay-API]]
 == Stay API
-
 include::stay/stay.adoc[]
