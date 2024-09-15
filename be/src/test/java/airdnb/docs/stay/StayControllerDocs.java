@@ -1,15 +1,22 @@
 package airdnb.docs.stay;
 
+import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.snippet.Attributes.attributes;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,6 +27,7 @@ import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.web.stay.StayController;
 import airdnb.be.web.stay.request.StayAddRequest;
 import airdnb.docs.RestDocsSupport;
+import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
@@ -43,8 +51,7 @@ public class StayControllerDocs extends RestDocsSupport {
     @Test
     void createStay() throws Exception {
         // given
-        StayAddRequest stayAddRequest = new StayAddRequest(
-                1L,
+        StayAddRequest request = new StayAddRequest(
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),
@@ -54,25 +61,30 @@ public class StayControllerDocs extends RestDocsSupport {
                 104.2,
                 58.3,
                 List.of("url1", "url2", "url3", "url4", "url5")
-        );;
+        );
+
+        Long stayId = 1L;
+        given(stayService.addStay(any()))
+                .willReturn(stayId);
 
         // when then
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .content(objectMapper.writeValueAsString(request))
+                                .sessionAttr(LOGIN_MEMBER, 1L)
+                                .cookie(new Cookie("JSESSIONID", "ACBCDFD0FF93D5BB"))
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").isNumber())
+                .andExpect(jsonPath("$.data").value(stayId))
                 .andDo(document("stay-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestCookies(cookieWithName("JSESSIONID").description("로그인 세션 쿠키")),
                         requestFields(
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER)
-                                        .description("등록하려는 회원ID"),
                                 fieldWithPath("title").type(JsonFieldType.STRING)
                                         .description("숙소 제목"),
                                 fieldWithPath("description").type(JsonFieldType.STRING)
@@ -92,7 +104,7 @@ public class StayControllerDocs extends RestDocsSupport {
                                         .description("숙소 위도(-90도 ~ 90도 사이"),
                                 fieldWithPath("images").type(JsonFieldType.ARRAY)
                                         .description("숙소 이미지(최소 5개)")
-                                ),
+                        ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING)
                                         .description("코드"),
@@ -122,14 +134,15 @@ public class StayControllerDocs extends RestDocsSupport {
                 3,
                 108.4,
                 45,
-                List.of()
+                List.of("URL1", "URL2", "URL3", "URL4", "URL5")
         );
 
-        given(stayService.getStay(stayId))
+        given(stayService.getStay(any()))
                 .willReturn(stayResponse);
 
         // when then
         mockMvc.perform(
+                        // REST docs 의 path parameter 에서 MockMvcRequestBuilders 를 사용하면 실패한다
                         RestDocumentationRequestBuilders.get("/stay/{stayId}", stayId)
                 ).andDo(print())
                 .andExpect(status().isOk())
@@ -144,21 +157,18 @@ public class StayControllerDocs extends RestDocsSupport {
                                 parameterWithName("stayId").description("조회할 숙소 ID")
                         ),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("메세지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
-                                fieldWithPath("data.stayId").type(JsonFieldType.NUMBER).description("숙소 ID"),
-                                fieldWithPath("data.hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
-                                fieldWithPath("data.title").type(JsonFieldType.STRING).description("숙소 제목"),
-                                fieldWithPath("data.description").type(JsonFieldType.STRING).description("숙소 설명"),
-                                fieldWithPath("data.checkInTime").type(JsonFieldType.STRING).description("숙소 체크인 시간"),
-                                fieldWithPath("data.checkOutTime").type(JsonFieldType.STRING).description("숙소 체크아웃 시간"),
-                                fieldWithPath("data.feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
-                                fieldWithPath("data.guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
-                                fieldWithPath("data.longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
-                                fieldWithPath("data.latitude").type(JsonFieldType.NUMBER).description("숙소 위도"),
-                                fieldWithPath("data.imageUrls").type(JsonFieldType.ARRAY).description("숙소 이미지 url")
+                                beneathPath("data"), // data 아래의 필드만 명시, code/status/message 필드는 공통 응답으로 뺌
+                                fieldWithPath("stayId").type(JsonFieldType.NUMBER).description("숙소 ID"),
+                                fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("숙소 제목"),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("숙소 설명"),
+                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).description("숙소 체크인 시간"),
+                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).description("숙소 체크아웃 시간"),
+                                fieldWithPath("feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
+                                fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
+                                fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
+                                fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("숙소 위도"),
+                                fieldWithPath("imageUrls").type(JsonFieldType.ARRAY).description("숙소 이미지 url")
                         )
                 ));
     }
