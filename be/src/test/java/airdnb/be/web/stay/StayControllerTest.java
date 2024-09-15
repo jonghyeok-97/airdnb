@@ -1,5 +1,6 @@
 package airdnb.be.web.stay;
 
+import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static org.mockito.BDDMockito.doNothing;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,13 +26,14 @@ class StayControllerTest extends ControllerTestSupport {
     @Test
     void createStay() throws Exception {
         // given
-        StayAddRequest stayAddRequest = createStayAddRequest(1L);
+        StayAddRequest stayAddRequest = createStayAddRequest();
 
         // when then
         mockMvc.perform(
                         post("/stay")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(stayAddRequest))
+                                .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
@@ -73,6 +75,7 @@ class StayControllerTest extends ControllerTestSupport {
         // when then
         mockMvc.perform(
                         get("/stay/{stayId}", stayId)
+                                .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
@@ -97,6 +100,7 @@ class StayControllerTest extends ControllerTestSupport {
                         put("/stay/{stayId}/image", stayId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(imageUrls))
+                                .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
@@ -105,9 +109,8 @@ class StayControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").exists());
     }
 
-    private StayAddRequest createStayAddRequest(Long memberId) {
+    private StayAddRequest createStayAddRequest() {
         return new StayAddRequest(
-                memberId,
                 "제목",
                 "설명",
                 LocalTime.of(15, 0),

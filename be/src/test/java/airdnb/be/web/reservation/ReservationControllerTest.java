@@ -1,5 +1,6 @@
 package airdnb.be.web.reservation;
 
+import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,7 +26,6 @@ class ReservationControllerTest extends ControllerTestSupport {
         // given
         ReservationAddRequest request = new ReservationAddRequest(
                 1L,
-                1L,
                 LocalDate.of(2024, 4, 5),
                 LocalDate.of(2024, 4, 30),
                 3
@@ -47,7 +47,8 @@ class ReservationControllerTest extends ControllerTestSupport {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/reservation")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request))
+                        .sessionAttr(LOGIN_MEMBER, 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0200"))
