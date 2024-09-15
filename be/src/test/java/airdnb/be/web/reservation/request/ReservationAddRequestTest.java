@@ -1,5 +1,6 @@
 package airdnb.be.web.reservation.request;
 
+import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,7 +29,6 @@ class ReservationAddRequestTest extends ControllerTestSupport {
                 null,
                 null,
                 null,
-                null,
                 1
         );
 
@@ -36,7 +36,7 @@ class ReservationAddRequestTest extends ControllerTestSupport {
         Set<ConstraintViolation<ReservationAddRequest>> violations = validator.validate(request);
 
         // then
-        assertThat(violations.size()).isEqualTo(4);
+        assertThat(violations.size()).isEqualTo(3);
         mockMvc.perform(
                         post("/reservation")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,7 +51,6 @@ class ReservationAddRequestTest extends ControllerTestSupport {
         // given
         ReservationAddRequest request = new ReservationAddRequest(
                 1L,
-                1L,
                 LocalDate.of(2024, 4, 5),
                 LocalDate.of(2024, 4, 10),
                 0
@@ -63,7 +62,8 @@ class ReservationAddRequestTest extends ControllerTestSupport {
         mockMvc.perform(
                         post("/reservation")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request)))
+                                .content(objectMapper.writeValueAsString(request))
+                                .sessionAttr(LOGIN_MEMBER, 1L))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("0400"))

@@ -12,9 +12,6 @@ import org.hibernate.validator.constraints.Range;
 
 public record StayAddRequest(
 
-        @NotNull(message = "회원Id는 필수입니다.")
-        Long memberId,
-
         @NotBlank(message = "제목을 넣어주세요.")
         String title,
 
@@ -47,7 +44,7 @@ public record StayAddRequest(
         List<String> images
 
 ) {
-        public StayAddServiceRequest toServiceRequest() {
+        public StayAddServiceRequest toServiceRequest(Long memberId) {
                 return new StayAddServiceRequest(memberId, title, description, checkInTime, checkOutTime, feePerNight, guestCount, longitude, latitude, images);
         }
 }

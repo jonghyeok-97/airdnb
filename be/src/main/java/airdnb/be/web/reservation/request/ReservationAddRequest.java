@@ -10,9 +10,6 @@ public record ReservationAddRequest(
         @NotNull(message = "숙소는 필수입니다")
         Long stayId,
 
-        @NotNull(message = "게스트는 필수입니다")
-        Long guestId,
-
         @NotNull
         LocalDate checkInDate,
 
@@ -23,7 +20,7 @@ public record ReservationAddRequest(
         int guestCount
 
 ) {
-        public ReservationAddServiceRequest toServiceRequest() {
+        public ReservationAddServiceRequest toServiceRequest(Long guestId) {
                 return new ReservationAddServiceRequest(
                         stayId,
                         guestId,

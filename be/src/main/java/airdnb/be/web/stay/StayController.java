@@ -1,9 +1,10 @@
 package airdnb.be.web.stay;
 
-import airdnb.be.web.ApiResponse;
+import airdnb.be.annotation.argumentResolver.Login;
 import airdnb.be.domain.stay.service.StayService;
-import airdnb.be.web.stay.request.StayAddRequest;
 import airdnb.be.domain.stay.service.response.StayResponse;
+import airdnb.be.web.ApiResponse;
+import airdnb.be.web.stay.request.StayAddRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,9 @@ public class StayController {
     private final StayService stayService;
 
     @PostMapping
-    public ApiResponse<Long> addStay(@RequestBody @Valid StayAddRequest request) {
-        Long stayId = stayService.addStay(request.toServiceRequest());
+    public ApiResponse<Long> addStay(@Login Long memberId,
+                                     @RequestBody @Valid StayAddRequest request) {
+        Long stayId = stayService.addStay(request.toServiceRequest(memberId));
         return ApiResponse.ok(stayId);
     }
 
@@ -37,9 +39,8 @@ public class StayController {
     }
 
     @DeleteMapping("/{stayId}")
-    public ApiResponse<Void> deleteStay(@PathVariable Long stayId) {
+    public ApiResponse<Void> deleteStay(@Login Long memberId, @PathVariable Long stayId) {
         stayService.deleteStay(stayId);
-
         return ApiResponse.ok();
     }
 
@@ -48,9 +49,9 @@ public class StayController {
      * patch : 부분 리소스 변경, 구현에 따라 멱등x
      */
     @PutMapping("/{stayId}/image")
-    public ApiResponse<StayResponse> changeStayImage(@PathVariable Long stayId, @RequestBody List<String> imageUrls) {
+    public ApiResponse<StayResponse> changeStayImage(
+            @Login Long memberId, @PathVariable Long stayId, @RequestBody List<String> imageUrls) {
         StayResponse stayResponse = stayService.changeStayImage(stayId, imageUrls);
-
         return ApiResponse.ok(stayResponse);
     }
 }
