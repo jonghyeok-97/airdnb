@@ -1,22 +1,29 @@
 [[stay-create]]
-=== 신규 숙소 등록
+=== 1. 신규 숙소 등록
 
-==== HTTP Request
+==== ✉️ HTTP Request
 include::{snippets}/stay-create/http-request.adoc[]
 include::{snippets}/stay-create/request-fields.adoc[]
 
-==== HTTP Response
+==== ✉️ HTTP Response
 include::{snippets}/stay-create/http-response.adoc[]
 include::{snippets}/stay-create/response-fields.adoc[]
 
 
 [[get-stay-one]]
-=== 숙소 단건 조회
-==== HTTP Request
+=== 2. 숙소 단건 조회
+==== ✉️ HTTP Request
 include::{snippets}/get-stay-one/http-request.adoc[]
 include::{snippets}/get-stay-one/path-parameters.adoc[]
 
-==== HTTP Response
+==== ✉️ HTTP Response
 include::{snippets}/get-stay-one/http-response.adoc[]
 include::{snippets}/common-api-response/common-response-fields.adoc[]
 include::{snippets}/get-stay-one/response-fields-beneath-data.adoc[]
+
+[[stay-delete]]
+=== 3. 숙소 삭제
+==== ✉️ HTTP Request
+include::{snippets}/stay-delete/http-request.adoc[]
+include::{snippets}/stay-delete/path-parameters.adoc[]
+

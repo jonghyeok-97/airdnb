@@ -3,6 +3,7 @@ package airdnb.docs.stay;
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -171,5 +172,65 @@ public class StayControllerDocs extends RestDocsSupport {
                                 fieldWithPath("imageUrls").type(JsonFieldType.ARRAY).description("숙소 이미지 url")
                         )
                 ));
+    }
+
+    @DisplayName("숙소 삭제 API")
+    @Test
+    void deleteStay() throws Exception {
+        //given
+        Long stayId = 3L;
+
+        doNothing()
+                .when(stayService)
+                .deleteStay(stayId);
+
+        // when then
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.delete("/stay/{stayId}", stayId)
+                                .sessionAttr(LOGIN_MEMBER, 1L)
+                                .cookie(new Cookie("JSESSIONID", "ACBCDFD0FF93D5BB"))
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andDo(document("stay-delete",
+                        preprocessRequest(prettyPrint()),
+                        pathParameters(
+                                attributes(key("url").value("/stay/{stayId}")),
+                                parameterWithName("stayId").description("삭제할 숙소 Id")
+                        ),
+                        requestCookies(cookieWithName("JSESSIONID").description("로그인 세션 쿠키"))));
+    }
+
+    private StayAddRequest createStayAddRequest() {
+        return new StayAddRequest(
+                "제목",
+                "설명",
+                LocalTime.of(15, 0),
+                LocalTime.of(11, 0),
+                new BigDecimal(30000),
+                3,
+                104.2,
+                58.3,
+                List.of("url1", "url2", "url3", "url4", "url5")
+        );
+    }
+
+    private StayResponse createStayResponse(Long stayId) {
+        return new StayResponse(
+                stayId,
+                1L,
+                "제목",
+                "설명",
+                LocalTime.of(15, 0),
+                LocalTime.of(11, 0),
+                new BigDecimal(50000),
+                3,
+                108.4,
+                45,
+                List.of()
+        );
     }
 }
