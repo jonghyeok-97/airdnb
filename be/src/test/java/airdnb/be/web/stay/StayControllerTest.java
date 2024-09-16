@@ -74,7 +74,7 @@ class StayControllerTest extends ControllerTestSupport {
 
         // when then
         mockMvc.perform(
-                        get("/stay/{stayId}", stayId)
+                        delete("/stay/{stayId}", stayId)
                                 .sessionAttr(LOGIN_MEMBER, 1L)
                 ).andDo(print())
                 .andExpect(status().isOk())
