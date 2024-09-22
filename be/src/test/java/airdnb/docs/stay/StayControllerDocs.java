@@ -2,6 +2,7 @@ package airdnb.docs.stay;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -204,18 +205,61 @@ public class StayControllerDocs extends RestDocsSupport {
                         requestCookies(cookieWithName("JSESSIONID").description("로그인 세션 쿠키"))));
     }
 
-    private StayAddRequest createStayAddRequest() {
-        return new StayAddRequest(
-                "제목",
-                "설명",
-                LocalTime.of(15, 0),
-                LocalTime.of(11, 0),
-                new BigDecimal(30000),
-                3,
-                104.2,
-                58.3,
-                List.of("url1", "url2", "url3", "url4", "url5")
-        );
+    @DisplayName("숙소 이미지 업데이트 API")
+    @Test
+    void changeStayImage() throws Exception {
+        //given
+        Long stayId = 3L;
+        List<String> imageUrls = List.of(
+                "changeURL1",
+                "changeURL2",
+                "changeURL3",
+                "changeURL4",
+                "changeURL5",
+                "changeURL6");
+
+        StayResponse stayResponse = createStayResponse(stayId);
+        given(stayService.changeStayImage(anyLong(), any()))
+                .willReturn(stayResponse);
+
+        // when then
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.put("/stay/{stayId}/image", stayId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(imageUrls))
+                                .sessionAttr(LOGIN_MEMBER, 1L)
+                                .cookie(new Cookie("JSESSIONID", "ACBCDFD0FF93D5BB"))
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").exists())
+                .andDo(document("stay-image-update",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                attributes(key("url").value("/stay/{stayId}/image")),
+                                parameterWithName("stayId").description("이미지 업데이트할 숙소 Id")
+                        ),
+                        requestFields(
+                                fieldWithPath("[]").type(JsonFieldType.ARRAY).description("업데이트할 숙소 이미지(최소 5개)")
+                        ),
+                        responseFields(
+                                beneathPath("data"),
+                                fieldWithPath("stayId").type(JsonFieldType.NUMBER).description("숙소 ID"),
+                                fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("숙소 제목"),
+                                fieldWithPath("description").type(JsonFieldType.STRING).description("숙소 설명"),
+                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).description("숙소 체크인 시간"),
+                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).description("숙소 체크아웃 시간"),
+                                fieldWithPath("feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
+                                fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
+                                fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
+                                fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("숙소 위도"),
+                                fieldWithPath("imageUrls").type(JsonFieldType.ARRAY).description("숙소 이미지 url")
+                        )
+                ));
     }
 
     private StayResponse createStayResponse(Long stayId) {
