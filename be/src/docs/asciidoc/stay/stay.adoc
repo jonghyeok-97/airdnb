@@ -1,6 +1,5 @@
 [[stay-create]]
 === 1. 신규 숙소 등록
-
 ==== ✉️ HTTP Request
 include::{snippets}/stay-create/http-request.adoc[]
 include::{snippets}/stay-create/request-fields.adoc[]
@@ -26,4 +25,14 @@ include::{snippets}/get-stay-one/response-fields-beneath-data.adoc[]
 ==== ✉️ HTTP Request
 include::{snippets}/stay-delete/http-request.adoc[]
 include::{snippets}/stay-delete/path-parameters.adoc[]
+
+[[stay-image-update]]
+=== 4. 숙소 이미지 업데이트
+==== ✉️ HTTP Request
+include::{snippets}/stay-image-update/http-request.adoc[]
+include::{snippets}/stay-image-update/path-parameters.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/stay-image-update/http-response.adoc[]
+include::{snippets}/stay-image-update/response-fields-beneath-data.adoc[]
 

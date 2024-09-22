@@ -16,3 +16,16 @@ Content-Type: application/json
 
 ###
 GET localhost:8080/stay/1
+
+###
+PUT localhost:8080/stay/1/image
+Content-Type: application/json
+
+[
+    "changeURL1",
+    "changeURL2",
+    "changeURL3",
+    "changeURL4",
+    "changeURL5",
+    "changeURL6"
+]
