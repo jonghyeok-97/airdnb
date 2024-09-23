@@ -1,5 +1,6 @@
 package airdnb.docs.member;
 
+import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static airdnb.be.utils.SessionConst.MAIL_VERIFIED_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +26,7 @@ import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.MemberController;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
+import airdnb.be.web.member.request.MemberLoginRequest;
 import airdnb.be.web.member.request.MemberSaveRequest;
 import airdnb.docs.RestDocsSupport;
 import jakarta.servlet.http.HttpSession;
@@ -204,6 +206,34 @@ public class MemberControllerDocs extends RestDocsSupport {
 
         HttpSession session = mvcResult.getRequest().getSession(false);
         assertThat(session).isNull();
+    }
 
+    @DisplayName("로그인 API")
+    @Test
+    void login() throws Exception {
+        // given
+        MemberLoginRequest request = new MemberLoginRequest(
+                "123@naver.com", "비밀번호");
+
+        given(memberService.login(request.toServiceRequest()))
+                .willReturn(1L);
+
+        // when then
+        mockMvc.perform(
+                        post("/member/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(request().sessionAttribute(LOGIN_MEMBER, 1L))
+                .andDo(document("member-login",
+                        preprocessRequest(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("회원 비밀번호")
+                        )));
     }
 }
