@@ -78,7 +78,7 @@ public class ReservationControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").exists())
-                .andDo(document("reservation-create",
+                .andDo(document("/reservation/reservation-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(

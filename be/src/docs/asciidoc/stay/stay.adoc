@@ -1,38 +1,38 @@
 [[stay-create]]
 === 1. 신규 숙소 등록
 ==== ✉️ HTTP Request
-include::{snippets}/stay-create/http-request.adoc[]
-include::{snippets}/stay-create/request-fields.adoc[]
+include::{snippets}/stay/stay-create/http-request.adoc[]
+include::{snippets}/stay/stay-create/request-fields.adoc[]
 
 ==== ✉️ HTTP Response
-include::{snippets}/stay-create/http-response.adoc[]
-include::{snippets}/stay-create/response-fields.adoc[]
+include::{snippets}/stay/stay-create/http-response.adoc[]
+include::{snippets}/stay/stay-create/response-fields.adoc[]
 
 
 [[get-stay-one]]
 === 2. 숙소 단건 조회
 ==== ✉️ HTTP Request
-include::{snippets}/get-stay-one/http-request.adoc[]
-include::{snippets}/get-stay-one/path-parameters.adoc[]
+include::{snippets}/stay/stay-get-one/http-request.adoc[]
+include::{snippets}/stay/stay-get-one/path-parameters.adoc[]
 
 ==== ✉️ HTTP Response
-include::{snippets}/get-stay-one/http-response.adoc[]
+include::{snippets}/stay/stay-get-one/http-response.adoc[]
 include::{snippets}/common-api-response/common-response-fields.adoc[]
-include::{snippets}/get-stay-one/response-fields-beneath-data.adoc[]
+include::{snippets}/stay/stay-get-one/response-fields-beneath-data.adoc[]
 
 [[stay-delete]]
 === 3. 숙소 삭제
 ==== ✉️ HTTP Request
-include::{snippets}/stay-delete/http-request.adoc[]
-include::{snippets}/stay-delete/path-parameters.adoc[]
+include::{snippets}/stay/stay-delete/http-request.adoc[]
+include::{snippets}/stay/stay-delete/path-parameters.adoc[]
 
 [[stay-image-update]]
 === 4. 숙소 이미지 업데이트
 ==== ✉️ HTTP Request
-include::{snippets}/stay-image-update/http-request.adoc[]
-include::{snippets}/stay-image-update/path-parameters.adoc[]
+include::{snippets}/stay/stay-image-update/http-request.adoc[]
+include::{snippets}/stay/stay-image-update/path-parameters.adoc[]
 
 ==== ✉️ HTTP Response
-include::{snippets}/stay-image-update/http-response.adoc[]
-include::{snippets}/stay-image-update/response-fields-beneath-data.adoc[]
+include::{snippets}/stay/stay-image-update/http-response.adoc[]
+include::{snippets}/stay/stay-image-update/response-fields-beneath-data.adoc[]
 
