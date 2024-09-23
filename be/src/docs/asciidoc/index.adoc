@@ -18,3 +18,7 @@ include::outline/outline.adoc[]
 [[Stay-API]]
 == ⭐ Stay API
 include::stay/stay.adoc[]
+
+[[Member-API]]
+== ⭐ Member API
+include::member/member.adoc[]
