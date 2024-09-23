@@ -1,6 +1,7 @@
 package airdnb.docs.stay;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static airdnb.docs.common.DateTimeFormat.getTimeFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -93,8 +94,10 @@ public class StayControllerDocs extends RestDocsSupport {
                                         .optional()
                                         .description("숙소 설명"),
                                 fieldWithPath("checkInTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
                                         .description("숙소 체크인 시간"),
                                 fieldWithPath("checkOutTime").type(JsonFieldType.STRING)
+                                        .attributes(getTimeFormat())
                                         .description("숙소 체크아웃 시간"),
                                 fieldWithPath("feePerNight").type(JsonFieldType.NUMBER)
                                         .description("1박당 요금(최소 10000원)"),
@@ -164,8 +167,8 @@ public class StayControllerDocs extends RestDocsSupport {
                                 fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("숙소 제목"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("숙소 설명"),
-                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).description("숙소 체크인 시간"),
-                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).description("숙소 체크아웃 시간"),
+                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크인 시간"),
+                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크아웃 시간"),
                                 fieldWithPath("feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
                                 fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
@@ -218,7 +221,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 "changeURL5",
                 "changeURL6");
 
-        StayResponse stayResponse = createStayResponse(stayId);
+        StayResponse stayResponse = createStayResponse(stayId, imageUrls);
         given(stayService.changeStayImage(anyLong(), any()))
                 .willReturn(stayResponse);
 
@@ -251,8 +254,8 @@ public class StayControllerDocs extends RestDocsSupport {
                                 fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("숙소 제목"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("숙소 설명"),
-                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).description("숙소 체크인 시간"),
-                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).description("숙소 체크아웃 시간"),
+                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크인 시간"),
+                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크아웃 시간"),
                                 fieldWithPath("feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
                                 fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
@@ -262,7 +265,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 ));
     }
 
-    private StayResponse createStayResponse(Long stayId) {
+    private StayResponse createStayResponse(Long stayId, List<String> imageUrls) {
         return new StayResponse(
                 stayId,
                 1L,
@@ -274,7 +277,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 3,
                 108.4,
                 45,
-                List.of()
+                imageUrls
         );
     }
 }

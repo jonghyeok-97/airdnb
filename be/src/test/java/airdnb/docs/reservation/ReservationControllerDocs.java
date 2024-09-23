@@ -1,6 +1,8 @@
 package airdnb.docs.reservation;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static airdnb.docs.common.DateTimeFormat.getDateFormat;
+import static airdnb.docs.common.DateTimeFormat.getDateTimeFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -58,7 +60,7 @@ public class ReservationControllerDocs extends RestDocsSupport {
                 1L,
                 1L,
                 LocalDateTime.of(2024, 4, 5, 15,0),
-                LocalDateTime.of(2024, 4, 30, 15,0),
+                LocalDateTime.of(2024, 4, 30, 11,0),
                 new BigDecimal(50000)
         );
 
@@ -83,8 +85,8 @@ public class ReservationControllerDocs extends RestDocsSupport {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("stayId").type(JsonFieldType.NUMBER).description("숙소 ID"),
-                                fieldWithPath("checkInDate").type(JsonFieldType.STRING).description("체크인 날짜"),
-                                fieldWithPath("checkOutDate").type(JsonFieldType.STRING).description("체크아웃 날짜"),
+                                fieldWithPath("checkInDate").type(JsonFieldType.STRING).attributes(getDateFormat()).description("체크인 날짜"),
+                                fieldWithPath("checkOutDate").type(JsonFieldType.STRING).attributes(getDateFormat()).description("체크아웃 날짜"),
                                 fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙소 사용할 인원 수")
                         ),
                         requestCookies(
@@ -95,8 +97,8 @@ public class ReservationControllerDocs extends RestDocsSupport {
                                 fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 ID"),
                                 fieldWithPath("stayId").type(JsonFieldType.NUMBER).description("숙소 ID"),
                                 fieldWithPath("guestId").type(JsonFieldType.NUMBER).description("예약한 사람 ID"),
-                                fieldWithPath("checkIn").type(JsonFieldType.STRING).description("체크인 날짜/시간"),
-                                fieldWithPath("checkOut").type(JsonFieldType.STRING).description("체크아웃 날짜/시간"),
+                                fieldWithPath("checkIn").type(JsonFieldType.STRING).attributes(getDateTimeFormat()).description("체크인 날짜/시간"),
+                                fieldWithPath("checkOut").type(JsonFieldType.STRING).attributes(getDateTimeFormat()).description("체크아웃 날짜/시간"),
                                 fieldWithPath("totalFee").type(JsonFieldType.NUMBER).description("예약 총 요금")
                         )));
     }
