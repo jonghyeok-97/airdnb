@@ -1,8 +1,11 @@
 package airdnb.docs.member;
 
 import static airdnb.be.utils.SessionConst.MAIL_VERIFIED_MEMBER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -10,6 +13,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -136,5 +140,29 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andDo(document("member-email-authenticate-400",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
+    }
+
+    @DisplayName("이메일 인증번호 보내는 API")
+    @Test
+    void sendAuthenticationEmail() throws Exception {
+        // given
+        EmailRequest request = new EmailRequest("123@naver.com");
+
+        // when then
+        mockMvc.perform(
+                        post("/member/email/authenticate")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andDo(document("member-email-authenticate-send",
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 메일")
+                        )));
+
+        verify(mailService, times(1)).sendAuthenticationMail(any());
     }
 }
