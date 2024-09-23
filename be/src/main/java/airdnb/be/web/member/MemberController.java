@@ -71,7 +71,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ApiResponse<Long> addMember(@RequestBody @Valid MemberSaveRequest request,
+    public ApiResponse<Void> addMember(@RequestBody @Valid MemberSaveRequest request,
                                        HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession(false);
         if (session == null || !((boolean) session.getAttribute(MAIL_VERIFIED_MEMBER))) {

@@ -1,7 +1,9 @@
 package airdnb.docs.member;
 
 import static airdnb.be.utils.SessionConst.MAIL_VERIFIED_MEMBER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -23,11 +25,14 @@ import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.web.member.MemberController;
 import airdnb.be.web.member.request.EmailAuthenticationRequest;
 import airdnb.be.web.member.request.EmailRequest;
+import airdnb.be.web.member.request.MemberSaveRequest;
 import airdnb.docs.RestDocsSupport;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MvcResult;
 
 public class MemberControllerDocs extends RestDocsSupport {
 
@@ -164,5 +169,41 @@ public class MemberControllerDocs extends RestDocsSupport {
                         )));
 
         verify(mailService, times(1)).sendAuthenticationMail(any());
+    }
+
+    @DisplayName("회원가입 API")
+    @Test
+    void addMemberWithoutEmailAuthenticate() throws Exception {
+        // given
+        MemberSaveRequest request = new MemberSaveRequest(
+                "이름", "123@naver.com", "010-1234-5678", "비밀번호");
+
+        given(memberService.addMember(request.toServiceRequest()))
+                .willReturn(anyLong());
+
+        // when then
+        MvcResult mvcResult = mockMvc.perform(
+                        post("/member")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                                .sessionAttr(MAIL_VERIFIED_MEMBER, true))
+                .andDo(print())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andDo(document("member-register",
+                        preprocessRequest(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("회원 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일"),
+                                fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("회원 전화번호"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("회원 비밀번호")
+                        )))
+                .andReturn();
+
+        HttpSession session = mvcResult.getRequest().getSession(false);
+        assertThat(session).isNull();
+
     }
 }
