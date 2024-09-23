@@ -1,0 +1,26 @@
+= 개요
+
+== 1. 개요
+이 API 문서는 'Airbnb Clone Project' 입니다.
+
+== 1.2. 응답형식
+
+프로젝트는 다음과 같은 응답형식을 제공합니다.
+
+=== 1.2.1. 정상(200, OK)
+
+응답데이터가 없는 경우와 있는 경우의 예시입니다
+
+[cols="2a,2a", options="header"]
+|===
+| 응답데이터가 없는 경우 | 응답데이터가 있는 경우
+
+| include::{snippets}/common-api-response/http-response.adoc[]
+| include::{snippets}/get-stay-one/http-response.adoc[]
+|===
+
+
+
+
+
+
