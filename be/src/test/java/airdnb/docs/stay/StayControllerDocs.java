@@ -82,7 +82,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").value(stayId))
-                .andDo(document("stay-create",
+                .andDo(document("/stay/stay-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(cookieWithName("JSESSIONID").description("로그인 세션 쿠키")),
@@ -152,7 +152,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").exists())
-                .andDo(document("get-stay-one",
+                .andDo(document("/stay/stay-get-one",
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 attributes(key("url").value("/stay/{stayId}")),
@@ -196,7 +196,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
-                .andDo(document("stay-delete",
+                .andDo(document("/stay/stay-delete",
                         preprocessRequest(prettyPrint()),
                         pathParameters(
                                 attributes(key("url").value("/stay/{stayId}")),
@@ -235,7 +235,7 @@ public class StayControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").exists())
-                .andDo(document("stay-image-update",
+                .andDo(document("/stay/stay-image-update",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
