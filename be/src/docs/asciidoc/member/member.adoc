@@ -10,8 +10,17 @@ include::{snippets}/member-exist-200/http-response.adoc[]
 - 회원 가입이 되어있지 않다면 204 NO CONTENT 를 반환
 include::{snippets}/member-exist-204/http-response.adoc[]
 
+[[member-email-authenticate-send]]
+=== 2. 회원 가입시 이메일 인증번호 보내기
+==== ✉️ HTTP Request
+include::{snippets}/member-email-authenticate-send/http-request.adoc[]
+include::{snippets}/member-email-authenticate-send/request-fields.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/member-email-authenticate-send/http-response.adoc[]
+
 [[member-email-authenticate]]
-=== 2. 회원 가입시 이메일 인증
+=== 3. 회원 가입시 이메일 인증
 ==== ✉️ HTTP Request
 include::{snippets}/member-email-authenticate-200/http-request.adoc[]
 include::{snippets}/member-email-authenticate-200/request-fields.adoc[]
