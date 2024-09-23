@@ -1,6 +1,8 @@
 package airdnb.docs.common;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -26,14 +28,15 @@ public class CommonResponseDocs extends RestDocsSupport {
 
     @DisplayName("공통 응답 형식")
     @Test
-    void test() throws Exception {
+    void common() throws Exception {
         // then
         mockMvc.perform(get("/docs"))
                 .andExpect(status().isOk())
                 .andDo(document("common-api-response",   // generated-snippets 에 생기는 폴더명
+                        preprocessResponse(prettyPrint()),
                         customResponseSnippet(
-                                "common-response",  // test-resources-org-springframework-restdocs-templates 의 snippet 파일명과 매칭
-                                null,
+                                "common-response",
+                                null, // test-resources-org-springframework-restdocs-templates 의 snippet 파일명과 매칭
                                 attributes(key("title").value("Common Response")), // snippet 양식에 mustache 속성 추가
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("코드"),
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
@@ -41,7 +44,18 @@ public class CommonResponseDocs extends RestDocsSupport {
                                 subsectionWithPath("data").type(JsonFieldType.VARIES).description("응답 데이터")
                         )
                 ));
+    }
 
+    @DisplayName("에러 응답 형식")
+    @Test
+    void error() throws Exception {
+        // then
+        mockMvc.perform(
+                        get("/error"))
+                .andExpect(status().isOk())
+                .andDo(document("error-api-response",
+                        preprocessResponse(prettyPrint())
+                ));
     }
 
     public static CustomResponseFieldsSnippet customResponseSnippet(

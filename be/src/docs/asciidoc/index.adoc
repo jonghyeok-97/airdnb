@@ -9,6 +9,12 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
+[[Outline]]
+== ⭐ 개요
+이 API 문서는 'Airbnb Clone Project' 입니다.
+
+include::outline/outline.adoc[]
+
 [[Stay-API]]
 == ⭐ Stay API
 include::stay/stay.adoc[]
