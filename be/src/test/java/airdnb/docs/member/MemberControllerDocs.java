@@ -63,7 +63,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
-                .andDo(document("member-exist-200",
+                .andDo(document("/member/member-exist-200",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
     }
@@ -86,7 +86,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("NO_CONTENT"))
                 .andExpect(jsonPath("$.message").value("NO_CONTENT"))
                 .andExpect(jsonPath("$.data").doesNotExist())
-                .andDo(document("member-exist-204",
+                .andDo(document("/member/member-exist-204",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
     }
@@ -113,7 +113,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(request().sessionAttribute(MAIL_VERIFIED_MEMBER, true))
-                .andDo(document("member-email-authenticate-200",
+                .andDo(document("/member/member-email-authenticate-200",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -144,7 +144,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.message").value("BAD_REQUEST"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(request().sessionAttributeDoesNotExist(MAIL_VERIFIED_MEMBER))
-                .andDo(document("member-email-authenticate-400",
+                .andDo(document("/member/member-email-authenticate-400",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint())));
     }
@@ -165,7 +165,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
-                .andDo(document("member-email-authenticate-send",
+                .andDo(document("/member/member-email-authenticate-send",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 메일")
                         )));
@@ -194,7 +194,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
-                .andDo(document("member-register",
+                .andDo(document("/member/member-register",
                         preprocessRequest(prettyPrint()),
                         requestFields(
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("회원 이름"),
@@ -229,7 +229,7 @@ public class MemberControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(request().sessionAttribute(LOGIN_MEMBER, 1L))
-                .andDo(document("member-login",
+                .andDo(document("/member/member-login",
                         preprocessRequest(prettyPrint()),
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일"),

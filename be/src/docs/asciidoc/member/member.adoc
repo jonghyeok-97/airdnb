@@ -1,51 +1,51 @@
 [[member-exist]]
 === 1. 회원 가입 여부
 ==== ✉️ HTTP Request
-include::{snippets}/member-exist-200/http-request.adoc[]
+include::{snippets}/member/member-exist-200/http-request.adoc[]
 
 ==== ✉️ HTTP Response
 - 회원 가입이 되어있으면 200 OK 를 반환
-include::{snippets}/member-exist-200/http-response.adoc[]
+include::{snippets}/member/member-exist-200/http-response.adoc[]
 
 - 회원 가입이 되어있지 않다면 204 NO CONTENT 를 반환
-include::{snippets}/member-exist-204/http-response.adoc[]
+include::{snippets}/member/member-exist-204/http-response.adoc[]
 
 [[member-email-authenticate-send]]
 === 2. 회원 가입시 이메일 인증번호 보내기
 ==== ✉️ HTTP Request
-include::{snippets}/member-email-authenticate-send/http-request.adoc[]
-include::{snippets}/member-email-authenticate-send/request-fields.adoc[]
+include::{snippets}/member/member-email-authenticate-send/http-request.adoc[]
+include::{snippets}/member/member-email-authenticate-send/request-fields.adoc[]
 
 ==== ✉️ HTTP Response
-include::{snippets}/member-email-authenticate-send/http-response.adoc[]
+include::{snippets}/member/member-email-authenticate-send/http-response.adoc[]
 
 [[member-email-authenticate]]
 === 3. 회원 가입시 이메일 인증
 ==== ✉️ HTTP Request
-include::{snippets}/member-email-authenticate-200/http-request.adoc[]
-include::{snippets}/member-email-authenticate-200/request-fields.adoc[]
+include::{snippets}/member/member-email-authenticate-200/http-request.adoc[]
+include::{snippets}/member/member-email-authenticate-200/request-fields.adoc[]
 
 ==== ✉️ HTTP Response
 - 이메일 인증이 성공하면 200 OK 를 반환
-include::{snippets}/member-email-authenticate-200/http-response.adoc[]
+include::{snippets}/member/member-email-authenticate-200/http-response.adoc[]
 
 - 이메일 인증이 실패하면 400 BAD REQUEST 를 반환
-include::{snippets}/member-email-authenticate-400/http-response.adoc[]
+include::{snippets}/member/member-email-authenticate-400/http-response.adoc[]
 
 [[member-register]]
 === 4. 회원 가입
 ==== ✉️ HTTP Request
-include::{snippets}/member-register/http-request.adoc[]
-include::{snippets}/member-register/request-fields.adoc[]
+include::{snippets}/member/member-register/http-request.adoc[]
+include::{snippets}/member/member-register/request-fields.adoc[]
 
 ==== ✉️ HTTP Response
-include::{snippets}/member-register/http-response.adoc[]
+include::{snippets}/member/member-register/http-response.adoc[]
 
 [[member-login]]
 === 5. 로그인
 ==== ✉️ HTTP Request
-include::{snippets}/member-login/http-request.adoc[]
-include::{snippets}/member-login/request-fields.adoc[]
+include::{snippets}/member/member-login/http-request.adoc[]
+include::{snippets}/member/member-login/request-fields.adoc[]
 
 ==== ✉️ HTTP Response
-include::{snippets}/member-login/http-response.adoc[]
+include::{snippets}/member/member-login/http-response.adoc[]
