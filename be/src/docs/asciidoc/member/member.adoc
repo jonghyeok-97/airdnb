@@ -40,3 +40,12 @@ include::{snippets}/member-register/request-fields.adoc[]
 
 ==== ✉️ HTTP Response
 include::{snippets}/member-register/http-response.adoc[]
+
+[[member-login]]
+=== 5. 로그인
+==== ✉️ HTTP Request
+include::{snippets}/member-login/http-request.adoc[]
+include::{snippets}/member-login/request-fields.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/member-login/http-response.adoc[]
