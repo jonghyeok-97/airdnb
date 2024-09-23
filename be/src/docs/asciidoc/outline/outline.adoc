@@ -1,3 +1,4 @@
+
 === 1 기본 응답
 
 응답데이터가 없는 경우와 있는 경우의 예시입니다
@@ -7,7 +8,7 @@
 | 응답데이터가 없는 경우 | 응답데이터가 있는 경우
 
 | include::{snippets}/common-api-response/http-response.adoc[]
-| include::{snippets}/get-stay-one/http-response.adoc[]
+| include::{snippets}/stay/stay-get-one/http-response.adoc[]
 |===
 
 === 2 에러코드
