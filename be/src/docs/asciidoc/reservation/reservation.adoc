@@ -1,0 +1,10 @@
+[[reservation-create]]
+=== 1. 신규 숙소 예약
+==== ✉️ HTTP Request
+include::{snippets}/reservation-create/http-request.adoc[]
+include::{snippets}/reservation-create/request-fields.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/reservation-create/http-response.adoc[]
+include::{snippets}/reservation-create/response-fields-beneath-data.adoc[]
+

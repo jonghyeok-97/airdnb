@@ -12,7 +12,6 @@ endif::[]
 [[Outline]]
 == ⭐ 개요
 이 API 문서는 'Airbnb Clone Project' 입니다.
-
 include::outline/outline.adoc[]
 
 [[Stay-API]]
@@ -22,3 +21,7 @@ include::stay/stay.adoc[]
 [[Member-API]]
 == ⭐ Member API
 include::member/member.adoc[]
+
+[[Reservation-API]]
+== ⭐ Reservation API
+include::reservation/reservation.adoc[]
