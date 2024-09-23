@@ -9,3 +9,16 @@ include::{snippets}/member-exist-200/http-response.adoc[]
 
 - 회원 가입이 되어있지 않다면 204 NO CONTENT 를 반환
 include::{snippets}/member-exist-204/http-response.adoc[]
+
+[[member-email-authenticate]]
+=== 2. 회원 가입시 이메일 인증
+==== ✉️ HTTP Request
+include::{snippets}/member-email-authenticate-200/http-request.adoc[]
+include::{snippets}/member-email-authenticate-200/request-fields.adoc[]
+
+==== ✉️ HTTP Response
+- 이메일 인증이 성공하면 200 OK 를 반환
+include::{snippets}/member-email-authenticate-200/http-response.adoc[]
+
+- 이메일 인증이 실패허면 400 BAD REQUEST 를 반환
+include::{snippets}/member-email-authenticate-400/http-response.adoc[]
