@@ -1,61 +1,89 @@
+# Airbnb Clone Project
+Airbnb 웹 사이트의 로그인/회원가입 부터 숙소 등록, 숙소 예약에 대한 API 를 제공하고자 합니다.
+
 ### 개발환경
 * JDK17
 * SpringBoot3.3
+* Spring Data JPA
+* MySQL
+* Spring Rest Docs 3.0.1
 
-### 개발 기간
-7월 24일 ~ 진행중
-7월 4주차 ~ 8월 1주차
----
-**기능**
-회원가입/로그인 API 설계
-메일에 인증번호를 보내서 회원가입 진행
+## #실행 방법
+### with mysql
+1. application-local.yml 을 참고하여 설정 or 수정
+```
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/airbnb
+    username: team04
+    password: 1234
+```
+2. 실행
+```
+> ./gradlew clean bootRun 
+```
 
-**고민**
-이메일 유효성 검증 범위 
-동시에 이메일로 회원가입시 어떻게 처리?
-인증번호를 어떻게 저장 ?
+- 회원가입 중 이메일 인증번호를 보내는 기능 사용 시 yml 추가 방법
+1. main/reousources 에 application-email.yml 을 만든다.
+2. application-email.yml 에 아래 설정을 한다.
+```
+spring:
+  email:
+    username: 네이버이메일
+    password: 네이버비밀번호
+```
 
-**기타**
-DTO에 Valid 추가
-공통 예외 처리 -> RestControllerAdvice 추가
-클라이언트와 협업을 위해 커스텀하게 ErrorCode & ErrorResponse 구현
-로깅 관련 Interceptor & logback.xml 추가
+## #주요 기능 & 구현 의도
+### 1. ERD 설계
+![image](https://github.com/user-attachments/assets/ce315dbe-1d22-4156-8058-6079317f7e13)
+- 각 엔티티간 생명주기를 고려하여 참조를 끊으며 보수적으로 접근
+  - 회원, 숙소, 예약 각각은 생명주기가 다르기 때문에 참조를 끊음
+  - 숙소와 숙소 이미지는 숙소가 등록될 때 같이 생성된다는 점에서 생명주기가 같다고 판단하여 참조 연결
+  - 예약(Reservation)과 예약 날짜(Reservation Date) 는 생명주기가 다르다고 판단하여 참조를 끊음
 
-8월 2주차
-**기능**
-로그인, 회원가입 API 구현
-외부 메일 서버 연동 불가 시 재시도 로직 추가
+### 2. 단위 테스트 & 통합 테스트 with DynamicTest
+![image](https://github.com/user-attachments/assets/fa9175f5-fee4-4b28-afec-d7d1bb26b683)
 
-**고민**
-모든 예외의 로그 레벨을 error로 해야하는가?
--> 클라이언트 오류 같이 자주 발생하는 예외 warn, 개발자에게 즉시 에러를 알리고 싶을 떄 error로  판단
+### 3. 지속 가능한 개발
+- Custom 한 에러코드와 응답 API를 제공하여 일관된 API 응답 제공
+- 가독성과 구현 의도를 알리기 위해 custom annotation 에 javadoc 및 주석 작성
+  - 회원가입 시 이메일 인증할 때 고려한 것들 [[Blog 링크]](https://dkswhdgur246.tistory.com/50)
+  - ex) main/java/airdnb/be/annotation/validation/VaildEmail
+```
+@Documented
+@Constraint(validatedBy = ValidEmailValidator.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface ValidEmail {
 
-**기타**
-예외처리, 로그, DTO, 인터셉터등 전반적인 리팩토링
-스프링 내부 예외들도 ErrorResponse & 예외 추가
-회원 가입 시 검증된 사용자에 대해 stateful 하도록 세션과 redis 사용
+    String regexp() default "^[^@]+@[^@\\-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    ... 중략
+}
 
-* 고민 포인트
-  * 블로그 회원가입 시 고민했던 포인트
-  * 로그 레벨 error 와 warn 의 관계
-  * ErrorCode 
+/**
+ * 모든 이메일에 인증 메일을 전송하지 않게 하여 서버의 부하를 낮추고자 함.
+ * Gmail 경우, 로컬에 + 에 포함 가능 -> 도메인 부분만 엄격하게 검증
+ *
+ * 로컬 : @ 문자를 제외한 모든 문자가 하나 이상 포함
+ * @ : 전체 문자에서 단 하나
+ * 도메인
+ *       [^@\-] : @ 뒤에 @ 나 - 로 시작하지 않음
+ *       [A-Za-z0-9-]+ :  알파벳, 숫자가 1개 이상 포함되어야 함
+ *       (\.[A-Za-z0-9-]+)* : 위의 표현식이 . 을 포함해서 0번이상 반복될 수 있음
+ *       (\.[A-Za-z]{2,})$ : 끝은 알파벳 2자리 이상으로 끝나야 함
+ *
+ */
+```
+- 가독성과 안전성을 위한 람다, 스트림을 적극 활용
+- Layer 간 참조 방향이 역행하지 않도록 구현
+  -  Layer 간 dto 를 구분
+  - Presentation dto 네이밍 : ~request
+  - Service dto 네이밍 : ~ServiceRequest / Response
 
-원활한 소통과 협업에 대한 생각
-* pull request의 중요성
-  * 풀리퀘에 구현 의도와 고민 포인트를 적음으로써 코드에 대한 설득 소통 시간을 줄이고, 원활한 코드 리뷰를 유도하고자 함
-  * 문서로 소통하는 시간에 대비해 문서화 역량을 기르고자 풀 리퀘를 가독성있게 작성하고자 함.
-* 구현 의도가 명확하도록 메서드 네이밍과 변수명을 짓고자 노력함
-* public 메서드의 추상화 레벨을 지키고자 노력함
-* 구현 의도가 명확히 전달 안될 것 같은 코드에 주석을 추가함
-* 테스트 코드 추가
-  * 기능A를 추가할 때, 내가 생각했던 case를 테스트 코드에 녹여 다음 개발자로 하여금 리소스 낭비X
-  * 기능B가 기능A코드를 건들 일 때, 기능 A이 잘 돌아가는 지 확인
-
-지속 가능한 개발에 대한 생각
-* JDK17 의 record 를 적극 도입, nullable 한 로직은 Optional, for문은 stream으로 대체하는 등 함수형 프로그래밍으로 멀티 쓰레드에서 안정성을 높이고자 함
-* lombok 의 위험성(ToString의 순환참조 유발, AllArgsConstructor 의 매개변수위치 변경의 위험성)을 고려하여, 코드 작성
-* web 패키지에서 domain 패키지로만 참조가 일어나도록 작성
-
+### 4. Spring 활용
+- ArgumentResolver, custom Bean Validation 을 활용한 로그인 기능 구현
+- ExceptionHandler 와 custom ErrorCode 를 활용한 일관된 에러 처리
 
 
 
