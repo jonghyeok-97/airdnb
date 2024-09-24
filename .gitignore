@@ -37,3 +37,6 @@ out/
 
 ### email ###
 application-email.yml
+
+### 외부 라이브러리 ###
+spy.log
