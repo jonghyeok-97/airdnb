@@ -33,6 +33,11 @@ spring:
     username: 네이버이메일
     password: 네이버비밀번호
 ```
+## #API 문서
+### [Rest Docs](http://restdocs.s3-website.ap-northeast-2.amazonaws.com/)
+- html파일을 S3를 이용하여 배포했습니다.
+- 총 5개인 필드명, 타입, 선택여부, 양식(날짜 등), 설명을 API문서에 녹였습니다.
+- 공통 응답 필드 및 에러코드 예시를 추가하였습니다.
 
 ## #주요 기능 & 구현 의도
 ### 1. ERD 설계
@@ -84,7 +89,6 @@ public @interface ValidEmail {
 ### 4. Spring 활용
 - ArgumentResolver, custom Bean Validation 을 활용한 로그인 기능 구현
 - ExceptionHandler 와 custom ErrorCode 를 활용한 일관된 에러 처리
-
 
 
 
