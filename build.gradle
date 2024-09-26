@@ -57,32 +57,34 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
 ext {
 	snippetsDir = file('build/generated-snippets')
 }
 
 test {
+	useJUnitPlatform()
 	outputs.dir snippetsDir // RestDocs 에 대한 테스트 결과물을 해당 파일에 넣는다.
 }
 
 asciidoctor {
+	dependsOn test
 	inputs.dir snippetsDir
 	configurations 'asciidoctorExt'
-
-	sources { // 특정 파일만 html로 한다.
+	sources { // 특정 파일만 html로 만든다.
 		include("**/index.adoc")
 	}
-	baseDirFollowsSourceFile() // 여러 abc파일을 include 할 때, BaseDir로 맞춘다
-	dependsOn test
+	baseDirFollowsSourceFile() // 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다
+}
+
+task createDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc") // 직접 경로 참조
+	into file("src/main/resources/static")
 }
 
 bootJar {
-	dependsOn asciidoctor
-	from ("${asciidoctor.outputDir}/html5") {
+	dependsOn createDocument
+	from("${asciidoctor.outputDir}") {
 		into 'static/docs'
 	}
 }
