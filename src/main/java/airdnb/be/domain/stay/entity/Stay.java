@@ -1,6 +1,8 @@
 package airdnb.be.domain.stay.entity;
 
 import airdnb.be.domain.base.entity.BaseTimeEntity;
+import airdnb.be.domain.stay.embedded.StayCoordinate;
+import airdnb.be.domain.stay.embedded.StayImage;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import airdnb.be.domain.reservation.entity.Reservation;

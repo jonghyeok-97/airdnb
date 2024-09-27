@@ -1,7 +1,7 @@
 package airdnb.be.domain.stay.service.response;
 
 import airdnb.be.domain.stay.entity.Stay;
-import airdnb.be.domain.stay.entity.StayImage;
+import airdnb.be.domain.stay.embedded.StayImage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import java.math.BigDecimal;
