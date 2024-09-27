@@ -1,4 +1,4 @@
-package airdnb.be.domain.stay.entity;
+package airdnb.be.domain.stay.embedded;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

@@ -1,6 +1,7 @@
 package airdnb.be.domain.reservation.entity;
 
 import airdnb.be.domain.base.entity.BaseTimeEntity;
+import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

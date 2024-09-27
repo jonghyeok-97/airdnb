@@ -1,7 +1,7 @@
-package airdnb.be.domain.stay.entity;
+package airdnb.be.domain.stay.embedded;
 
-import static airdnb.be.domain.stay.entity.StayCoordinate.LATITUDE_ERR_MSG;
-import static airdnb.be.domain.stay.entity.StayCoordinate.LONGITUDE_ERR_MSG;
+import static airdnb.be.domain.stay.embedded.StayCoordinate.LATITUDE_ERR_MSG;
+import static airdnb.be.domain.stay.embedded.StayCoordinate.LONGITUDE_ERR_MSG;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
