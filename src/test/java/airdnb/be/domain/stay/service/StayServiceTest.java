@@ -6,13 +6,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.member.entitiy.Member;
+import airdnb.be.domain.reservation.ReservationDateRepository;
+import airdnb.be.domain.reservation.entity.ReservationDate;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
+import airdnb.be.domain.stay.service.response.StayReservedDatesResponse;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -31,6 +35,9 @@ class StayServiceTest extends IntegrationTestSupport {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private ReservationDateRepository reservationDateRepository;
+
     /**
      * AllInBatch - 테이블 자체를 날리는 것 -> 외래키 제약 조건을 고려야 함.
      * deleteAll - 데이터를 지울 때 모든 데이터를 조회한 후, 데이터를 1개씩 지움. sql이 깔끔하지 않음(생각) + 성능문제
@@ -39,13 +46,15 @@ class StayServiceTest extends IntegrationTestSupport {
     void tearDown() {
         stayRepository.deleteAllInBatch();
         memberRepository.deleteAllInBatch();
+        reservationDateRepository.deleteAllInBatch();
     }
 
     @DisplayName("숙소를 등록한다")
     @Test
     void addStay() {
         // given
-        Member member = saveMember();
+        Member member = createMember("1@naver.com");
+        memberRepository.save(member);
 
         StayAddServiceRequest serviceRequest = createServiceRequest(member.getMemberId());
 
@@ -76,7 +85,8 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void getStay() {
         // given
-        Member member = saveMember();
+        Member member = createMember("1@naver.com");
+        memberRepository.save(member);
 
         Stay saved = stayRepository.save(createStay(member.getMemberId()));
 
@@ -105,7 +115,8 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void getStayWithoutNotExistStay() {
         // given
-        Member member = saveMember();
+        Member member = createMember("1@naver.com");
+        memberRepository.save(member);
 
         Stay stay = createStay(member.getMemberId());
         stayRepository.save(stay);
@@ -123,7 +134,8 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void deleteStay() {
         // given
-        Member member = saveMember();
+        Member member = createMember("1@naver.com");
+        memberRepository.save(member);
 
         Stay stay = createStay(member.getMemberId());
         Stay saved = stayRepository.save(stay);
@@ -139,7 +151,8 @@ class StayServiceTest extends IntegrationTestSupport {
     @Test
     void changeStayImage() {
         // given
-        Member member = saveMember();
+        Member member = createMember("1@naver.com");
+        memberRepository.save(member);
 
         Stay stay = createStay(member.getMemberId());
         Stay saved = stayRepository.save(stay);
@@ -167,9 +180,50 @@ class StayServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
     }
 
-    private Member saveMember() {
-        return memberRepository.save(
-                new Member("이름1", "email1@naver.com", "010-1111-1111", "password"));
+    @DisplayName("숙소ID로 숙소의 예약된 날짜를 조회한다.")
+    @Test
+    void getReservedDates() {
+        // given
+        Member member1 = createMember("1@naver.com");
+        Member member2 = createMember("2@naver.com");
+        memberRepository.saveAll(List.of(member1, member2));
+
+        Stay stay = createStay(member1.getMemberId());
+        Stay savedStay = stayRepository.save(stay);
+
+        ReservationDate date1 = new ReservationDate(
+                savedStay.getStayId(),
+                LocalDate.of(2024, 5, 30)
+        );
+        ReservationDate date2 = new ReservationDate(
+                savedStay.getStayId(),
+                LocalDate.of(2024, 5, 31)
+        );
+        ReservationDate date3 = new ReservationDate(
+                savedStay.getStayId(),
+                LocalDate.of(2024, 6, 2)
+        );
+        ReservationDate date4 = new ReservationDate(
+                savedStay.getStayId(),
+                LocalDate.of(2024, 6, 3)
+        );
+        reservationDateRepository.saveAll(List.of(date1, date2, date3, date4));
+
+        // when
+        StayReservedDatesResponse result = stayService.getReservedDates(savedStay.getStayId());
+
+        // then
+        assertThat(result.reservedDates())
+                .containsExactly(
+                        LocalDate.of(2024, 5, 30),
+                        LocalDate.of(2024, 5, 31),
+                        LocalDate.of(2024, 6, 2),
+                        LocalDate.of(2024, 6, 3)
+                );
+    }
+
+    private Member createMember(String email) {
+        return new Member("이름1", email, "010-1111-1111", "password");
     }
 
     private Stay createStay(Long memberId) {

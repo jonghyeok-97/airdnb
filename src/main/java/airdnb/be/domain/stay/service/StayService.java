@@ -1,6 +1,8 @@
 package airdnb.be.domain.stay.service;
 
 import airdnb.be.domain.member.MemberRepository;
+import airdnb.be.domain.reservation.ReservationDateRepository;
+import airdnb.be.domain.reservation.entity.ReservationDate;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
@@ -8,6 +10,7 @@ import airdnb.be.domain.stay.service.response.StayReservedDatesResponse;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ public class StayService {
 
     private final StayRepository stayRepository;
     private final MemberRepository memberRepository;
+    private final ReservationDateRepository reservationDateRepository;
 
     @Transactional
     public Long addStay(StayAddServiceRequest request) {
@@ -57,6 +61,10 @@ public class StayService {
     }
 
     public StayReservedDatesResponse getReservedDates(Long stayId) {
-        return null;
+        List<LocalDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(stayId).stream()
+                .map(ReservationDate::getReservationDate)
+                .toList();
+
+        return new StayReservedDatesResponse(reservedDates);
     }
 }
