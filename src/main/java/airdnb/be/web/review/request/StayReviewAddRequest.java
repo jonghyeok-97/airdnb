@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.Range;
 
 public record StayReviewAddRequest(
 
+        @NotNull(message = "예약 Id는 필수입니다.")
+        Long reservationId,
+
         @NotBlank(message = "리뷰 내용을 입력해 주세요")
         String content,
 
@@ -16,6 +19,6 @@ public record StayReviewAddRequest(
 ) {
 
         public StayReviewAddServiceRequest toServiceRequest() {
-                return new StayReviewAddServiceRequest(content, starRating);
+                return new StayReviewAddServiceRequest(reservationId, content, starRating);
         }
 }
