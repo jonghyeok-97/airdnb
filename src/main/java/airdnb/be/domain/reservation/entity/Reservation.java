@@ -1,7 +1,10 @@
 package airdnb.be.domain.reservation.entity;
 
+import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,6 +43,9 @@ public class Reservation {
     @Column(nullable = false)
     private BigDecimal totalFee;
 
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
+
     public Reservation(Long stayId, Long guestId, LocalDateTime checkIn, LocalDateTime checkOut,
                        int guestCount, BigDecimal totalFee) {
         this.stayId = stayId;
@@ -48,6 +54,7 @@ public class Reservation {
         this.checkOut = checkOut;
         this.guestCount = guestCount;
         this.totalFee = totalFee;
+        this.status = ReservationStatus.RESERVED; // 결제하고, 예약이 완료되었다고 가정
     }
 
     /**
