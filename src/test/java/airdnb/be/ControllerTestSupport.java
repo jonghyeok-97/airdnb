@@ -3,9 +3,11 @@ package airdnb.be;
 import airdnb.be.domain.mail.MailService;
 import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.domain.reservation.service.ReservationService;
+import airdnb.be.domain.review.ReviewService;
 import airdnb.be.domain.stay.service.StayService;
 import airdnb.be.web.member.MemberController;
 import airdnb.be.web.reservation.ReservationController;
+import airdnb.be.web.review.ReviewController;
 import airdnb.be.web.stay.StayController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = {
         MemberController.class,
         StayController.class,
-        ReservationController.class
+        ReservationController.class,
+        ReviewController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -37,4 +40,7 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected ReservationService reservationService;
+
+    @MockBean
+    protected ReviewService reviewService;
 }
