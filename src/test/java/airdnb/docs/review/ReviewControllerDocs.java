@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import airdnb.be.domain.review.ReviewService;
+import airdnb.be.domain.review.request.StayReviewAddServiceRequest;
 import airdnb.be.domain.review.response.ReviewResponse;
 import airdnb.be.web.review.ReviewController;
 import airdnb.be.web.review.request.StayReviewAddRequest;
@@ -63,7 +64,7 @@ public class ReviewControllerDocs extends RestDocsSupport {
 
         String apiUrl = "/stay/{stayId}/review";
 
-        given(reviewService.addStayReview(any()))
+        given(reviewService.addStayReview(any(), any(), any(StayReviewAddServiceRequest.class)))
                 .willReturn(response);
 
         // when then

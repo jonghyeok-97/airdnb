@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ReviewService {
 
-    public ReviewResponse addStayReview(StayReviewAddServiceRequest request) {
+    public ReviewResponse addStayReview(Long memberId, Long stayId, StayReviewAddServiceRequest request) {
+
         return null;
     }
 }
