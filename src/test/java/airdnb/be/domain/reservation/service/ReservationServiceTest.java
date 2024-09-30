@@ -142,8 +142,8 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 3);
 
         List<ReservationDate> reserved = List.of(
-                new ReservationDate(stay.getStayId(), LocalDate.of(2024, 11, 10)),
-                new ReservationDate(stay.getStayId(), LocalDate.of(2024, 11, 11)));
+                new ReservationDate(1L, stay.getStayId(), LocalDate.of(2024, 11, 10)),
+                new ReservationDate(1L, stay.getStayId(), LocalDate.of(2024, 11, 11)));
 
         reservationDateRepository.saveAll(reserved);
 
