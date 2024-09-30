@@ -22,17 +22,17 @@ class StayReviewAddRequestTest extends ControllerTestSupport {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    @DisplayName("숙소 리뷰 내용과 별점은 필수이다.")
+    @DisplayName("숙소 리뷰를 등록할 때, 예약Id, 내용, 별점은 필수이다.")
     @Test
     void validateNullContent() {
         // given
-        StayReviewAddRequest request = new StayReviewAddRequest(null, null);
+        StayReviewAddRequest request = new StayReviewAddRequest(null, null, null);
 
         // when
         Set<ConstraintViolation<StayReviewAddRequest>> violations = validator.validate(request);
 
         // then
-        assertThat(violations).hasSize(2);
+        assertThat(violations).hasSize(3);
     }
 
     @DisplayName("숙소 리뷰 내용에는 빈 값, 공백은 들어갈 수 없다.")
@@ -40,7 +40,7 @@ class StayReviewAddRequestTest extends ControllerTestSupport {
     @ValueSource(strings = {"", " "})
     void validateContent(String content) throws Exception {
         // given
-        StayReviewAddRequest request = new StayReviewAddRequest(content, 3.5d);
+        StayReviewAddRequest request = new StayReviewAddRequest(1L, content, 3.5d);
 
         // when
         Set<ConstraintViolation<StayReviewAddRequest>> violations = validator.validate(request);
@@ -65,7 +65,7 @@ class StayReviewAddRequestTest extends ControllerTestSupport {
     @ValueSource(doubles = {-0.1, 5.00001})
     void validateStarRating1(double starRating) throws Exception {
         // given
-        StayReviewAddRequest request = new StayReviewAddRequest("내용", starRating);
+        StayReviewAddRequest request = new StayReviewAddRequest(1L, "내용", starRating);
 
         // when
         Set<ConstraintViolation<StayReviewAddRequest>> violations = validator.validate(request);
@@ -90,7 +90,7 @@ class StayReviewAddRequestTest extends ControllerTestSupport {
     @ValueSource(doubles = {0.0, 0, 5.0000})
     void validateStarRating2(double starRating) throws Exception {
         // given
-        StayReviewAddRequest request = new StayReviewAddRequest("내용", starRating);
+        StayReviewAddRequest request = new StayReviewAddRequest(1L, "내용", starRating);
 
         // when
         Set<ConstraintViolation<StayReviewAddRequest>> violations = validator.validate(request);
