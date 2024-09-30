@@ -55,10 +55,7 @@ class ReservationAddRequestTest extends ControllerTestSupport {
                 LocalDate.of(2024, 4, 10),
                 0
         );
-
-        // when
-
-        // then
+        // when then
         mockMvc.perform(
                         post("/reservation")
                                 .contentType(MediaType.APPLICATION_JSON)
