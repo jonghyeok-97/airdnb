@@ -180,7 +180,7 @@ class StayServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
     }
 
-    @DisplayName("숙소ID로 숙소의 예약된 날짜를 조회한다.")
+    @DisplayName("숙소Id로 숙소의 예약된 날짜를 조회한다.")
     @Test
     void getReservedDates() {
         // given
@@ -191,22 +191,10 @@ class StayServiceTest extends IntegrationTestSupport {
         Stay stay = createStay(member1.getMemberId());
         Stay savedStay = stayRepository.save(stay);
 
-        ReservationDate date1 = new ReservationDate(
-                savedStay.getStayId(),
-                LocalDate.of(2024, 5, 30)
-        );
-        ReservationDate date2 = new ReservationDate(
-                savedStay.getStayId(),
-                LocalDate.of(2024, 5, 31)
-        );
-        ReservationDate date3 = new ReservationDate(
-                savedStay.getStayId(),
-                LocalDate.of(2024, 6, 2)
-        );
-        ReservationDate date4 = new ReservationDate(
-                savedStay.getStayId(),
-                LocalDate.of(2024, 6, 3)
-        );
+        ReservationDate date1 = createReservationDate(1L, savedStay, 5, 30);
+        ReservationDate date2 = createReservationDate(1L, savedStay, 5, 31);
+        ReservationDate date3 = createReservationDate(2L, savedStay, 6, 2);
+        ReservationDate date4 = createReservationDate(2L, savedStay, 6, 3);
         reservationDateRepository.saveAll(List.of(date1, date2, date3, date4));
 
         // when
@@ -220,6 +208,15 @@ class StayServiceTest extends IntegrationTestSupport {
                         LocalDate.of(2024, 6, 2),
                         LocalDate.of(2024, 6, 3)
                 );
+    }
+
+    private ReservationDate createReservationDate(long reservationId, Stay savedStay, int month,
+                                                         int dayOfMonth) {
+        return new ReservationDate(
+                reservationId,
+                savedStay.getStayId(),
+                LocalDate.of(2024, month, dayOfMonth)
+        );
     }
 
     private Member createMember(String email) {

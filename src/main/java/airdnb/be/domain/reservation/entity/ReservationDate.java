@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(exclude = {"reservationDateId"}, callSuper = false)
+@EqualsAndHashCode(exclude = {"reservationDateId", "reservationId"}, callSuper = false)
 @Table(uniqueConstraints = @UniqueConstraint(
         columnNames = {"stayId", "reservationDate"},
         name = "stay_id_reservation_date"
@@ -29,11 +29,15 @@ public class ReservationDate extends BaseTimeEntity {
     private Long reservationDateId;
 
     @Column(nullable = false)
+    private Long reservationId;
+
+    @Column(nullable = false)
     private Long stayId;
 
     private LocalDate reservationDate;
 
-    public ReservationDate(Long stayId, LocalDate reservationDate) {
+    public ReservationDate(Long reservationId, Long stayId, LocalDate reservationDate) {
+        this.reservationId = reservationId;
         this.stayId = stayId;
         this.reservationDate = reservationDate;
     }

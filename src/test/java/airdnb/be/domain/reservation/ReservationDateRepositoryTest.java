@@ -25,10 +25,10 @@ class ReservationDateRepositoryTest extends IntegrationTestSupport {
     @Test
     void findReservationDatesByStayId() {
         // given
-        ReservationDate reservationDate1 = new ReservationDate(1L, LocalDate.of(2024, 8, 13));
-        ReservationDate reservationDate2 = new ReservationDate(1L, LocalDate.of(2024, 8, 14));
-        ReservationDate reservationDate3 = new ReservationDate(2L, LocalDate.of(2024, 8, 13));
-        ReservationDate reservationDate4 = new ReservationDate(3L, LocalDate.of(2024, 8, 15));
+        ReservationDate reservationDate1 = new ReservationDate(1L, 1L, LocalDate.of(2024, 8, 13));
+        ReservationDate reservationDate2 = new ReservationDate(1L, 1L, LocalDate.of(2024, 8, 14));
+        ReservationDate reservationDate3 = new ReservationDate(2L, 2L, LocalDate.of(2024, 8, 13));
+        ReservationDate reservationDate4 = new ReservationDate(2L, 2L, LocalDate.of(2024, 8, 15));
 
         reservationDateRepository.saveAll(
                 List.of(reservationDate1, reservationDate2, reservationDate3, reservationDate4));

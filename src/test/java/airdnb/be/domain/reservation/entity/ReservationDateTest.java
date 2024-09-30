@@ -12,8 +12,8 @@ class ReservationDateTest {
     @Test
     void equalsAndHashCodeByStayIdAndDate() {
         // given
-        ReservationDate reservationDate1 = new ReservationDate(1L, LocalDate.of(2024, 4, 5));
-        ReservationDate reservationDate2 = new ReservationDate(1L, LocalDate.of(2024, 4, 5));
+        ReservationDate reservationDate1 = new ReservationDate(1L, 2L, LocalDate.of(2024, 4, 5));
+        ReservationDate reservationDate2 = new ReservationDate(3L, 2L, LocalDate.of(2024, 4, 5));
 
         // when then
         assertThat(reservationDate1).isEqualTo(reservationDate2);
@@ -23,8 +23,8 @@ class ReservationDateTest {
     @Test
     void equalsAndHashCodeByStayIdAndDate2() {
         // given
-        ReservationDate reservationDate1 = new ReservationDate(1L, LocalDate.of(2024, 4, 5));
-        ReservationDate reservationDate2 = new ReservationDate(1L, LocalDate.of(2024, 4, 6));
+        ReservationDate reservationDate1 = new ReservationDate(1L, 1L, LocalDate.of(2024, 4, 5));
+        ReservationDate reservationDate2 = new ReservationDate(1L, 1L, LocalDate.of(2024, 4, 6));
 
         // when then
         assertThat(reservationDate1).isNotEqualTo(reservationDate2);
@@ -34,8 +34,8 @@ class ReservationDateTest {
     @Test
     void equalsAndHashCodeByStayIdAndDate3() {
         // given
-        ReservationDate reservationDate1 = new ReservationDate(1L, LocalDate.of(2024, 4, 5));
-        ReservationDate reservationDate2 = new ReservationDate(2L, LocalDate.of(2024, 4, 5));
+        ReservationDate reservationDate1 = new ReservationDate(1L, 1L, LocalDate.of(2024, 4, 5));
+        ReservationDate reservationDate2 = new ReservationDate(1L, 2L, LocalDate.of(2024, 4, 5));
 
         // when then
         assertThat(reservationDate1).isNotEqualTo(reservationDate2);

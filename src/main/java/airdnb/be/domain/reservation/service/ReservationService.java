@@ -41,7 +41,8 @@ public class ReservationService {
         );
 
         // 예약될 날짜들 생성
-        List<ReservationDate> reservationDates = reservation.createReservationDate();
+        Reservation saved = reservationRepository.save(reservation);
+        List<ReservationDate> reservationDates = saved.createReservationDate();
 
         // 예약하려는 날짜에 예약이 되어 있다면 예외 발생
         if (isReserved(reservationDates, stay)) {
@@ -50,14 +51,12 @@ public class ReservationService {
 
         // 예약하려는 날짜에 예약이 되어있지 않다면 예약 성공
         reservationDateRepository.saveAll(reservationDates);
-        Reservation saved = reservationRepository.save(reservation);
 
         return ReservationResponse.from(saved);
     }
 
     private boolean isReserved(List<ReservationDate> reservationDates, Stay stay) {
-        List<ReservationDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(
-                stay.getStayId());
+        List<ReservationDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(stay.getStayId());
 
         return reservationDates.stream()
                 .anyMatch(reservedDates::contains);
