@@ -65,4 +65,8 @@ public class Reservation {
                 .map(checkInDate -> new ReservationDate(stayId, checkInDate))
                 .collect(Collectors.toList());
     }
+
+    public boolean isCreatedBy(Long memberId, Long stayId) {
+        return this.guestId.equals(memberId) && this.stayId.equals(stayId);
+    }
 }

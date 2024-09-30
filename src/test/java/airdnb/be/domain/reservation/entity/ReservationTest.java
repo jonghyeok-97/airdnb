@@ -10,6 +10,8 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ReservationTest {
 
@@ -58,5 +60,26 @@ class ReservationTest {
 
         // then
         assertThat(status).isEqualTo(ReservationStatus.RESERVED);
+    }
+
+    @DisplayName("특정 회원과 특정 숙소에 대한 예약인지 확인할 수 있다.")
+    @ParameterizedTest
+    @CsvSource(value = {"1, 1, true", "1, 2, false"})
+    void isCreatedByMemberAndStay(Long memberId, Long stayId, boolean expected) {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 5, 2, 15, 0),
+                LocalDateTime.of(2024, 5, 10, 11, 1),
+                3,
+                new BigDecimal(30000)
+        );
+
+        // when
+        boolean result = reservation.isCreatedBy(memberId, stayId);
+
+        // then
+        assertThat(result).isEqualTo(expected);
     }
 }
