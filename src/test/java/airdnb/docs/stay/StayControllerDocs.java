@@ -1,6 +1,7 @@
 package airdnb.docs.stay;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static airdnb.docs.common.DateTimeFormat.getDateFormat;
 import static airdnb.docs.common.DateTimeFormat.getTimeFormat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -20,18 +21,21 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import airdnb.be.domain.stay.service.StayService;
+import airdnb.be.domain.stay.service.response.StayReservedDatesResponse;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.web.stay.StayController;
 import airdnb.be.web.stay.request.StayAddRequest;
 import airdnb.docs.RestDocsSupport;
 import jakarta.servlet.http.Cookie;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +44,7 @@ import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class StayControllerDocs extends RestDocsSupport {
 
@@ -167,8 +172,10 @@ public class StayControllerDocs extends RestDocsSupport {
                                 fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("숙소 제목"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("숙소 설명"),
-                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크인 시간"),
-                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크아웃 시간"),
+                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).attributes(getTimeFormat())
+                                        .description("숙소 체크인 시간"),
+                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).attributes(getTimeFormat())
+                                        .description("숙소 체크아웃 시간"),
                                 fieldWithPath("feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
                                 fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
@@ -221,7 +228,20 @@ public class StayControllerDocs extends RestDocsSupport {
                 "changeURL5",
                 "changeURL6");
 
-        StayResponse stayResponse = createStayResponse(stayId, imageUrls);
+        StayResponse stayResponse = new StayResponse(
+                stayId,
+                1L,
+                "제목",
+                "설명",
+                LocalTime.of(15, 0),
+                LocalTime.of(11, 0),
+                new BigDecimal(50000),
+                3,
+                108.4,
+                45,
+                imageUrls
+        );
+
         given(stayService.changeStayImage(anyLong(), any()))
                 .willReturn(stayResponse);
 
@@ -254,8 +274,10 @@ public class StayControllerDocs extends RestDocsSupport {
                                 fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("숙소 주인ID"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("숙소 제목"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("숙소 설명"),
-                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크인 시간"),
-                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).attributes(getTimeFormat()).description("숙소 체크아웃 시간"),
+                                fieldWithPath("checkInTime").type(JsonFieldType.STRING).attributes(getTimeFormat())
+                                        .description("숙소 체크인 시간"),
+                                fieldWithPath("checkOutTime").type(JsonFieldType.STRING).attributes(getTimeFormat())
+                                        .description("숙소 체크아웃 시간"),
                                 fieldWithPath("feePerNight").type(JsonFieldType.NUMBER).description("1박당 요금"),
                                 fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙박 인원 수"),
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("숙소 경도"),
@@ -265,19 +287,44 @@ public class StayControllerDocs extends RestDocsSupport {
                 ));
     }
 
-    private StayResponse createStayResponse(Long stayId, List<String> imageUrls) {
-        return new StayResponse(
-                stayId,
-                1L,
-                "제목",
-                "설명",
-                LocalTime.of(15, 0),
-                LocalTime.of(11, 0),
-                new BigDecimal(50000),
-                3,
-                108.4,
-                45,
-                imageUrls
-        );
+    @DisplayName("숙소의 예약된 날짜 조회 API")
+    @Test
+    void getReservedDates() throws Exception {
+        //given
+        Long stayId = 3L;
+        StayReservedDatesResponse response = new StayReservedDatesResponse(List.of(
+                LocalDate.of(2024, 5, 10),
+                LocalDate.of(2024, 5, 11),
+                LocalDate.of(2024, 5, 12),
+                LocalDate.of(2024, 5, 13)));
+
+        String apiUrl = "/stay/{stayId}/reservedDates";
+
+        given(stayService.getReservedDates(anyLong()))
+                .willReturn(response);
+
+        // when then
+        mockMvc.perform(
+                        get(apiUrl, stayId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("0200"))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data").exists())
+                .andDo(document("/stay/stay-reservedDates",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                attributes(key("url").value(apiUrl)),
+                                parameterWithName("stayId").description("조회할 숙소 Id")
+                        ),
+                        responseFields(
+                                beneathPath("data"),
+                                fieldWithPath("reservedDates").type(JsonFieldType.ARRAY).attributes(getDateFormat())
+                                        .description("숙소의 예약된 날짜")
+                        )
+                ));
     }
 }

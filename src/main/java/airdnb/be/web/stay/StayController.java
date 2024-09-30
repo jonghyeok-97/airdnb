@@ -2,6 +2,7 @@ package airdnb.be.web.stay;
 
 import airdnb.be.annotation.argumentResolver.Login;
 import airdnb.be.domain.stay.service.StayService;
+import airdnb.be.domain.stay.service.response.StayReservedDatesResponse;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.web.ApiResponse;
 import airdnb.be.web.stay.request.StayAddRequest;
@@ -53,5 +54,10 @@ public class StayController {
             @Login Long memberId, @PathVariable Long stayId, @RequestBody List<String> imageUrls) {
         StayResponse stayResponse = stayService.changeStayImage(stayId, imageUrls);
         return ApiResponse.ok(stayResponse);
+    }
+
+    @GetMapping("/{stayId}/reservedDates")
+    public ApiResponse<StayReservedDatesResponse> getReservedDates(@PathVariable Long stayId) {
+        return ApiResponse.ok(stayService.getReservedDates(stayId));
     }
 }

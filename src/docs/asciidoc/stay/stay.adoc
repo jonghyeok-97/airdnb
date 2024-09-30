@@ -36,3 +36,12 @@ include::{snippets}/stay/stay-image-update/path-parameters.adoc[]
 include::{snippets}/stay/stay-image-update/http-response.adoc[]
 include::{snippets}/stay/stay-image-update/response-fields-beneath-data.adoc[]
 
+[[stay-reservedDates]]
+=== 5. 숙소 예약된 날짜 조회
+==== ✉️ HTTP Request
+include::{snippets}/stay/stay-reservedDates/http-request.adoc[]
+include::{snippets}/stay/stay-reservedDates/path-parameters.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/stay/stay-reservedDates/http-response.adoc[]
+include::{snippets}/stay/stay-reservedDates/response-fields-beneath-data.adoc[]
