@@ -1,0 +1,11 @@
+[[review-add]]
+=== 1. 숙소 리뷰 생성
+==== ✉️ HTTP Request
+include::{snippets}/review/review-add/http-request.adoc[]
+include::{snippets}/review/review-add/request-fields.adoc[]
+include::{snippets}/review/review-add/path-parameters.adoc[]
+include::{snippets}/review/review-add/request-cookies.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/review/review-add/http-response.adoc[]
+include::{snippets}/review/review-add/response-fields-beneath-data.adoc[]
