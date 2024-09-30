@@ -43,12 +43,12 @@ public class ReservationService {
         // 예약될 날짜들 생성
         List<ReservationDate> reservationDates = reservation.createReservationDate();
 
-        // 예약하려는 날짜에 예약이 되어 있다면
+        // 예약하려는 날짜에 예약이 되어 있다면 예외 발생
         if (isReserved(reservationDates, stay)) {
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_RESERVATION);
         }
 
-        // 예약하려는 날짜에 예약이 되어있지 않다면
+        // 예약하려는 날짜에 예약이 되어있지 않다면 예약 성공
         reservationDateRepository.saveAll(reservationDates);
         Reservation saved = reservationRepository.save(reservation);
 
