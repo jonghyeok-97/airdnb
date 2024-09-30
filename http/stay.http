@@ -29,3 +29,8 @@ Content-Type: application/json
     "changeURL5",
     "changeURL6"
 ]
+
+### 숙소의 예약된 날짜 조회 API
+GET localhost:8080/stay/1/reservedDates
+Content-Type: application/json
+

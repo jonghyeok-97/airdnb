@@ -4,6 +4,7 @@ import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.stay.StayRepository;
 import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.domain.stay.service.request.StayAddServiceRequest;
+import airdnb.be.domain.stay.service.response.StayReservedDatesResponse;
 import airdnb.be.domain.stay.service.response.StayResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
@@ -53,5 +54,9 @@ public class StayService {
 
         stay.changeStayImages(images);
         return StayResponse.from(stay);
+    }
+
+    public StayReservedDatesResponse getReservedDates(Long stayId) {
+        return null;
     }
 }
