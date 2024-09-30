@@ -25,3 +25,7 @@ include::member/member.adoc[]
 [[Reservation-API]]
 == ⭐ Reservation API
 include::reservation/reservation.adoc[]
+
+[[Review-API]]
+== ⭐ Review API
+include::review/review.adoc[]
