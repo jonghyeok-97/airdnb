@@ -305,7 +305,7 @@ public class StayControllerDocs extends RestDocsSupport {
 
         // when then
         mockMvc.perform(
-                        get(apiUrl, stayId)
+                        RestDocumentationRequestBuilders.get(apiUrl, stayId)
                                 .contentType(MediaType.APPLICATION_JSON)
                 ).andDo(print())
                 .andExpect(status().isOk())

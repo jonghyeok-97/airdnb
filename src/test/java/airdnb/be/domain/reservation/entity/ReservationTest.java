@@ -1,7 +1,8 @@
 package airdnb.be.domain.reservation.entity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,5 +38,25 @@ class ReservationTest {
                         LocalDate.of(2024, 9, 3),
                         LocalDate.of(2024, 9, 4)
                 ));
+    }
+
+    @DisplayName("예약을 생성하면 초기 상태는 '예약됨' 이다.")
+    @Test
+    void initStatusReservedWhenReservationDateCreate() {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 9, 1, 15, 0),
+                LocalDateTime.of(2024, 9, 5, 11, 0),
+                3,
+                new BigDecimal(30000)
+        );
+
+        // when
+        ReservationStatus status = reservation.getStatus();
+
+        // then
+        assertThat(status).isEqualTo(ReservationStatus.RESERVED);
     }
 }
