@@ -1,0 +1,8 @@
+###
+POST localhost:8080/stay/1/review
+Content-Type: application/json
+
+{
+  "content": "내용",
+  "starRating": 4.0
+}
