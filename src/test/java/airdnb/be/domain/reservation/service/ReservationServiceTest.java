@@ -95,7 +95,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
     }
 
-    @DisplayName("숙소를 예약하면 1건의 예약과 예약 기간의 수 만큼 생성된다")
+    @DisplayName("숙소를 예약하면 1건의 예약과 예약 날짜가 기간 만큼 생성된다")
     @Test
     void reserveStay() {
         // given
@@ -127,12 +127,18 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .containsExactly(stay.getStayId(), member.getMemberId(), checkIn, checkOut, totalFee);
     }
 
-    @DisplayName("같은 숙소에 예약 날짜가 겹치면 예외가 발생한다")
+    @DisplayName("같은 숙소에 예약 날짜가 겹치면 예약할 수 없다.")
     @Test
     void failWithDuplicatedDates() {
         // given
         Member member = saveMember();
         Stay stay = saveStay(member.getMemberId());
+
+        List<ReservationDate> dates = ReservationDate.of(
+                stay.getStayId(),
+                LocalDate.of(2024, 11, 10),
+                LocalDate.of(2024, 11, 11));
+        reservationDateRepository.saveAll(dates);
 
         ReservationAddServiceRequest request = new ReservationAddServiceRequest(
                 stay.getStayId(),
@@ -140,13 +146,6 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 LocalDate.of(2024, 11, 9),
                 LocalDate.of(2024, 11, 11),
                 3);
-
-        List<ReservationDate> reserved = List.of(
-                new ReservationDate(1L, stay.getStayId(), LocalDate.of(2024, 11, 10)),
-                new ReservationDate(1L, stay.getStayId(), LocalDate.of(2024, 11, 11)));
-
-        reservationDateRepository.saveAll(reserved);
-
         // when then
         assertThatThrownBy(() -> reservationService.reserve(request))
                 .isInstanceOf(BusinessException.class)
@@ -154,7 +153,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.ALREADY_EXISTS_RESERVATION);
     }
 
-    @DisplayName("한 숙소에 겹친 날짜를 동시에 예약할 수 없다.")
+    @DisplayName("예약 날짜가 겹친 채로 같은 숙소를 동시에 예약할 수 없다.")
     @Test
     void reserveConcurrency() throws InterruptedException {
         // given
