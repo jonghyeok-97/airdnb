@@ -191,11 +191,16 @@ class StayServiceTest extends IntegrationTestSupport {
         Stay stay = createStay(member1.getMemberId());
         Stay savedStay = stayRepository.save(stay);
 
-        ReservationDate date1 = createReservationDate(1L, savedStay, 5, 30);
-        ReservationDate date2 = createReservationDate(1L, savedStay, 5, 31);
-        ReservationDate date3 = createReservationDate(2L, savedStay, 6, 2);
-        ReservationDate date4 = createReservationDate(2L, savedStay, 6, 3);
-        reservationDateRepository.saveAll(List.of(date1, date2, date3, date4));
+        List<ReservationDate> dates1 = createReservationDate(
+                savedStay,
+                LocalDate.of(2024, 5, 30),
+                LocalDate.of(2024, 5, 31));
+        List<ReservationDate> dates2 = createReservationDate(
+                savedStay,
+                LocalDate.of(2024, 6, 2),
+                LocalDate.of(2024, 6, 3));
+        reservationDateRepository.saveAll(dates1);
+        reservationDateRepository.saveAll(dates2);
 
         // when
         StayReservedDatesResponse result = stayService.getReservedDates(savedStay.getStayId());
@@ -204,19 +209,12 @@ class StayServiceTest extends IntegrationTestSupport {
         assertThat(result.reservedDates())
                 .containsExactly(
                         LocalDate.of(2024, 5, 30),
-                        LocalDate.of(2024, 5, 31),
-                        LocalDate.of(2024, 6, 2),
-                        LocalDate.of(2024, 6, 3)
+                        LocalDate.of(2024, 6, 2)
                 );
     }
 
-    private ReservationDate createReservationDate(long reservationId, Stay savedStay, int month,
-                                                         int dayOfMonth) {
-        return new ReservationDate(
-                reservationId,
-                savedStay.getStayId(),
-                LocalDate.of(2024, month, dayOfMonth)
-        );
+    private List<ReservationDate> createReservationDate(Stay savedStay, LocalDate checkInDate, LocalDate checkOutDate) {
+        return ReservationDate.of(savedStay.getStayId(), checkInDate, checkOutDate);
     }
 
     private Member createMember(String email) {

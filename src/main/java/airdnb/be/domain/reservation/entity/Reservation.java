@@ -1,5 +1,6 @@
 package airdnb.be.domain.reservation.entity;
 
+import airdnb.be.domain.base.entity.BaseTimeEntity;
 import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class Reservation {
+public class Reservation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,15 +54,6 @@ public class Reservation {
         this.guestCount = guestCount;
         this.totalFee = totalFee;
         this.status = ReservationStatus.RESERVED; // 결제하고, 예약이 완료되었다고 가정
-    }
-
-    /**
-     * @return 9/1 ~ 9/5 일 때, 예약될 날짜로 9/1 ~ 9/4 을 생성한다.
-     */
-    public List<ReservationDate> createReservationDate() {
-        return checkIn.toLocalDate().datesUntil(checkOut.toLocalDate())
-                .map(checkInDate -> new ReservationDate(stayId, checkInDate))
-                .collect(Collectors.toList());
     }
 
     public boolean isCreatedBy(Long memberId, Long stayId) {
