@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(exclude = {"reservationDateId", "reservationId"}, callSuper = false)
+@EqualsAndHashCode(exclude = {"reservationDateId"}, callSuper = false)
 @Table(uniqueConstraints = @UniqueConstraint(
         columnNames = {"stayId", "reservationDate"},
         name = "stay_id_reservation_date"
@@ -29,16 +31,23 @@ public class ReservationDate extends BaseTimeEntity {
     private Long reservationDateId;
 
     @Column(nullable = false)
-    private Long reservationId;
-
-    @Column(nullable = false)
     private Long stayId;
 
     private LocalDate reservationDate;
 
-    public ReservationDate(Long reservationId, Long stayId, LocalDate reservationDate) {
-        this.reservationId = reservationId;
+    private ReservationDate(Long stayId, LocalDate reservationDate) {
         this.stayId = stayId;
         this.reservationDate = reservationDate;
+    }
+
+    /**
+     * @param checkInDate 9/1
+     * @param checkOutDate 9/5
+     * @return 9/1 ~ 9/4 을 반환
+     */
+    public static List<ReservationDate> of(Long stayId, LocalDate checkInDate, LocalDate checkOutDate) {
+        return checkInDate.datesUntil(checkOutDate)
+                .map(date -> new ReservationDate(stayId, date))
+                .collect(Collectors.toList());
     }
 }
