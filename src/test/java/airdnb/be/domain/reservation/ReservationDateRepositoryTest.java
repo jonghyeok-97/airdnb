@@ -25,22 +25,31 @@ class ReservationDateRepositoryTest extends IntegrationTestSupport {
     @Test
     void findReservationDatesByStayId() {
         // given
-        ReservationDate reservationDate1 = new ReservationDate(1L, 1L, LocalDate.of(2024, 8, 13));
-        ReservationDate reservationDate2 = new ReservationDate(1L, 1L, LocalDate.of(2024, 8, 14));
-        ReservationDate reservationDate3 = new ReservationDate(2L, 2L, LocalDate.of(2024, 8, 13));
-        ReservationDate reservationDate4 = new ReservationDate(2L, 2L, LocalDate.of(2024, 8, 15));
-
-        reservationDateRepository.saveAll(
-                List.of(reservationDate1, reservationDate2, reservationDate3, reservationDate4));
+        List<ReservationDate> dates1 = ReservationDate.of(
+                1L,
+                LocalDate.of(2024, 4, 5),
+                LocalDate.of(2024, 4, 7));
+        List<ReservationDate> dates2 = ReservationDate.of(
+                1L,
+                LocalDate.of(2024, 7, 29),
+                LocalDate.of(2024, 7, 30));
+        List<ReservationDate> dates3 = ReservationDate.of(
+                2L,
+                LocalDate.of(2024, 4, 8),
+                LocalDate.of(2024, 4, 9));
+        reservationDateRepository.saveAll(dates1);
+        reservationDateRepository.saveAll(dates2);
+        reservationDateRepository.saveAll(dates3);
 
         // when
         List<ReservationDate> results = reservationDateRepository.findReservationDatesByStayId(1L);
 
         // then
-        assertThat(results).hasSize(2)
+        assertThat(results).hasSize(3)
                 .extracting("reservationDate")
-                .containsExactlyInAnyOrderElementsOf(List.of(
-                        LocalDate.of(2024, 8, 13),
-                        LocalDate.of(2024, 8, 14)));
+                .containsExactly(
+                        LocalDate.of(2024, 4, 5),
+                        LocalDate.of(2024, 4, 6),
+                        LocalDate.of(2024, 7, 29));
     }
 }
