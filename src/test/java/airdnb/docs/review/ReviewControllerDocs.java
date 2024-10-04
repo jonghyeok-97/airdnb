@@ -51,6 +51,7 @@ public class ReviewControllerDocs extends RestDocsSupport {
         Long stayId = 1L;
 
         StayReviewAddRequest request = new StayReviewAddRequest(
+                1L,
                 "내용",
                 3.5d
         );
@@ -64,7 +65,7 @@ public class ReviewControllerDocs extends RestDocsSupport {
 
         String apiUrl = "/stay/{stayId}/review";
 
-        given(reviewService.addStayReview(any(), any(), any(StayReviewAddServiceRequest.class)))
+        given(reviewService.addStayReview(any(), any(), any(), any(StayReviewAddServiceRequest.class)))
                 .willReturn(response);
 
         // when then
@@ -91,6 +92,7 @@ public class ReviewControllerDocs extends RestDocsSupport {
                                 cookieWithName("JSESSIONID").description("로그인 세션 ID")
                         ),
                         requestFields(
+                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 Id"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                 fieldWithPath("starRating").type(JsonFieldType.NUMBER).description("리뷰 별점")
                         ),
