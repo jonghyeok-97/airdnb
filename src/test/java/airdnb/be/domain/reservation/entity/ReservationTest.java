@@ -52,4 +52,44 @@ class ReservationTest {
         // then
         assertThat(result).isEqualTo(expected);
     }
+
+    @DisplayName("예약이 주어진 시간보다 지났으면 끝난다")
+    @Test
+    void isOver() {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 5, 2, 15, 0),
+                LocalDateTime.of(2024, 5, 10, 11, 1),
+                3,
+                new BigDecimal(30000)
+        );
+
+        // when
+        boolean result = reservation.isEnd(LocalDateTime.of(2024, 5, 10, 12, 0));
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("예약이 주어진 시간보다 이전이면 끝나지 않는다.")
+    @Test
+    void isNotOver() {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 5, 2, 15, 0),
+                LocalDateTime.of(2024, 5, 10, 11, 1),
+                3,
+                new BigDecimal(30000)
+        );
+
+        // when
+        boolean result = reservation.isEnd(LocalDateTime.of(2024, 5, 8, 12, 0));
+
+        // then
+        assertThat(result).isFalse();
+    }
 }
