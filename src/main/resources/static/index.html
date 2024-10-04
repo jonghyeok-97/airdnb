@@ -459,6 +459,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#get-stay-one">2. 숙소 단건 조회</a></li>
 <li><a href="#stay-delete">3. 숙소 삭제</a></li>
 <li><a href="#stay-image-update">4. 숙소 이미지 업데이트</a></li>
+<li><a href="#stay-reservedDates">5. 숙소 예약된 날짜 조회</a></li>
 </ul>
 </li>
 <li><a href="#Member-API">⭐ Member API</a>
@@ -473,6 +474,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#Reservation-API">⭐ Reservation API</a>
 <ul class="sectlevel2">
 <li><a href="#reservation-create">1. 신규 숙소 예약</a></li>
+</ul>
+</li>
+<li><a href="#Review-API">⭐ Review API</a>
+<ul class="sectlevel2">
+<li><a href="#review-add">1. 숙소 리뷰 생성</a></li>
 </ul>
 </li>
 </ul>
@@ -553,7 +559,7 @@ Content-Length: 408
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1029
+Content-Length: 1283
 
 [ {
   "code" : "1000",
@@ -589,6 +595,16 @@ Content-Length: 1029
   "code" : "1300",
   "status" : "BAD_REQUEST",
   "message" : "이미 존재하는 예약입니다.",
+  "data" : null
+}, {
+  "code" : "1301",
+  "status" : "BAD_REQUEST",
+  "message" : "존재하지 않는 예약입니다.",
+  "data" : null
+}, {
+  "code" : "1302",
+  "status" : "BAD_REQUEST",
+  "message" : "예약이 끝나지 않았습니다.",
   "data" : null
 }, {
   "code" : "2000",
@@ -1164,6 +1180,89 @@ Content-Length: 452
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="stay-reservedDates"><a class="link" href="#stay-reservedDates">5. 숙소 예약된 날짜 조회</a></h3>
+<div class="sect3">
+<h4 id="_️_http_request_5"><a class="link" href="#_️_http_request_5">✉️ HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /stay/3/reservedDates HTTP/1.1
+Content-Type: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_path_parameters_4"><a class="link" href="#_path_parameters_4">Path Parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">URL</th>
+<th class="tableblock halign-left valign-top">파라미터</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/stay/{stayId}/reservedDates</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stayId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">조회할 숙소 Id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_️_http_response_4"><a class="link" href="#_️_http_response_4">✉️ HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 166
+
+{
+  "code" : "0200",
+  "status" : "OK",
+  "message" : "OK",
+  "data" : {
+    "reservedDates" : [ "2024-05-10", "2024-05-11", "2024-05-12", "2024-05-13" ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_4"><a class="link" href="#_response_fields_4">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reservedDates</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yyyy-MM-dd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">숙소의 예약된 날짜</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1172,7 +1271,7 @@ Content-Length: 452
 <div class="sect2">
 <h3 id="member-exist"><a class="link" href="#member-exist">1. 회원 가입 여부</a></h3>
 <div class="sect3">
-<h4 id="_️_http_request_5"><a class="link" href="#_️_http_request_5">✉️ HTTP Request</a></h4>
+<h4 id="_️_http_request_6"><a class="link" href="#_️_http_request_6">✉️ HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /member/exist HTTP/1.1
@@ -1187,7 +1286,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_️_http_response_4"><a class="link" href="#_️_http_response_4">✉️ HTTP Response</a></h4>
+<h4 id="_️_http_response_5"><a class="link" href="#_️_http_response_5">✉️ HTTP Response</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1235,7 +1334,7 @@ Content-Length: 98
 <div class="sect2">
 <h3 id="member-email-authenticate-send"><a class="link" href="#member-email-authenticate-send">2. 회원 가입시 이메일 인증번호 보내기</a></h3>
 <div class="sect3">
-<h4 id="_️_http_request_6"><a class="link" href="#_️_http_request_6">✉️ HTTP Request</a></h4>
+<h4 id="_️_http_request_7"><a class="link" href="#_️_http_request_7">✉️ HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /member/email/authenticate HTTP/1.1
@@ -1278,7 +1377,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_️_http_response_5"><a class="link" href="#_️_http_response_5">✉️ HTTP Response</a></h4>
+<h4 id="_️_http_response_6"><a class="link" href="#_️_http_response_6">✉️ HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1293,7 +1392,7 @@ Content-Length: 56
 <div class="sect2">
 <h3 id="member-email-authenticate"><a class="link" href="#member-email-authenticate">3. 회원 가입시 이메일 인증</a></h3>
 <div class="sect3">
-<h4 id="_️_http_request_7"><a class="link" href="#_️_http_request_7">✉️ HTTP Request</a></h4>
+<h4 id="_️_http_request_8"><a class="link" href="#_️_http_request_8">✉️ HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /member/email/authenticate HTTP/1.1
@@ -1346,7 +1445,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_️_http_response_6"><a class="link" href="#_️_http_response_6">✉️ HTTP Response</a></h4>
+<h4 id="_️_http_response_7"><a class="link" href="#_️_http_response_7">✉️ HTTP Response</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1394,7 +1493,7 @@ Content-Length: 100
 <div class="sect2">
 <h3 id="member-register"><a class="link" href="#member-register">4. 회원 가입</a></h3>
 <div class="sect3">
-<h4 id="_️_http_request_8"><a class="link" href="#_️_http_request_8">✉️ HTTP Request</a></h4>
+<h4 id="_️_http_request_9"><a class="link" href="#_️_http_request_9">✉️ HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /member HTTP/1.1
@@ -1463,7 +1562,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_️_http_response_7"><a class="link" href="#_️_http_response_7">✉️ HTTP Response</a></h4>
+<h4 id="_️_http_response_8"><a class="link" href="#_️_http_response_8">✉️ HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1478,7 +1577,7 @@ Content-Length: 56
 <div class="sect2">
 <h3 id="member-login"><a class="link" href="#member-login">5. 로그인</a></h3>
 <div class="sect3">
-<h4 id="_️_http_request_9"><a class="link" href="#_️_http_request_9">✉️ HTTP Request</a></h4>
+<h4 id="_️_http_request_10"><a class="link" href="#_️_http_request_10">✉️ HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /member/login HTTP/1.1
@@ -1531,7 +1630,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_️_http_response_8"><a class="link" href="#_️_http_response_8">✉️ HTTP Response</a></h4>
+<h4 id="_️_http_response_9"><a class="link" href="#_️_http_response_9">✉️ HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1551,7 +1650,7 @@ Content-Length: 56
 <div class="sect2">
 <h3 id="reservation-create"><a class="link" href="#reservation-create">1. 신규 숙소 예약</a></h3>
 <div class="sect3">
-<h4 id="_️_http_request_10"><a class="link" href="#_️_http_request_10">✉️ HTTP Request</a></h4>
+<h4 id="_️_http_request_11"><a class="link" href="#_️_http_request_11">✉️ HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /reservation HTTP/1.1
@@ -1621,7 +1720,7 @@ Cookie: JSESSIONID=RBDHAOVN13421D
 </table>
 </div>
 <div class="sect3">
-<h4 id="_️_http_response_9"><a class="link" href="#_️_http_response_9">✉️ HTTP Response</a></h4>
+<h4 id="_️_http_response_10"><a class="link" href="#_️_http_response_10">✉️ HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1645,7 +1744,7 @@ Content-Length: 248
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_4"><a class="link" href="#_response_fields_4">Response Fields</a></h4>
+<h4 id="_response_fields_5"><a class="link" href="#_response_fields_5">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -1704,11 +1803,190 @@ Content-Length: 248
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="Review-API"><a class="link" href="#Review-API">⭐ Review API</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="review-add"><a class="link" href="#review-add">1. 숙소 리뷰 생성</a></h3>
+<div class="sect3">
+<h4 id="_️_http_request_12"><a class="link" href="#_️_http_request_12">✉️ HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /stay/1/review HTTP/1.1
+Content-Type: application/json
+Content-Length: 75
+Host: localhost:8080
+Cookie: JSESSIONID=DAJEBVB31FBD
+
+{
+  "reservationId" : 1,
+  "content" : "내용",
+  "starRating" : 3.5
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_request_fields_7"><a class="link" href="#_request_fields_7">Request Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">선택</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reservationId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예약 Id</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>starRating</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 별점</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="_path_parameters_5"><a class="link" href="#_path_parameters_5">Path Parameters</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">URL</th>
+<th class="tableblock halign-left valign-top">파라미터</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/stay/{stayId}/review</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stayId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 쓸 숙소 Id</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>JSESSIONID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 세션 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_️_http_response_11"><a class="link" href="#_️_http_response_11">✉️ HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 177
+
+{
+  "code" : "0200",
+  "status" : "OK",
+  "message" : "OK",
+  "data" : {
+    "reviewId" : 1,
+    "writerId" : 3,
+    "content" : "내용",
+    "starRating" : 3.5
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_6"><a class="link" href="#_response_fields_6">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">양식</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>writerId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성자 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>starRating</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 별점</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-09-25 12:37:50 +0900
+Last updated 2024-09-30 16:03:01 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
