@@ -59,4 +59,8 @@ public class Reservation extends BaseTimeEntity {
     public boolean isCreatedBy(Long memberId, Long stayId) {
         return this.guestId.equals(memberId) && this.stayId.equals(stayId);
     }
+
+    public boolean isEnd(LocalDateTime now) {
+        return status == ReservationStatus.RESERVED && now.isAfter(checkOut);
+    }
 }
