@@ -55,6 +55,10 @@ dependencies {
 	// REST docs
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	// monitoring
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' //actuator 추가
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 ext {
