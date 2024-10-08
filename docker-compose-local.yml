@@ -1,0 +1,7 @@
+services:
+  airdnb-local-prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
