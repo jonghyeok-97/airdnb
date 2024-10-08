@@ -16,3 +16,16 @@ spring:
   sql:
     init:
       mode: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 9292
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
