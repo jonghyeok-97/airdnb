@@ -6,6 +6,7 @@ import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.reservation.entity.ReservationDate;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,5 +52,25 @@ class ReservationDateRepositoryTest extends IntegrationTestSupport {
                         LocalDate.of(2024, 4, 5),
                         LocalDate.of(2024, 4, 6),
                         LocalDate.of(2024, 7, 29));
+    }
+
+    @DisplayName("예약날짜만큼 예약날짜ID가 생성됐는지 확인한다.")
+    @Test
+    void find() {
+        // given
+        List<ReservationDate> dates = ReservationDate.of(3L,
+                LocalDate.of(2024, 5, 18),
+                LocalDate.of(2024, 5, 22));
+        reservationDateRepository.saveAll(dates);
+
+        // when
+        List<ReservationDate> all = reservationDateRepository.findAll();
+
+        List<Long> allIds = all.stream()
+                .map(ReservationDate::getReservationDateId)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(allIds).hasSize(4);
     }
 }
