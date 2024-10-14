@@ -123,8 +123,8 @@ class ReservationServiceTest extends IntegrationTestSupport {
         assertThat(reservationRepository.findAll()).hasSize(1);
         assertThat(response.reservationId()).isNotNull();
         assertThat(response)
-                .extracting("stayId", "guestId", "checkIn", "checkOut", "totalFee")
-                .containsExactly(stay.getStayId(), member.getMemberId(), checkIn, checkOut, totalFee);
+                .extracting("stayId", "guestId", "checkIn", "checkOut", "totalFee", "guestCount")
+                .containsExactly(stay.getStayId(), member.getMemberId(), checkIn, checkOut, totalFee, 3);
     }
 
     @DisplayName("같은 숙소에 예약 날짜가 겹치면 예약할 수 없다.")
