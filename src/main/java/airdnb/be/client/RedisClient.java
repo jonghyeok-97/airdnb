@@ -16,17 +16,9 @@ public class RedisClient {
         redisTemplate.opsForValue().set(key, value, expiredTime, timeUnit);
     }
 
-    public void addData(String key, String value) {
-        redisTemplate.opsForValue().set(key, value);
-    }
-
     public boolean hasData(String key, String value) {
         return Optional.ofNullable(redisTemplate.opsForValue().get(key))
                 .map(redisValue -> redisValue.equals(value))
                 .orElse(false);
-    }
-
-    public void deleteData(String key) {
-        redisTemplate.delete(key);
     }
 }
