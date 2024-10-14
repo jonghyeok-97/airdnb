@@ -49,9 +49,8 @@ spring:
   - 숙소와 숙소 이미지는 숙소가 등록될 때 같이 생성된다는 점에서 생명주기가 같다고 판단하여 연관관계 설정
 
 ### 2. JUnit5 & Mockito 등을 활용한 테스트 코드
-* Presentation ~ Persistence Layer 까지 160여개의 테스트 코드 작성, 테스트 커버리지 94% 달성하여 리팩토링 시 코드 안정성 확보
-![image](https://github.com/user-attachments/assets/11b78d0d-4c90-452c-8c3a-a4388d558013)
-![image](https://github.com/user-attachments/assets/70ab9a5b-5255-42ad-8fa3-a68829fed047)
+* Presentation ~ Persistence Layer 까지 180여개의 테스트 코드 작성, 테스트 커버리지 99% 달성하며 코드 안정성 확보
+![스크린샷 2024-10-14 180533.png](..%2F..%2F..%2FDesktop%2F%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-14%20180533.png)
 
 * DynamicTest, ParameterizedTest 를 활용한 테스트 코드의 중복을 제거, 시나리오 기반 테스트를 통해 테스트 코드  리팩토링
 ![image](https://github.com/user-attachments/assets/fa9175f5-fee4-4b28-afec-d7d1bb26b683)
