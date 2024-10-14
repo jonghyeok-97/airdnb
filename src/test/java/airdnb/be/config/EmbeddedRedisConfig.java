@@ -17,7 +17,6 @@ public class EmbeddedRedisConfig extends IntegrationTestSupport {
 
     private RedisServer redisServer;
 
-
     @PostConstruct
     public void postConstruct() throws IOException {
         int port = isRedisRunning() ? findAvaliablePort() : this.port;
