@@ -37,7 +37,8 @@ class ReservationControllerTest extends ControllerTestSupport {
                 1L,
                 LocalDateTime.of(2024, 4, 5, 15,0),
                 LocalDateTime.of(2024, 4, 30, 15,0),
-                new BigDecimal(50000)
+                new BigDecimal(50000),
+                3
         );
 
         BDDMockito.given(reservationService.reserve(any()))

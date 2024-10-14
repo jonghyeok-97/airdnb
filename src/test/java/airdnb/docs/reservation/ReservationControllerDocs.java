@@ -61,7 +61,8 @@ public class ReservationControllerDocs extends RestDocsSupport {
                 1L,
                 LocalDateTime.of(2024, 4, 5, 15,0),
                 LocalDateTime.of(2024, 4, 30, 11,0),
-                new BigDecimal(50000)
+                new BigDecimal(50000),
+                3
         );
 
         BDDMockito.given(reservationService.reserve(any()))
@@ -99,7 +100,8 @@ public class ReservationControllerDocs extends RestDocsSupport {
                                 fieldWithPath("guestId").type(JsonFieldType.NUMBER).description("예약한 사람 ID"),
                                 fieldWithPath("checkIn").type(JsonFieldType.STRING).attributes(getDateTimeFormat()).description("체크인 날짜/시간"),
                                 fieldWithPath("checkOut").type(JsonFieldType.STRING).attributes(getDateTimeFormat()).description("체크아웃 날짜/시간"),
-                                fieldWithPath("totalFee").type(JsonFieldType.NUMBER).description("예약 총 요금")
+                                fieldWithPath("totalFee").type(JsonFieldType.NUMBER).description("예약 총 요금"),
+                                fieldWithPath("guestCount").type(JsonFieldType.NUMBER).description("숙소 사용 인원 수")
                         )));
     }
 }

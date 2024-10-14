@@ -17,8 +17,9 @@ public record ReservationResponse(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
         LocalDateTime checkOut,
 
-        BigDecimal totalFee
+        BigDecimal totalFee,
 
+        int guestCount
 ) {
 
     public static ReservationResponse from(Reservation reservation) {
@@ -28,7 +29,8 @@ public record ReservationResponse(
                 reservation.getGuestId(),
                 reservation.getCheckIn(),
                 reservation.getCheckOut(),
-                reservation.getTotalFee()
+                reservation.getTotalFee(),
+                reservation.getGuestCount()
         );
     }
 }
