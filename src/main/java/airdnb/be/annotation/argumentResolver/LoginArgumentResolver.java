@@ -16,7 +16,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
-        boolean hasMemberId = Long.class.isAssignableFrom(parameter.getParameterType());
+        boolean hasMemberId = long.class.isAssignableFrom(parameter.getParameterType());
 
         return hasLoginAnnotation && hasMemberId;
     }
@@ -26,7 +26,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpSession session = request.getSession(false);
-        if (session == null) {
+        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
 
