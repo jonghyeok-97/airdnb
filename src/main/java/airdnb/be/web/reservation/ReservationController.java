@@ -19,9 +19,9 @@ public class ReservationController {
 
     @PostMapping("/reservation")
     public ApiResponse<ReservationResponse> reserve(
-            @Login Long userId,
+            @Login Long memberId,
             @RequestBody @Valid ReservationAddRequest request) {
-        ReservationResponse response = reservationService.reserve(request.toServiceRequest(userId));
+        ReservationResponse response = reservationService.reserve(request.toServiceRequest(memberId));
         return ApiResponse.ok(response);
     }
 }
