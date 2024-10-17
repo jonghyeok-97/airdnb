@@ -1,6 +1,6 @@
 spring:
   profiles:
-    default: local, email
+    default: local, email, paymentKey
 
 server:
   servlet:
