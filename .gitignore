@@ -37,6 +37,7 @@ out/
 
 ### email ###
 application-email.yml
+application-paymentKey.yml
 
 ### 외부 라이브러리 ###
 spy.log
