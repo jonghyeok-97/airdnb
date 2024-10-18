@@ -2,18 +2,16 @@ package airdnb.be.web.review;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import airdnb.be.ControllerTestSupport;
-import airdnb.be.domain.review.request.StayReviewAddServiceRequest;
 import airdnb.be.domain.review.response.ReviewResponse;
 import airdnb.be.web.review.request.StayReviewAddRequest;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.http.MediaType;
 
 class ReviewControllerTest extends ControllerTestSupport {
@@ -32,7 +30,7 @@ class ReviewControllerTest extends ControllerTestSupport {
                 4d
         );
 
-        BDDMockito.given(reviewService.addStayReview(any(Long.class), any(Long.class), any(LocalDateTime.class), any(StayReviewAddServiceRequest.class)))
+        given(reviewService.addStayReview(any(), any(), any(), any()))
                         .willReturn(response);
 
         // when then
