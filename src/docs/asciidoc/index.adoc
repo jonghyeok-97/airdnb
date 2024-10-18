@@ -29,3 +29,7 @@ include::reservation/reservation.adoc[]
 [[Review-API]]
 == ⭐ Review API
 include::review/review.adoc[]
+
+[[Payment-API]]
+== ⭐ Payment API
+include::payment/payment.adoc[]
