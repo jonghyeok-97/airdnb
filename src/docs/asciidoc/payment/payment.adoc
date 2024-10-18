@@ -4,6 +4,7 @@
 include::{snippets}/payment/payment-temporary-create/http-request.adoc[]
 include::{snippets}/payment/payment-temporary-create/query-parameters.adoc[]
 include::{snippets}/payment/payment-temporary-create/request-cookies.adoc[]
+include::{snippets}/payment/payment-temporary-create/path-parameters.adoc[]
 
 ==== ✉️ HTTP Response
 include::{snippets}/payment/payment-temporary-create/http-response.adoc[]
