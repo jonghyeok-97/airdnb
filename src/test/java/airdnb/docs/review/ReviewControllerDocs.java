@@ -15,7 +15,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.snippet.Attributes.attributes;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -85,8 +84,7 @@ public class ReviewControllerDocs extends RestDocsSupport {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
-                                attributes(key("url").value(apiUrl)),
-                                parameterWithName("stayId").description("리뷰 쓸 숙소 Id")
+                                parameterWithName("stayId").attributes(key("url").value(apiUrl)).description("리뷰 쓸 숙소 ID")
                         ),
                         requestCookies(
                                 cookieWithName("JSESSIONID").description("로그인 세션 ID")
