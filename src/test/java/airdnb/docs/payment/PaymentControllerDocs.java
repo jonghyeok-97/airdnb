@@ -5,12 +5,14 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,8 +38,11 @@ public class PaymentControllerDocs extends RestDocsSupport {
     @Test
     void payment() throws Exception {
         // given
+        Long reservationId = 1L;
+
+        // when then
         mockMvc.perform(
-                        post("/payment/reservation/request")
+                        post("/payment/reservation/{reservationId}/request", reservationId)
                                 .queryParam("paymentKey", "randomValue1")
                                 .queryParam("amount", "30000")
                                 .queryParam("orderId", "randomValue2")
@@ -53,6 +58,9 @@ public class PaymentControllerDocs extends RestDocsSupport {
                 .andDo(document("/payment/payment-temporary-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("reservationId").attributes(key("url").value("/payment/reservation/{reservationId}/request")).description("결제할 예약 ID")
+                        ),
                         queryParameters(
                                 parameterWithName("paymentKey").description("Toss Payments 에게 받은 고유 결제 키"),
                                 parameterWithName("orderId").description("Toss Payments 에게 받은 고유 주문 번호"),

@@ -5,6 +5,7 @@ import airdnb.be.domain.payment.PaymentService;
 import airdnb.be.web.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,13 @@ public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping("/payment/reservation/request")
+    @PostMapping("/payment/reservation/{reservationId}/request")
     public ApiResponse<Void> addPaymentTemporaryData(@Login Long memberId,
-                                               @RequestParam String paymentKey,
-                                               @RequestParam String amount,
-                                               @RequestParam String orderId) {
-        paymentService.addPaymentTemporaryData(memberId, paymentKey, amount, orderId);
+                                                     @PathVariable Long reservationId,
+                                                     @RequestParam String paymentKey,
+                                                     @RequestParam String amount,
+                                                     @RequestParam String orderId) {
+        paymentService.addPaymentTemporaryData(memberId, reservationId, paymentKey, amount, orderId);
         return ApiResponse.ok();
     }
 }

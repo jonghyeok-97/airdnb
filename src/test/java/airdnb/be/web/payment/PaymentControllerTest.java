@@ -16,9 +16,12 @@ class PaymentControllerTest extends ControllerTestSupport {
     @DisplayName("예약 결제 임시 데이터 추가하면 OK_200 을 응답한다.")
     @Test
     void addPaymentTemporaryData() throws Exception {
+        // given
+        Long reservationId = 1L;
+
         // when then
         mockMvc.perform(
-                        post("/payment/reservation/request")
+                        post("/payment/reservation/{reservationId}/request", reservationId)
                                 .queryParam("paymentKey", "randomValue1")
                                 .queryParam("amount", "30000")
                                 .queryParam("orderId", "randomValue2")
