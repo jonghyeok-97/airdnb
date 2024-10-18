@@ -2,10 +2,12 @@ package airdnb.be;
 
 import airdnb.be.domain.mail.MailService;
 import airdnb.be.domain.member.service.MemberService;
+import airdnb.be.domain.payment.PaymentService;
 import airdnb.be.domain.reservation.service.ReservationService;
 import airdnb.be.domain.review.ReviewService;
 import airdnb.be.domain.stay.service.StayService;
 import airdnb.be.web.member.MemberController;
+import airdnb.be.web.payment.PaymentController;
 import airdnb.be.web.reservation.ReservationController;
 import airdnb.be.web.review.ReviewController;
 import airdnb.be.web.stay.StayController;
@@ -19,7 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
         MemberController.class,
         StayController.class,
         ReservationController.class,
-        ReviewController.class
+        ReviewController.class,
+        PaymentController.class
 })
 public abstract class ControllerTestSupport {
 
@@ -43,4 +46,7 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected ReviewService reviewService;
+
+    @MockBean
+    protected PaymentService paymentService;
 }
