@@ -1,0 +1,9 @@
+[[payment-temporary-create]]
+=== 1. 예약 결제 임시 데이터 추가
+==== ✉️ HTTP Request
+include::{snippets}/payment/payment-temporary-create/http-request.adoc[]
+include::{snippets}/payment/payment-temporary-create/query-parameters.adoc[]
+include::{snippets}/payment/payment-temporary-create/request-cookies.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/payment/payment-temporary-create/http-response.adoc[]
