@@ -65,6 +65,6 @@ public class Reservation extends BaseTimeEntity {
     }
 
     public boolean hasTotalFee(String totalFee) {
-        return this.totalFee.equals(new BigDecimal(totalFee));
+        return this.totalFee.compareTo(new BigDecimal(totalFee)) == 0;
     }
 }
