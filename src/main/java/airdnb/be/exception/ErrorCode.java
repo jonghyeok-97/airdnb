@@ -25,6 +25,9 @@ public enum ErrorCode {
     NOT_EXIST_RESERVATION("1301", HttpStatus.BAD_REQUEST, "존재하지 않는 예약입니다."),
     RESERVATION_NOT_ENDED("1302", HttpStatus.BAD_REQUEST, "예약이 끝나지 않았습니다."),
 
+    // 결제
+    NOT_EQUAL_AMOUNT("1401", HttpStatus.BAD_REQUEST, "결졔하려는 예약의 요금이 다릅니다."),
+
     // 외부 API
     MAIL_SERVER_ERROR("2000", HttpStatus.INTERNAL_SERVER_ERROR, "외부 메일 서버 오류입니다.");
 
