@@ -63,4 +63,8 @@ public class Reservation extends BaseTimeEntity {
     public boolean isEnd(LocalDateTime now) {
         return status == ReservationStatus.RESERVED && now.isAfter(checkOut);
     }
+
+    public boolean hasTotalFee(String totalFee) {
+        return this.totalFee.equals(new BigDecimal(totalFee));
+    }
 }

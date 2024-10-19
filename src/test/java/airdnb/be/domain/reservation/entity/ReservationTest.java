@@ -92,4 +92,25 @@ class ReservationTest {
         // then
         assertThat(result).isFalse();
     }
+
+    @DisplayName("예약의 총 금액을 비교한다")
+    @ParameterizedTest
+    @CsvSource(value = {"30000,true", "50000,false"})
+    void hasTotalFee(String amount, boolean hasTotalFee) {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 5, 2, 15, 0),
+                LocalDateTime.of(2024, 5, 10, 11, 1),
+                3,
+                new BigDecimal(30000)
+        );
+
+        // when
+        boolean result = reservation.hasTotalFee(amount);
+
+        // then
+        assertThat(result).isEqualTo(hasTotalFee);
+    }
 }
