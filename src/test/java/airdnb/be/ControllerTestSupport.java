@@ -2,7 +2,7 @@ package airdnb.be;
 
 import airdnb.be.domain.mail.MailService;
 import airdnb.be.domain.member.service.MemberService;
-import airdnb.be.domain.payment.PaymentService;
+import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.reservation.service.ReservationService;
 import airdnb.be.domain.review.ReviewService;
 import airdnb.be.domain.stay.service.StayService;
