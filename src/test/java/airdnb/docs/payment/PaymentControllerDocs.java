@@ -1,6 +1,8 @@
 package airdnb.docs.payment;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -9,6 +11,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
@@ -17,13 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import airdnb.be.domain.payment.PaymentService;
+import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.web.payment.PaymentController;
 import airdnb.docs.RestDocsSupport;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 
 public class PaymentControllerDocs extends RestDocsSupport {
 
@@ -40,6 +45,9 @@ public class PaymentControllerDocs extends RestDocsSupport {
         // given
         Long reservationId = 1L;
 
+        given(paymentService.addPaymentTemporaryData(any(), any(), any(), any(), any()))
+                .willReturn(1L);
+
         // when then
         mockMvc.perform(
                         post("/payment/reservation/{reservationId}/request", reservationId)
@@ -54,7 +62,7 @@ public class PaymentControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.data").exists())
                 .andDo(document("/payment/payment-temporary-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -68,6 +76,12 @@ public class PaymentControllerDocs extends RestDocsSupport {
                         ),
                         requestCookies(
                                 cookieWithName("JSESSIONID").description("로그인 세션 쿠키")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("응답 코드"),
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.NUMBER).description("결제 임시 데이터 ID")
                         )));
     }
 }

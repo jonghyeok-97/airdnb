@@ -18,12 +18,13 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("/payment/reservation/{reservationId}/request")
-    public ApiResponse<Void> addPaymentTemporaryData(@Login Long memberId,
+    public ApiResponse<Long> addPaymentTemporaryData(@Login Long memberId,
                                                      @PathVariable Long reservationId,
                                                      @RequestParam String paymentKey,
                                                      @RequestParam String amount,
                                                      @RequestParam String orderId) {
-        paymentService.addPaymentTemporaryData(memberId, reservationId, paymentKey, amount, orderId);
-        return ApiResponse.ok();
+        return ApiResponse.ok(
+                paymentService.addPaymentTemporaryData(memberId, reservationId, paymentKey, amount, orderId)
+        );
     }
 }
