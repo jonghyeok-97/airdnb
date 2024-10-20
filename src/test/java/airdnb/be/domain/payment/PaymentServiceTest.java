@@ -69,11 +69,12 @@ class PaymentServiceTest extends IntegrationTestSupport {
         System.out.println("saved.hasTotalFee(\"30000\") = " + saved.hasTotalFee("30000"));
 
         // when
-        paymentService.addPaymentTemporaryData(1L, saved.getReservationId(),
+        Long temporaryId = paymentService.addPaymentTemporaryData(1L, saved.getReservationId(),
                 "paymentKey", "30000", "orderId");
 
         // then
         int savedSize = paymentTemporaryRepository.findAll().size();
         assertThat(savedSize).isEqualTo(1);
+        assertThat(temporaryId).isNotNull();
     }
 }

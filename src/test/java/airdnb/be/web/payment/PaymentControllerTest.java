@@ -1,6 +1,8 @@
 package airdnb.be.web.payment;
 
 import static airdnb.be.utils.SessionConst.LOGIN_MEMBER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,6 +21,9 @@ class PaymentControllerTest extends ControllerTestSupport {
         // given
         Long reservationId = 1L;
 
+        given(paymentService.addPaymentTemporaryData(any(), any(), any(), any(), any()))
+                .willReturn(1L);
+
         // when then
         mockMvc.perform(
                         post("/payment/reservation/{reservationId}/request", reservationId)
@@ -32,6 +37,6 @@ class PaymentControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.code").value("0200"))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").doesNotExist());
+                .andExpect(jsonPath("$.data").exists());
     }
 }
