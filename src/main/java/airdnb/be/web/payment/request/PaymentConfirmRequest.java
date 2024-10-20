@@ -1,5 +1,6 @@
 package airdnb.be.web.payment.request;
 
+import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,4 +18,14 @@ public record PaymentConfirmRequest(
         @NotBlank(message = "결제 승인할 주문ID를 입력하세요.")
         String orderId
 ) {
+        public PaymentConfirmServiceRequest toServiceRequest(Long paymentTemporaryId, Long memberId) {
+                return new PaymentConfirmServiceRequest(
+                        paymentTemporaryId,
+                        memberId,
+                        reservationId,
+                        paymentKey,
+                        amount,
+                        orderId
+                );
+        }
 }

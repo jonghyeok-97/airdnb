@@ -3,6 +3,7 @@ package airdnb.be.web.payment;
 import airdnb.be.annotation.argumentResolver.Login;
 import airdnb.be.domain.payment.service.PaymentFacade;
 import airdnb.be.web.ApiResponse;
+import airdnb.be.web.payment.request.PaymentConfirmRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
