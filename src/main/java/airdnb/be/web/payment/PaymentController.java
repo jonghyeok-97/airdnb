@@ -1,7 +1,7 @@
 package airdnb.be.web.payment;
 
 import airdnb.be.annotation.argumentResolver.Login;
-import airdnb.be.domain.payment.PaymentService;
+import airdnb.be.domain.payment.service.PaymentFacade;
 import airdnb.be.web.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PaymentController {
 
-    private final PaymentService paymentService;
+    private final PaymentFacade paymentFacade;
 
     @PostMapping("/payment/reservation/{reservationId}/request")
     public ApiResponse<Long> addPaymentTemporaryData(@Login Long memberId,
@@ -24,7 +24,7 @@ public class PaymentController {
                                                      @RequestParam String amount,
                                                      @RequestParam String orderId) {
         return ApiResponse.ok(
-                paymentService.addPaymentTemporaryData(memberId, reservationId, paymentKey, amount, orderId)
+                paymentFacade.addPaymentTemporaryData(memberId, reservationId, paymentKey, amount, orderId)
         );
     }
 }
