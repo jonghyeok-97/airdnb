@@ -26,10 +26,12 @@ public enum ErrorCode {
     RESERVATION_NOT_ENDED("1302", HttpStatus.BAD_REQUEST, "예약이 끝나지 않았습니다."),
 
     // 결제
-    NOT_EQUAL_AMOUNT("1401", HttpStatus.BAD_REQUEST, "결졔하려는 예약의 요금이 다릅니다."),
+    NOT_EQUAL_AMOUNT("1401", HttpStatus.BAD_REQUEST, "결제하려는 예약의 요금이 다릅니다."),
+    NOT_EXIST_TEMPORARY_DATA("1402", HttpStatus.BAD_REQUEST, "임시 결제 데이터가 존재하지 않습니다"),
 
     // 외부 API
-    MAIL_SERVER_ERROR("2000", HttpStatus.INTERNAL_SERVER_ERROR, "외부 메일 서버 오류입니다.");
+    MAIL_SERVER_ERROR("2000", HttpStatus.INTERNAL_SERVER_ERROR, "외부 메일 서버 오류입니다."),
+    ;
 
     private final String code;
     private final HttpStatus status;

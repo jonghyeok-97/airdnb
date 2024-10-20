@@ -1,10 +1,13 @@
 package airdnb.be.domain.payment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import airdnb.be.IntegrationTestSupport;
+import airdnb.be.domain.payment.entity.PaymentTemporary;
 import airdnb.be.domain.payment.service.PaymentService;
+import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.exception.BusinessException;
@@ -77,5 +80,47 @@ class PaymentServiceTest extends IntegrationTestSupport {
         int savedSize = paymentTemporaryRepository.findAll().size();
         assertThat(savedSize).isEqualTo(1);
         assertThat(temporaryId).isNotNull();
+    }
+
+    @DisplayName("결제 승인 전에 결제 임시 데이터와 비교한다")
+    @Test
+    void existsPaymentTemporary() {
+        // given
+        PaymentTemporary paymentTemporary = new PaymentTemporary(
+                1L, 1L, "orderId", "paymentKey", "amount");
+        PaymentTemporary saved = paymentTemporaryRepository.save(paymentTemporary);
+
+        PaymentConfirmServiceRequest request = new PaymentConfirmServiceRequest(
+                saved.getPaymentTemporaryId(),
+                1L,
+                1L,
+                "paymentKey",
+                "amount",
+                "orderId"
+        );
+
+        // when then
+        assertThatCode(() -> paymentService.validateExistingPaymentTemporary(request))
+                .doesNotThrowAnyException();
+    }
+
+    @DisplayName("결제 승인 전에 결제 임시 데이터가 없으면 예외가 발생한다")
+    @Test
+    void existsPaymentTemporaryWithFail() {
+        // given
+        PaymentConfirmServiceRequest request = new PaymentConfirmServiceRequest(
+                1L,
+                1L,
+                1L,
+                "paymentKey",
+                "amount",
+                "orderId"
+        );
+
+        // when then
+        assertThatThrownBy(() -> paymentService.validateExistingPaymentTemporary(request))
+                .isInstanceOf(BusinessException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.NOT_EXIST_TEMPORARY_DATA);
     }
 }
