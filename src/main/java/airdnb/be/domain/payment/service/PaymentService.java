@@ -1,15 +1,17 @@
 package airdnb.be.domain.payment.service;
 
 import airdnb.be.domain.payment.PaymentTemporaryRepository;
+import airdnb.be.domain.payment.TossPaymentConfirmRepository;
 import airdnb.be.domain.payment.entity.PaymentTemporary;
+import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
+import airdnb.be.domain.payment.service.response.PaymentResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,7 @@ public class PaymentService {
 
     private final PaymentTemporaryRepository paymentTemporaryRepository;
     private final ReservationRepository reservationRepository;
-    private final Environment env;
+    private final TossPaymentConfirmRepository tossPaymentConfirmRepository;
 
     @Transactional
     public Long addPaymentTemporaryData(Long memberId, Long reservationId, String paymentKey, String amount,
@@ -44,5 +46,11 @@ public class PaymentService {
         paymentTemporaryRepository.findById(request.paymentTemporaryId())
                 .filter(temp -> temp.equals(request.toPaymentTemporary()))
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_TEMPORARY_DATA));
+    }
+
+    public PaymentResponse addTossPaymentConfirm(TossPaymentConfirm tossPaymentConfirm) {
+        TossPaymentConfirm saved = tossPaymentConfirmRepository.save(tossPaymentConfirm);
+
+        return PaymentResponse.from(saved);
     }
 }
