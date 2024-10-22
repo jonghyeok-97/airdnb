@@ -21,7 +21,7 @@ public class ReservationController {
     public ApiResponse<ReservationResponse> reserve(
             @Login Long memberId,
             @RequestBody @Valid ReservationAddRequest request) {
-        ReservationResponse response = reservationService.reserve(request.toServiceRequest(memberId));
+        ReservationResponse response = reservationService.reserveV1(request.toServiceRequest(memberId));
         return ApiResponse.ok(response);
     }
 }

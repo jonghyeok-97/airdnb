@@ -3,6 +3,7 @@ package airdnb.be.domain.reservation.service;
 import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.reservation.ReservationDateRepository;
 import airdnb.be.domain.reservation.ReservationRepository;
+import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.domain.reservation.entity.ReservationDate;
 import airdnb.be.domain.reservation.service.request.ReservationAddServiceRequest;
@@ -27,7 +28,7 @@ public class ReservationService {
     private final ReservationDateRepository reservationDateRepository;
 
     @Transactional
-    public ReservationResponse reserve(ReservationAddServiceRequest request) {
+    public ReservationResponse reserveV1(ReservationAddServiceRequest request) {
         // 예약하는 사람과 숙소 있는지 확인
         checkExistMember(request.guestId());
         Stay stay = checkExistStay(request.stayId());
@@ -39,7 +40,7 @@ public class ReservationService {
                 request.checkOutDate());
 
         // 예약할 날짜에 이미 예약이 되어 있다면 예약 불가
-        if (isReserved(reservationDates, stay)) {
+        if (isReserved(reservationDates, stay.getStayId())) {
             throw new BusinessException(ErrorCode.ALREADY_EXISTS_RESERVATION);
         }
 
@@ -58,8 +59,36 @@ public class ReservationService {
         return ReservationResponse.from(saved);
     }
 
-    private boolean isReserved(List<ReservationDate> dates, Stay stay) {
-        List<ReservationDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(stay.getStayId());
+    // 결제 시 사용하는 예약 프로세스
+    @Transactional
+    public ReservationResponse reserveV2(Long reservationId, Long memberId) {
+        checkExistMember(memberId);
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_RESERVATION));
+
+        if (reservation.isCreatedBy(memberId)) {
+            throw new BusinessException(ErrorCode.NOT_CONFIRM_RESERVATION);
+        }
+
+        List<ReservationDate> dates = ReservationDate.of(
+                reservation.getStayId(),
+                reservation.getCheckIn().toLocalDate(),
+                reservation.getCheckOut().toLocalDate()
+        );
+
+        if (isReserved(dates, reservation.getStayId())) {
+            throw new BusinessException(ErrorCode.ALREADY_EXISTS_RESERVATION);
+        }
+
+        reservationDateRepository.saveAll(dates);
+        reservation.updateStatus(ReservationStatus.RESERVED);
+
+        return ReservationResponse.from(reservation);
+    }
+
+    private boolean isReserved(List<ReservationDate> dates, Long stayId) {
+        List<ReservationDate> reservedDates = reservationDateRepository.findReservationDatesByStayId(stayId);
 
         return reservedDates.stream()
                 .anyMatch(dates::contains);

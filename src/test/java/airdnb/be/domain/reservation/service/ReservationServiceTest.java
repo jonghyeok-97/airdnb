@@ -68,7 +68,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 3);
 
         // when then
-        assertThatThrownBy(() -> reservationService.reserve(request))
+        assertThatThrownBy(() -> reservationService.reserveV1(request))
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_EXIST_MEMBER);
@@ -89,7 +89,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 3);
 
         // when then
-        assertThatThrownBy(() -> reservationService.reserve(request))
+        assertThatThrownBy(() -> reservationService.reserveV1(request))
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_EXIST_STAY);
@@ -110,7 +110,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 3);
 
         // when
-        ReservationResponse response = reservationService.reserve(request);
+        ReservationResponse response = reservationService.reserveV1(request);
 
         // then
         LocalDateTime checkIn = LocalDateTime.of(request.checkInDate(), stay.getCheckInTime());
@@ -147,7 +147,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
                 LocalDate.of(2024, 11, 11),
                 3);
         // when then
-        assertThatThrownBy(() -> reservationService.reserve(request))
+        assertThatThrownBy(() -> reservationService.reserveV1(request))
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.ALREADY_EXISTS_RESERVATION);
@@ -186,7 +186,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
             if (i % 2 == 0) {
                 executorService.execute(() -> {
                     try {
-                        reservationService.reserve(request1);
+                        reservationService.reserveV1(request1);
                         successCount.incrementAndGet();
                     } catch (Exception e) {
                         failCount.incrementAndGet();
@@ -197,7 +197,7 @@ class ReservationServiceTest extends IntegrationTestSupport {
             } else {
                 executorService.execute(() -> {
                     try {
-                        reservationService.reserve(request2);
+                        reservationService.reserveV1(request2);
                         successCount.incrementAndGet();
                     } catch (Exception e) {
                         failCount.incrementAndGet();
