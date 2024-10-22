@@ -113,4 +113,25 @@ class ReservationTest {
         // then
         assertThat(result).isEqualTo(hasTotalFee);
     }
+
+    @DisplayName("예약 한 사람이 동일 인물인지 확인한다")
+    @ParameterizedTest
+    @CsvSource(value = {"1, true", "2, false"})
+    void isCreateBySamePerson(Long requestedMemberId, boolean result) {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 5, 2, 15, 0),
+                LocalDateTime.of(2024, 5, 10, 11, 1),
+                3,
+                new BigDecimal(30000)
+        );
+
+        // when
+        boolean actual = reservation.isCreatedBy(requestedMemberId);
+
+        // then
+        assertThat(actual).isEqualTo(result);
+    }
 }

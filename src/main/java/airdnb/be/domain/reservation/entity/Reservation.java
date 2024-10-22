@@ -56,6 +56,10 @@ public class Reservation extends BaseTimeEntity {
         this.status = ReservationStatus.RESERVED; // 결제하고, 예약이 완료되었다고 가정
     }
 
+    public boolean isCreatedBy(Long memberId) {
+        return this.guestId.equals(memberId);
+    }
+
     public boolean isCreatedBy(Long memberId, Long stayId) {
         return this.guestId.equals(memberId) && this.stayId.equals(stayId);
     }
