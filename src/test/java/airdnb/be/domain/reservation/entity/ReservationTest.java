@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class ReservationTest {
 
-    @DisplayName("예약을 생성하면 초기 상태는 '예약됨' 이다.")
+    @DisplayName("예약을 생성하면 초기 상태는 '보류 중' 이다.")
     @Test
     void initStatusReservedWhenReservationDateCreate() {
         // given
@@ -29,7 +29,7 @@ class ReservationTest {
         ReservationStatus status = reservation.getStatus();
 
         // then
-        assertThat(status).isEqualTo(ReservationStatus.RESERVED);
+        assertThat(status).isEqualTo(ReservationStatus.PENDING);
     }
 
     @DisplayName("특정 회원과 특정 숙소에 대한 예약인지 확인할 수 있다.")
@@ -53,7 +53,7 @@ class ReservationTest {
         assertThat(result).isEqualTo(expected);
     }
 
-    @DisplayName("예약이 주어진 시간보다 지났으면 끝난다")
+    @DisplayName("예약이 주어진 시간보다 지났는지 확인한다")
     @Test
     void isOver() {
         // given
@@ -65,6 +65,7 @@ class ReservationTest {
                 3,
                 new BigDecimal(30000)
         );
+        reservation.updateStatus(ReservationStatus.RESERVED);
 
         // when
         boolean result = reservation.isEnd(LocalDateTime.of(2024, 5, 10, 12, 0));

@@ -2,6 +2,7 @@ package airdnb.be;
 
 import airdnb.be.domain.mail.MailService;
 import airdnb.be.domain.member.service.MemberService;
+import airdnb.be.domain.payment.service.PaymentFacade;
 import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.reservation.service.ReservationService;
 import airdnb.be.domain.review.ReviewService;
@@ -49,4 +50,7 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected PaymentService paymentService;
+
+    @MockBean
+    protected PaymentFacade paymentFacade;
 }
