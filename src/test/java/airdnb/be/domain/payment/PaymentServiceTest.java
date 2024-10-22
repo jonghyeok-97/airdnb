@@ -6,8 +6,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.payment.entity.PaymentTemporary;
+import airdnb.be.domain.payment.entity.TossPaymentConfirm;
+import airdnb.be.domain.payment.entity.TossPaymentStatus;
 import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
+import airdnb.be.domain.payment.service.response.PaymentResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.exception.BusinessException;
@@ -122,5 +125,28 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(BusinessException.class)
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_EXIST_TEMPORARY_DATA);
+    }
+
+    @DisplayName("토스 결제 승인을 저장한다")
+    @Test
+    void addTossPaymentConfirm() {
+        // given
+        TossPaymentConfirm tossPaymentConfirm = TossPaymentConfirm.builder()
+                .paymentKey("결제 고유 키")
+                .orderId("주문 번호")
+                .orderName("주문 이름")
+                .mId("상점 아이디")
+                .taxExemptionAmount(50000)
+                .status(TossPaymentStatus.READY)
+                .requestedAt("결제 시간")
+                .build();
+
+        // when
+        PaymentResponse response = paymentService.addTossPaymentConfirm(tossPaymentConfirm);
+
+        // then
+        assertThat(response.tossPaymentConfirmId()).isNotNull();
+        assertThat(response).extracting("orderId", "orderName", "requestedAt")
+                .containsExactly("주문 번호", "주문 이름", "결제 시간");
     }
 }
