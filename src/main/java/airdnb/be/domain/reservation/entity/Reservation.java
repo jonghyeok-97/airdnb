@@ -53,7 +53,7 @@ public class Reservation extends BaseTimeEntity {
         this.checkOut = checkOut;
         this.guestCount = guestCount;
         this.totalFee = totalFee;
-        this.status = ReservationStatus.RESERVED; // 결제하고, 예약이 완료되었다고 가정
+        this.status = ReservationStatus.PENDING;
     }
 
     public boolean isCreatedBy(Long memberId) {
@@ -70,5 +70,9 @@ public class Reservation extends BaseTimeEntity {
 
     public boolean hasTotalFee(String totalFee) {
         return this.totalFee.compareTo(new BigDecimal(totalFee)) == 0;
+    }
+
+    public void updateStatus(ReservationStatus status) {
+        this.status = status;
     }
 }
