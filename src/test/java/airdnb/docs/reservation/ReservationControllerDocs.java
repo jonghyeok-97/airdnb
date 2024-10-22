@@ -65,7 +65,7 @@ public class ReservationControllerDocs extends RestDocsSupport {
                 3
         );
 
-        BDDMockito.given(reservationService.reserve(any()))
+        BDDMockito.given(reservationService.reserveV1(any()))
                 .willReturn(response);
 
         // when then
