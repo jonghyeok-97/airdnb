@@ -134,4 +134,25 @@ class ReservationTest {
         // then
         assertThat(actual).isEqualTo(result);
     }
+
+    @DisplayName("예약의 상태를 변경한다")
+    @Test
+    void updateStatus() {
+        // given
+        Reservation reservation = new Reservation(
+                1L,
+                1L,
+                LocalDateTime.of(2024, 5, 2, 15, 0),
+                LocalDateTime.of(2024, 5, 10, 11, 1),
+                3,
+                new BigDecimal(30000)
+        );
+        ReservationStatus status = ReservationStatus.RESERVED;
+
+        // when
+        reservation.updateStatus(status);
+
+        // then
+        assertThat(reservation.getStatus()).isEqualTo(status);
+    }
 }
