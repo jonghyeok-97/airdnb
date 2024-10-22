@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.reservation.ReservationRepository;
+import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.domain.review.request.StayReviewAddServiceRequest;
 import airdnb.be.domain.review.response.ReviewResponse;
@@ -46,6 +47,7 @@ class ReviewServiceTest extends IntegrationTestSupport {
                 3,
                 new BigDecimal(30000)
         );
+        reservation.updateStatus(ReservationStatus.RESERVED);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         StayReviewAddServiceRequest request = new StayReviewAddServiceRequest(
