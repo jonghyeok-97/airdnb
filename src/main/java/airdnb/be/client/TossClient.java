@@ -1,5 +1,7 @@
 package airdnb.be.client;
 
+import airdnb.be.domain.payment.entity.TossPaymentConfirm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -18,8 +20,10 @@ import org.springframework.stereotype.Component;
 public class TossClient {
 
     private final Environment env;
+    private final ObjectMapper objectMapper;
 
-    public void confirmPayment(String paymentKey, String orderId, String amount){
+    public TossPaymentConfirm confirmPayment(String paymentKey, String orderId, String amount)
+            throws IOException, InterruptedException {
         String secretApiKey = env.getProperty("payment.toss.api.secret");
         String encodedKey = Base64.getEncoder().encodeToString(secretApiKey.getBytes(StandardCharsets.UTF_8));
 
@@ -29,24 +33,17 @@ public class TossClient {
                 .header("Content-Type", "application/json")
                 .method("POST", HttpRequest.BodyPublishers.ofString(toJsonPayload(paymentKey, orderId, amount)))
                 .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
-        HttpResponse<String> response = null;
-        try {
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(response.body());
+        return objectMapper.readValue(response.body(), TossPaymentConfirm.class);
     }
 
     private String toJsonPayload(String paymentKey, String orderId, String amount) {
         StringBuilder builder = new StringBuilder();
         builder.append("{")
-                .append("\"paymentKey\":").append("\"").append(paymentKey).append("\"").append(",")
-                .append("\"orderId\":").append("\"").append(orderId).append("\"").append(",")
-                .append("\"amount\":").append("\"").append(amount).append("\"")
+                .append("\"paymentKey\":\"").append(paymentKey).append("\",")
+                .append("\"orderId\":\"").append(orderId).append("\",")
+                .append("\"amount\":\"").append(amount).append("\"")
                 .append("}");
 
         return builder.toString();
