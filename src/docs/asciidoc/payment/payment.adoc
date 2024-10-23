@@ -8,3 +8,15 @@ include::{snippets}/payment/payment-temporary-create/path-parameters.adoc[]
 
 ==== ✉️ HTTP Response
 include::{snippets}/payment/payment-temporary-create/http-response.adoc[]
+
+[[payment-confirm-create]]
+=== 2. 예약 결제 승인 API
+==== ✉️ HTTP Request
+include::{snippets}/payment/payment-confirm-create/http-request.adoc[]
+include::{snippets}/payment/payment-confirm-create/request-fields.adoc[]
+include::{snippets}/payment/payment-confirm-create/request-cookies.adoc[]
+include::{snippets}/payment/payment-confirm-create/path-parameters.adoc[]
+
+==== ✉️ HTTP Response
+include::{snippets}/payment/payment-confirm-create/http-response.adoc[]
+include::{snippets}/payment/payment-confirm-create/response-fields-beneath-data.adoc[]
