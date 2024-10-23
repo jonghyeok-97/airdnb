@@ -62,14 +62,9 @@ public class ReservationService {
     // 결제 시 사용하는 예약 프로세스
     @Transactional
     public ReservationResponse reserveV2(Long reservationId, Long memberId) {
-        checkExistMember(memberId);
-
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_RESERVATION));
-
-        if (reservation.isCreatedBy(memberId)) {
-            throw new BusinessException(ErrorCode.NOT_CONFIRM_RESERVATION);
-        }
+                .filter(r -> r.isCreatedBy(memberId))
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_CONFIRM_RESERVATION));
 
         List<ReservationDate> dates = ReservationDate.of(
                 reservation.getStayId(),
