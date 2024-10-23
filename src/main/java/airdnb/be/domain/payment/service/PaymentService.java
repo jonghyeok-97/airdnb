@@ -48,6 +48,7 @@ public class PaymentService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_TEMPORARY_DATA));
     }
 
+    @Transactional
     public PaymentConfirmResponse addTossPaymentConfirm(TossPaymentConfirm tossPaymentConfirm) {
         TossPaymentConfirm saved = tossPaymentConfirmRepository.save(tossPaymentConfirm);
 
