@@ -10,7 +10,7 @@ import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.entity.TossPaymentStatus;
 import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
-import airdnb.be.domain.payment.service.response.PaymentResponse;
+import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.exception.BusinessException;
@@ -142,7 +142,7 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .build();
 
         // when
-        PaymentResponse response = paymentService.addTossPaymentConfirm(tossPaymentConfirm);
+        PaymentConfirmResponse response = paymentService.addTossPaymentConfirm(tossPaymentConfirm);
 
         // then
         assertThat(response.tossPaymentConfirmId()).isNotNull();

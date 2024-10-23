@@ -5,7 +5,7 @@ import airdnb.be.domain.payment.TossPaymentConfirmRepository;
 import airdnb.be.domain.payment.entity.PaymentTemporary;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
-import airdnb.be.domain.payment.service.response.PaymentResponse;
+import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.exception.BusinessException;
@@ -48,9 +48,9 @@ public class PaymentService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_TEMPORARY_DATA));
     }
 
-    public PaymentResponse addTossPaymentConfirm(TossPaymentConfirm tossPaymentConfirm) {
+    public PaymentConfirmResponse addTossPaymentConfirm(TossPaymentConfirm tossPaymentConfirm) {
         TossPaymentConfirm saved = tossPaymentConfirmRepository.save(tossPaymentConfirm);
 
-        return PaymentResponse.from(saved);
+        return PaymentConfirmResponse.from(saved);
     }
 }

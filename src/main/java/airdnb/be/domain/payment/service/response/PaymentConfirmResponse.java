@@ -2,7 +2,7 @@ package airdnb.be.domain.payment.service.response;
 
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 
-public record PaymentResponse(
+public record PaymentConfirmResponse(
 
         Long tossPaymentConfirmId,
         String orderId,
@@ -10,8 +10,8 @@ public record PaymentResponse(
         String requestedAt
 
 ) {
-    public static PaymentResponse from(TossPaymentConfirm tossPaymentConfirm) {
-        return new PaymentResponse(
+    public static PaymentConfirmResponse from(TossPaymentConfirm tossPaymentConfirm) {
+        return new PaymentConfirmResponse(
                 tossPaymentConfirm.getTossPaymentConfirmId(),
                 tossPaymentConfirm.getOrderId(),
                 tossPaymentConfirm.getOrderName(),
