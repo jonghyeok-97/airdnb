@@ -1,6 +1,7 @@
 package airdnb.be.domain.payment.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -33,11 +34,28 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     @MockBean
     private TossClient tossClient;
 
+    @MockBean
+    private PaymentService paymentService;
+
     @Autowired
     private PaymentTemporaryRepository paymentTemporaryRepository;
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @DisplayName("결제 임시 데이터를 저장하면 결제 임시 데이터ID를 반환한다")
+    @Test
+    void addPaymentTemporaryData() {
+        // given
+        Long returnValue = 1L;
+        given(paymentService.addPaymentTemporaryData(anyLong(), anyLong(), anyString(), anyString(), anyString()))
+                .willReturn(returnValue);
+        // when
+        Long result = paymentFacade.addPaymentTemporaryData(1L, 1L, "paymentKey", "amount", "orderId");
+
+        // then
+        assertThat(result).isEqualTo(returnValue);
+    }
 
     @Transactional
     @DisplayName("결제 승인을 받으면 결제승인과 예약에 대한 응답이 온다")
