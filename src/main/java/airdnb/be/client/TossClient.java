@@ -1,12 +1,11 @@
 package airdnb.be.client;
 
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,18 +13,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class TossClient {
 
-    private final Environment env;
+    @Value("${payment.toss.api.secret}")
+    private String secretApiKey;
 
-    public TossPaymentConfirm confirmPayment(String paymentKey, String orderId, String amount)
-            throws IOException, InterruptedException {
-        String secretApiKey = env.getProperty("payment.toss.api.secret");
+    private final RestTemplate restTemplate;
+
+    public TossClient(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
+
+    public TossPaymentConfirm confirmPayment(String paymentKey, String orderId, String amount) {
         String encodedKey = Base64.getEncoder().encodeToString(secretApiKey.getBytes(StandardCharsets.UTF_8));
 
-        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Basic " + encodedKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
