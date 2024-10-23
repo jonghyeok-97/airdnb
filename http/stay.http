@@ -7,7 +7,7 @@ Content-Type: application/json
   "description": "설명2",
   "checkInTime": "01:01",
   "checkOutTime": "12:00",
-  "feePerNight" : "20000",
+  "feePerNight" : "50000",
   "guestCount" :"1",
   "longitude" : 104.5,
   "latitude" : 46.5,
