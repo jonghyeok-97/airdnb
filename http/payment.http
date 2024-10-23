@@ -1,5 +1,5 @@
 ### 결제 임시 데이터 저장 API (호출 전에 login.http 실행)
-POST localhost:8080/payment/reservation/1/request?paymentKey=tviva20241020171350ocbE0&amount=50000&orderId=MC43NzMzNjMyNTI3NzI1
+POST localhost:8080/payment/reservation/1/request?paymentKey=tviva20241021175818asZ71&amount=50000&orderId=MC4wNzQ5OTc3MTE3NDc2
 Content-Type: application/json
 
 ### 결제 임시 데이터 저장 API (login.http, 결제 임시 데이터 저장 API 호출 후 사용)
@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "reservationId": 1,
-  "paymentKey": "tviva20241020171350ocbE0",
+  "paymentKey": "tviva20241021175818asZ71",
   "amount": "50000",
-  "orderId": "MC43NzMzNjMyNTI3NzI1"
+  "orderId": "MC4wNzQ5OTc3MTE3NDc2"
 }
