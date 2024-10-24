@@ -47,10 +47,10 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     void addPaymentTemporaryData() {
         // given
         Long returnValue = 1L;
-        given(paymentService.addPaymentTemporaryData(anyLong(), anyLong(), anyString(), anyString(), anyString()))
-                .willReturn(returnValue);
+        saveReservation(50000);
+
         // when
-        Long result = paymentFacade.addPaymentTemporaryData(1L, 1L, "paymentKey", "amount", "orderId");
+        Long result = paymentFacade.addPaymentTemporaryData(1L, 1L, "paymentKey", "50000", "orderId");
 
         // then
         assertThat(result).isEqualTo(returnValue);
