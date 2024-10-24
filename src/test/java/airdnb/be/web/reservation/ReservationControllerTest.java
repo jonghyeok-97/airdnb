@@ -41,7 +41,7 @@ class ReservationControllerTest extends ControllerTestSupport {
                 3
         );
 
-        BDDMockito.given(reservationService.reserveV1(any()))
+        BDDMockito.given(reservationServiceV2.pendReservation(any()))
                         .willReturn(response);
 
         // when then

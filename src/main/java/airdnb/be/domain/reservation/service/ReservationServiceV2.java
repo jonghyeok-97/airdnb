@@ -1,11 +1,15 @@
 package airdnb.be.domain.reservation.service;
 
+import airdnb.be.domain.member.MemberRepository;
 import airdnb.be.domain.reservation.ReservationDateRepository;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.embedded.ReservationStatus;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.domain.reservation.entity.ReservationDate;
+import airdnb.be.domain.reservation.service.request.ReservationAddServiceRequest;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
+import airdnb.be.domain.stay.StayRepository;
+import airdnb.be.domain.stay.entity.Stay;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import java.util.List;
@@ -20,8 +24,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ReservationServiceV2 {
 
+    private final MemberRepository memberRepository;
+    private final StayRepository stayRepository;
     private final ReservationRepository reservationRepository;
     private final ReservationDateRepository reservationDateRepository;
+
+    @Transactional
+    public ReservationResponse pendReservation(ReservationAddServiceRequest request) {
+        // 예약하는 사람과 숙소 있는지 확인
+        checkExistMember(request.guestId());
+        Stay stay = checkExistStay(request.stayId());
+
+        // 결제 전 예약 생성
+        Reservation reservation = stay.createReservation(
+                request.guestId(),
+                request.checkInDate(),
+                request.checkOutDate(),
+                request.guestCount()
+        );
+        Reservation saved = reservationRepository.save(reservation);
+
+        return ReservationResponse.from(saved);
+    }
 
     // 결제 시 사용하는 예약 프로세스
     @Transactional
@@ -51,5 +75,15 @@ public class ReservationServiceV2 {
 
         return reservedDates.stream()
                 .anyMatch(dates::contains);
+    }
+
+    private Stay checkExistStay(Long stayId) {
+        return stayRepository.findById(stayId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_STAY));
+    }
+
+    private void checkExistMember(Long memberId) {
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXIST_MEMBER));
     }
 }
