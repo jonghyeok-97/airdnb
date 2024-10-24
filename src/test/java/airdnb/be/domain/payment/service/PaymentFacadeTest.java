@@ -17,7 +17,6 @@ import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +33,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     @MockBean
     private TossClient tossClient;
 
-    @MockBean
+    @Autowired
     private PaymentService paymentService;
 
     @Autowired
@@ -60,7 +59,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     @Transactional
     @DisplayName("결제 승인을 받으면 결제승인과 예약에 대한 응답이 온다")
     @Test
-    void confirmPaymentByReservation() throws IOException, InterruptedException {
+    void confirmPaymentByReservation() {
         // given
         Reservation reservation = saveReservation(50000);
         PaymentTemporary paymentTemporary = savePaymentTemporary("orderId", "paymentKey", "50000");

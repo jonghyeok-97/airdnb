@@ -5,6 +5,7 @@ import airdnb.be.domain.member.service.MemberService;
 import airdnb.be.domain.payment.service.PaymentFacade;
 import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.reservation.service.ReservationService;
+import airdnb.be.domain.reservation.service.ReservationServiceV2;
 import airdnb.be.domain.review.ReviewService;
 import airdnb.be.domain.stay.service.StayService;
 import airdnb.be.web.member.MemberController;
@@ -44,6 +45,9 @@ public abstract class ControllerTestSupport {
 
     @MockBean
     protected ReservationService reservationService;
+
+    @MockBean
+    protected ReservationServiceV2 reservationServiceV2;
 
     @MockBean
     protected ReviewService reviewService;

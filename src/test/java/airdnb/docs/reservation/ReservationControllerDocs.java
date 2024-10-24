@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import airdnb.be.domain.reservation.service.ReservationService;
+import airdnb.be.domain.reservation.service.ReservationServiceV2;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import airdnb.be.web.reservation.ReservationController;
 import airdnb.be.web.reservation.request.ReservationAddRequest;
@@ -37,11 +37,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 public class ReservationControllerDocs extends RestDocsSupport {
 
-    private final ReservationService reservationService = mock(ReservationService.class);
+    private final ReservationServiceV2 reservationServiceV2 = mock(ReservationServiceV2.class);
 
     @Override
     protected Object initController() {
-        return new ReservationController(reservationService);
+        return new ReservationController(reservationServiceV2);
     }
 
     @DisplayName("숙소 예약 API")
@@ -65,7 +65,7 @@ public class ReservationControllerDocs extends RestDocsSupport {
                 3
         );
 
-        BDDMockito.given(reservationService.reserveV1(any()))
+        BDDMockito.given(reservationServiceV2.pendReservation(any()))
                 .willReturn(response);
 
         // when then
