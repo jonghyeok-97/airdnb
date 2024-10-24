@@ -5,7 +5,7 @@ import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
 import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
-import airdnb.be.domain.reservation.service.ReservationService;
+import airdnb.be.domain.reservation.service.ReservationServiceV2;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PaymentFacade {
 
-    private final ReservationService reservationService;
+    private final ReservationServiceV2 reservationServiceV2;
     private final PaymentService paymentService;
     private final TossClient tossClient;
 
@@ -37,7 +37,7 @@ public class PaymentFacade {
         PaymentConfirmResponse paymentConfirmResponse = paymentService.addTossPaymentConfirm(tossPaymentConfirm);
 
         // 예약 확정 INSERT
-        ReservationResponse reservationResponse = reservationService.reserveV2(request.reservationId(), request.memberId());
+        ReservationResponse reservationResponse = reservationServiceV2.confirmReservation(request.reservationId(), request.memberId());
 
         return PaymentReservationResponse.of(paymentConfirmResponse, reservationResponse);
     }
