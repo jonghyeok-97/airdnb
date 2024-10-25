@@ -3,10 +3,9 @@ package airdnb.be.domain.payment.service;
 import airdnb.be.client.TossClient;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
-import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
 import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
-import airdnb.be.domain.reservation.service.ReservationServiceV2;
-import airdnb.be.domain.reservation.service.response.ReservationResponse;
+import airdnb.be.exception.BusinessException;
+import airdnb.be.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PaymentFacade {
 
-    private final ReservationServiceV2 reservationServiceV2;
     private final PaymentService paymentService;
     private final TossClient tossClient;
 
@@ -31,14 +29,17 @@ public class PaymentFacade {
 
         // 결제 승인 요청(네트워크)
         TossPaymentConfirm tossPaymentConfirm = tossClient.confirmPayment(request.paymentKey(), request.orderId(),
-                    request.amount());
+                request.amount());
 
-        // 결제 승인 INSERT
-        PaymentConfirmResponse paymentConfirmResponse = paymentService.addTossPaymentConfirm(tossPaymentConfirm);
+        try {
+            // 결제 및 예약 INSERT 에 대한 트랜잭션 시작
+            return paymentService.confirmReservation(tossPaymentConfirm, request.reservationId(), request.memberId());
+        } catch (RuntimeException e) {
+            // 결제 취소 요청 보내기
+            tossClient.cancelPayment();
 
-        // 예약 확정 INSERT
-        ReservationResponse reservationResponse = reservationServiceV2.confirmReservation(request.reservationId(), request.memberId());
-
-        return PaymentReservationResponse.of(paymentConfirmResponse, reservationResponse);
+            log.warn("예약 실패 이유: {}", e);
+            throw new BusinessException(ErrorCode.NOT_CONFIRM_RESERVATION);
+        }
     }
 }

@@ -46,4 +46,8 @@ public class TossClient {
                 paymentKey, orderId, amount
         );
     }
+
+    public void cancelPayment() {
+        // TODO:
+    }
 }
