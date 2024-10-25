@@ -22,13 +22,18 @@ import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
+import airdnb.be.exception.BusinessException;
+import airdnb.be.exception.ErrorCode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 class PaymentFacadeTest extends IntegrationTestSupport {
@@ -103,24 +108,25 @@ class PaymentFacadeTest extends IntegrationTestSupport {
                 .isEqualTo(new BigDecimal("50000"));
     }
 
-    @Transactional
-    @DisplayName("결제 및 예약 트랜잭션이 실패하면 결제 취소요청을 보낸다")
-    @Test
-    void confirmPaymentByReservation1() throws JsonProcessingException {
+    @DisplayName("결제 및 예약 트랜잭션이 실패하면 결제 취소요청을 보내고 예약을 확정할 수 없다")
+    @ParameterizedTest
+    @ValueSource(classes = {DBException.class, BusinessException.class})
+    void confirmPaymentByReservation1(Class<? extends Throwable> exception) {
         // given
         PaymentConfirmServiceRequest request = createPaymentConfirmServiceRequest(1L);
 
         given(paymentService.confirmReservation(any(), anyLong(), anyLong()))
-                .willThrow(RuntimeException.class);
+                .willThrow(exception);
         willDoNothing()
                 .given(paymentService)
                 .validateExistingPaymentTemporary(any());
 
-        // when
+        // when then
         assertThatThrownBy(() -> paymentFacade.confirmPaymentByReservation(request))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(BusinessException.class)
+                .extracting("errorCode")
+                .isEqualTo(ErrorCode.NOT_CONFIRM_RESERVATION);
 
-        // then
         verify(tossClient, times(1)).cancelPayment();
     }
 
@@ -156,5 +162,12 @@ class PaymentFacadeTest extends IntegrationTestSupport {
                 amount
         );
         return paymentTemporaryRepository.save(paymentTemporary);
+    }
+
+    static class DBException extends DataAccessException {
+
+        public DBException(String msg) {
+            super(msg);
+        }
     }
 }
