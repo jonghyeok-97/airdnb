@@ -6,8 +6,11 @@ import airdnb.be.domain.payment.entity.PaymentTemporary;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
+import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
+import airdnb.be.domain.reservation.service.ReservationServiceV2;
+import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class PaymentService {
     private final PaymentTemporaryRepository paymentTemporaryRepository;
     private final ReservationRepository reservationRepository;
     private final TossPaymentConfirmRepository tossPaymentConfirmRepository;
+    private final ReservationServiceV2 reservationServiceV2;
 
     @Transactional
     public Long addPaymentTemporaryData(Long memberId, Long reservationId, String paymentKey, String amount,
@@ -49,9 +53,14 @@ public class PaymentService {
     }
 
     @Transactional
-    public PaymentConfirmResponse addTossPaymentConfirm(TossPaymentConfirm tossPaymentConfirm) {
+    public PaymentReservationResponse confirmReservation(TossPaymentConfirm tossPaymentConfirm, Long reservationId, Long memberId) {
+        // 결제 승인 INSERT
         TossPaymentConfirm saved = tossPaymentConfirmRepository.save(tossPaymentConfirm);
+        PaymentConfirmResponse paymentConfirmResponse = PaymentConfirmResponse.from(saved);
 
-        return PaymentConfirmResponse.from(saved);
+        // 예약 확정 INSERT
+        ReservationResponse reservationResponse = reservationServiceV2.confirmReservation(reservationId, memberId);
+
+        return PaymentReservationResponse.of(paymentConfirmResponse, reservationResponse);
     }
 }

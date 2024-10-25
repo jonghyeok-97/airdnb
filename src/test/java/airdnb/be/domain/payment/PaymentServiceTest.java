@@ -3,6 +3,8 @@ package airdnb.be.domain.payment;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.anyLong;
+import static org.mockito.BDDMockito.given;
 
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.payment.entity.PaymentTemporary;
@@ -11,8 +13,11 @@ import airdnb.be.domain.payment.entity.TossPaymentStatus;
 import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
+import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
+import airdnb.be.domain.reservation.service.ReservationServiceV2;
+import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import java.math.BigDecimal;
@@ -21,17 +26,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 class PaymentServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private PaymentService paymentService;
 
+    @MockBean
+    private ReservationServiceV2 reservationServiceV2;
+
     @Autowired
     private ReservationRepository reservationRepository;
 
     @Autowired
     private PaymentTemporaryRepository paymentTemporaryRepository;
+
+    @Autowired
+    private TossPaymentConfirmRepository tossPaymentConfirmRepository;
 
     @AfterEach
     void tearDown() {
@@ -127,9 +139,9 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .isEqualTo(ErrorCode.NOT_EXIST_TEMPORARY_DATA);
     }
 
-    @DisplayName("토스 결제 승인을 저장한다")
+    @DisplayName("토스 결제 승인 과 예약ID와 회원ID 로 예약을 확정짓는다")
     @Test
-    void addTossPaymentConfirm() {
+    void confirmReservation() {
         // given
         TossPaymentConfirm tossPaymentConfirm = TossPaymentConfirm.builder()
                 .paymentKey("결제 고유 키")
@@ -141,12 +153,59 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .requestedAt("결제 시간")
                 .build();
 
+        given(reservationServiceV2.confirmReservation(anyLong(), anyLong()))
+                .willReturn(new ReservationResponse(
+                    1L,
+                    1L,
+                    1L,
+                    LocalDateTime.of(2024, 8, 13, 15, 0),
+                    LocalDateTime.of(2024, 8, 15, 11, 0),
+                    new BigDecimal(50000),
+                    3
+                ));
+
         // when
-        PaymentConfirmResponse response = paymentService.addTossPaymentConfirm(tossPaymentConfirm);
+        PaymentReservationResponse response = paymentService.confirmReservation(tossPaymentConfirm, 1L, 1L);
 
         // then
-        assertThat(response.tossPaymentConfirmId()).isNotNull();
-        assertThat(response).extracting("orderId", "orderName", "requestedAt")
+        PaymentConfirmResponse paymentConfirmResponse = response.paymentConfirmResponse();
+        ReservationResponse reservationResponse = response.reservationResponse();
+
+        assertThat(paymentConfirmResponse.tossPaymentConfirmId()).isNotNull();
+        assertThat(paymentConfirmResponse)
+                .extracting("orderId", "orderName", "requestedAt")
                 .containsExactly("주문 번호", "주문 이름", "결제 시간");
+
+        assertThat(reservationResponse.reservationId()).isNotNull();
+        assertThat(reservationResponse)
+                .extracting("totalFee")
+                .isEqualTo(new BigDecimal("50000"));
+    }
+
+    @DisplayName("예약을 확정지을 때, 예약 확정에서 런타임 예외가 생기면 결제 승인 테이블이 롤백된다")
+    @Test
+    void confirmReservationWithException() {
+        // given
+        TossPaymentConfirm tossPaymentConfirm = TossPaymentConfirm.builder()
+                .paymentKey("결제 고유 키")
+                .orderId("주문 번호")
+                .orderName("주문 이름")
+                .mId("상점 아이디")
+                .taxExemptionAmount(50000)
+                .status(TossPaymentStatus.READY)
+                .requestedAt("결제 시간")
+                .build();
+
+        given(reservationServiceV2.confirmReservation(anyLong(), anyLong()))
+                .willThrow(new RuntimeException());
+
+        // when
+        assertThatThrownBy(() -> paymentService.confirmReservation(tossPaymentConfirm, 1L, 1L))
+                .isInstanceOf(RuntimeException.class);
+
+        // then
+//        assertThat(response).isNull();
+        assertThat(tossPaymentConfirmRepository.findAll()).hasSize(0);
+        assertThat(reservationRepository.findAll()).hasSize(0);
     }
 }

@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.client.TossClient;
 import airdnb.be.domain.payment.PaymentTemporaryRepository;
+import airdnb.be.domain.payment.TossPaymentConfirmRepository;
 import airdnb.be.domain.payment.entity.PaymentTemporary;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.entity.TossPaymentStatus;
@@ -16,9 +17,13 @@ import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
 import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
 import airdnb.be.domain.reservation.ReservationRepository;
 import airdnb.be.domain.reservation.entity.Reservation;
+import airdnb.be.domain.reservation.service.ReservationService;
+import airdnb.be.domain.reservation.service.ReservationServiceV2;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +41,14 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     @Autowired
     private PaymentService paymentService;
 
+    @MockBean
+    private ReservationServiceV2 reservationServiceV2;
+
     @Autowired
     private PaymentTemporaryRepository paymentTemporaryRepository;
+
+    @Autowired
+    private TossPaymentConfirmRepository tossPaymentConfirmRepository;
 
     @Autowired
     private ReservationRepository reservationRepository;
@@ -59,7 +70,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     @Transactional
     @DisplayName("결제 승인을 받으면 결제승인과 예약에 대한 응답이 온다")
     @Test
-    void confirmPaymentByReservation() {
+    void confirmPaymentByReservation() throws JsonProcessingException {
         // given
         Reservation reservation = saveReservation(50000);
         PaymentTemporary paymentTemporary = savePaymentTemporary("orderId", "paymentKey", "50000");
@@ -102,6 +113,46 @@ class PaymentFacadeTest extends IntegrationTestSupport {
         assertThat(reservationResponse)
                 .extracting("totalFee")
                 .isEqualTo(new BigDecimal("50000"));
+    }
+
+    @Transactional
+    @DisplayName("결제 승인을 받으면 결제승인과 예약에 대한 응답이 온다")
+    @Test
+    void confirmPaymentByReservation1() throws JsonProcessingException {
+        // given
+        Reservation reservation = saveReservation(50000);
+        PaymentTemporary paymentTemporary = savePaymentTemporary("orderId", "paymentKey", "50000");
+
+        PaymentConfirmServiceRequest request = new PaymentConfirmServiceRequest(
+                paymentTemporary.getPaymentTemporaryId(),
+                1L,
+                1L,
+                "paymentKey",
+                "50000",
+                "orderId"
+        );
+
+        TossPaymentConfirm tossPaymentConfirm = TossPaymentConfirm.builder()
+                .paymentKey("paymentKey")
+                .orderId("orderId")
+                .orderName("orderName")
+                .mId("mId")
+                .lastTransactionKey("lastTransactionKey")
+                .taxExemptionAmount(50000)
+                .status(TossPaymentStatus.DONE)
+                .requestedAt("requestedAt")
+                .build();
+        given(tossClient.confirmPayment(anyString(), anyString(), anyString()))
+                .willReturn(tossPaymentConfirm);
+        given(reservationServiceV2.confirmReservation(anyLong(), anyLong()))
+                .willThrow(new RuntimeException());
+
+        // when
+        PaymentReservationResponse response = paymentFacade.confirmPaymentByReservation(request);
+
+        // then
+        List<TossPaymentConfirm> all = tossPaymentConfirmRepository.findAll();
+        assertThat(all.size()).isEqualTo(0);
     }
 
     private Reservation saveReservation(int amount) {
