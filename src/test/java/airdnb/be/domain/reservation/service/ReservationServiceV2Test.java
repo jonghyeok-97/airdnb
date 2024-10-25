@@ -29,6 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 
 class ReservationServiceV2Test extends IntegrationTestSupport {
 
@@ -237,6 +238,25 @@ class ReservationServiceV2Test extends IntegrationTestSupport {
 
         // then
         assertThat(successCount.get()).isEqualTo(1);
+    }
+
+    @DisplayName("유니크 제약조건에 의해 INSERT 실패 시 DataAccessException 이 발생한다")
+    @Test
+    void confirmReservationWithDataAccessException() {
+        // given
+        List<ReservationDate> dates1 = ReservationDate.of(
+                1L,
+                LocalDate.of(2024, 11, 9),
+                LocalDate.of(2024, 11, 11));
+        reservationDateRepository.saveAll(dates1);
+
+        List<ReservationDate> dates2 = ReservationDate.of(
+                1L,
+                LocalDate.of(2024, 11, 10),
+                LocalDate.of(2024, 11, 11));
+
+        assertThatThrownBy(() -> reservationDateRepository.saveAll(dates2))
+                .isInstanceOf(DataAccessException.class);
     }
 
     private Stay saveStay(Long memberId) {
