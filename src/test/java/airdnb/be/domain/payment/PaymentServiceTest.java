@@ -204,7 +204,6 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .isInstanceOf(RuntimeException.class);
 
         // then
-//        assertThat(response).isNull();
         assertThat(tossPaymentConfirmRepository.findAll()).hasSize(0);
         assertThat(reservationRepository.findAll()).hasSize(0);
     }
