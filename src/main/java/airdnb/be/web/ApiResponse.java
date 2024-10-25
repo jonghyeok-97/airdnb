@@ -34,6 +34,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(HttpStatus.BAD_REQUEST, message, null);
     }
 
+    public static <T> ApiResponse<T> badRequest(String code, String message) {
+        return new ApiResponse<>(code, HttpStatus.BAD_REQUEST, message, null);
+    }
+
     public static <T> ApiResponse<T> ok(T data) {
         return new ApiResponse<>(HttpStatus.OK, HttpStatus.OK.name(), data);
     }

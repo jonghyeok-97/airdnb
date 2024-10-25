@@ -1,6 +1,9 @@
 package airdnb.be.exception;
 
 import airdnb.be.web.ApiResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +11,26 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class ExceptionHandlers {
+
+    private final ObjectMapper objectMapper;
+
+    /**
+     * TossPayment 로부터 결제에 실패 했을 떄
+     */
+    @ExceptionHandler(HttpClientErrorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Void> handleHttpClientErrorException(HttpClientErrorException e) throws JsonProcessingException {
+        TossPaymentErrorResponse tossErrorResponse = convertToTossPaymentErrorResponse(e.getMessage());
+        log.warn("토스페이먼츠 결제 코드: {}, 결제 메시지: {}", tossErrorResponse.code(), tossErrorResponse.message());
+
+        return ApiResponse.badRequest(tossErrorResponse.code(), tossErrorResponse.message());
+    }
 
     /**
      * Valid/Validated 로 인한 검증에 의해 필드에 바인딩이 실패 했을 떄
@@ -54,4 +73,11 @@ public class ExceptionHandlers {
      "data" : null
      }
      */
+
+    private TossPaymentErrorResponse convertToTossPaymentErrorResponse(String message) throws JsonProcessingException {
+        String[] split = message.split(": ");
+        String jsonString = split[1].trim().replaceAll("^\"|\"$", "");
+
+        return objectMapper.readValue(jsonString, TossPaymentErrorResponse.class);
+    }
 }
