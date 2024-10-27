@@ -37,7 +37,8 @@
 - Layer 간 참조 방향이 역행하지 않도록 ServiceDto 와 ControllerDto 분리
 
 ## 결제 프로세스 과정
-![스크린샷 2024-10-27 165212.png](..%2F..%2F..%2FDesktop%2F%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7%202024-10-27%20165212.png)
+![image](https://github.com/user-attachments/assets/41871857-d94a-4175-9ce5-4c09f405ba53)
+
 
 ## 개발환경
 * JDK17 / Spring Boot 3.X / Spring Rest Docs / Spring Mail
