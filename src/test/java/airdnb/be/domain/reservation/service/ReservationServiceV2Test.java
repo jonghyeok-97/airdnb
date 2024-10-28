@@ -29,7 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 class ReservationServiceV2Test extends IntegrationTestSupport {
 
@@ -240,7 +240,7 @@ class ReservationServiceV2Test extends IntegrationTestSupport {
         assertThat(successCount.get()).isEqualTo(1);
     }
 
-    @DisplayName("유니크 제약조건에 의해 INSERT 실패 시 DataAccessException 이 발생한다")
+    @DisplayName("유니크 제약조건에 의해 INSERT 실패 시 DataIntegrityViolationException 이 발생한다")
     @Test
     void confirmReservationWithDataAccessException() {
         // given
@@ -256,7 +256,7 @@ class ReservationServiceV2Test extends IntegrationTestSupport {
                 LocalDate.of(2024, 11, 11));
 
         assertThatThrownBy(() -> reservationDateRepository.saveAll(dates2))
-                .isInstanceOf(DataAccessException.class);
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     private Stay saveStay(Long memberId) {
