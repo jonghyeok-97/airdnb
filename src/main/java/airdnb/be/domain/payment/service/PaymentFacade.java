@@ -39,7 +39,7 @@ public class PaymentFacade {
             log.warn("예약 실패 이유: {}", e);
 
             // 결제 취소 요청 보내기
-            tossClient.cancelPayment();
+            tossClient.cancelPayment(request.paymentKey());
             throw new BusinessException(ErrorCode.NOT_CONFIRM_RESERVATION);
         }
     }

@@ -49,6 +49,7 @@ class PaymentServiceTest extends IntegrationTestSupport {
     void tearDown() {
         reservationRepository.deleteAllInBatch();
         paymentTemporaryRepository.deleteAllInBatch();
+        tossPaymentConfirmRepository.deleteAllInBatch();
     }
 
     @DisplayName("결제 임시 데이터 저장중 결제하려는 총 금액이 맞지 않으면 예외가 발생한다.")
