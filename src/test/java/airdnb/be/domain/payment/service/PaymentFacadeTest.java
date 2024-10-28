@@ -34,6 +34,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 class PaymentFacadeTest extends IntegrationTestSupport {
@@ -110,7 +111,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
 
     @DisplayName("결제 및 예약 트랜잭션이 실패하면 결제 취소요청을 보내고 예약을 확정할 수 없다")
     @ParameterizedTest
-    @ValueSource(classes = {DBException.class, BusinessException.class})
+    @ValueSource(classes = {DataIntegrityViolationException.class, BusinessException.class})
     void confirmPaymentByReservation1(Class<? extends Throwable> exception) {
         // given
         PaymentConfirmServiceRequest request = createPaymentConfirmServiceRequest(1L);
@@ -162,12 +163,5 @@ class PaymentFacadeTest extends IntegrationTestSupport {
                 amount
         );
         return paymentTemporaryRepository.save(paymentTemporary);
-    }
-
-    static class DBException extends DataAccessException {
-
-        public DBException(String msg) {
-            super(msg);
-        }
     }
 }

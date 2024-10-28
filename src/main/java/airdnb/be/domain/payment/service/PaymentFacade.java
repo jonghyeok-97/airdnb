@@ -8,7 +8,7 @@ import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -35,7 +35,7 @@ public class PaymentFacade {
         try {
             // 결제 및 예약 INSERT 에 대한 트랜잭션 시작
             return paymentService.confirmReservation(tossPaymentConfirm, request.reservationId(), request.memberId());
-        } catch (DataAccessException | BusinessException e) {
+        } catch (DataIntegrityViolationException | BusinessException e) {
             log.warn("예약 실패 이유: {}", e);
 
             // 결제 취소 요청 보내기
