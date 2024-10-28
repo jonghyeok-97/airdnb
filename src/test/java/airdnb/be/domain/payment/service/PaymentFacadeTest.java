@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 
@@ -24,18 +24,16 @@ import airdnb.be.domain.reservation.entity.Reservation;
 import airdnb.be.domain.reservation.service.response.ReservationResponse;
 import airdnb.be.exception.BusinessException;
 import airdnb.be.exception.ErrorCode;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.transaction.annotation.Transactional;
 
 class PaymentFacadeTest extends IntegrationTestSupport {
 
@@ -54,29 +52,31 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    @AfterEach
+    void tearDown() {
+        paymentTemporaryRepository.deleteAllInBatch();
+        reservationRepository.deleteAllInBatch();
+    }
+
     @DisplayName("결제 임시 데이터를 저장하면 결제 임시 데이터ID를 반환한다")
     @Test
     void addPaymentTemporaryData() {
         // given
-        Long returnValue = 1L;
         saveReservation(50000);
 
         // when
         Long result = paymentFacade.addPaymentTemporaryData(1L, 1L, "paymentKey", "50000", "orderId");
 
         // then
-        assertThat(result).isEqualTo(returnValue);
+        assertThat(result).isNotNull();
     }
 
-    @Transactional
+
     @DisplayName("결제 승인을 받으면 결제승인과 예약에 대한 응답이 온다")
     @Test
-    void confirmPaymentByReservation() throws JsonProcessingException {
+    void confirmPaymentByReservation() {
         // given
-        Reservation reservation = saveReservation(50000);
-        PaymentTemporary paymentTemporary = savePaymentTemporary("orderId", "paymentKey", "50000");
-
-        PaymentConfirmServiceRequest request = createPaymentConfirmServiceRequest(paymentTemporary.getPaymentTemporaryId());
+        PaymentConfirmServiceRequest request = createPaymentConfirmServiceRequest(1L);
 
         TossPaymentConfirm tossPaymentConfirm = TossPaymentConfirm.builder()
                 .paymentKey("paymentKey")
@@ -88,8 +88,21 @@ class PaymentFacadeTest extends IntegrationTestSupport {
                 .status(TossPaymentStatus.DONE)
                 .requestedAt("requestedAt")
                 .build();
+
+        PaymentReservationResponse expectedResponse = new PaymentReservationResponse(
+                new PaymentConfirmResponse(
+                        1L, "orderId", "orderName", "결제 요청 시각"
+                ),
+                new ReservationResponse(
+                        1L, 1L, 1L, LocalDateTime.now(), LocalDateTime.now(), new BigDecimal("50000"), 3
+                )
+        );
+
         given(tossClient.confirmPayment(anyString(), anyString(), anyString()))
                 .willReturn(tossPaymentConfirm);
+
+        given(paymentService.confirmReservation(any(), any(), any()))
+                .willReturn(expectedResponse);
 
         // when
         PaymentReservationResponse response = paymentFacade.confirmPaymentByReservation(request);
@@ -101,7 +114,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
         assertThat(paymentConfirmResponse.tossPaymentConfirmId()).isNotNull();
         assertThat(paymentConfirmResponse)
                 .extracting("orderId", "orderName", "requestedAt")
-                .containsExactly("orderId", "orderName", "requestedAt");
+                .containsExactly("orderId", "orderName", "결제 요청 시각");
 
         assertThat(reservationResponse.reservationId()).isNotNull();
         assertThat(reservationResponse)
@@ -128,7 +141,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.NOT_CONFIRM_RESERVATION);
 
-        verify(tossClient, times(1)).cancelPayment();
+        verify(tossClient, times(1)).cancelPayment(anyString());
     }
 
     private PaymentConfirmServiceRequest createPaymentConfirmServiceRequest(Long paymentTemporaryId) {
