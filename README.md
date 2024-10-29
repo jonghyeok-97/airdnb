@@ -3,21 +3,15 @@
 - 문서화, 테스트에 높은 우선순위를 두어 기능 추가 및 유지보수가 쉬운 프로젝트를 만들고자 합니다.
 
 ## Issue 해결 과정
-- [#5] 예약 ~ 결제 승인 / 결제 취소에 대한 프로세스(트랜잭션 전파/Facade패턴/동시성 제어)
+- [[#5] 예약 ~ 결제 승인 / 결제 취소에 대한 프로세스(트랜잭션 전파/Facade패턴/동시성 제어/외부 API 호출 동기 or 비동기)](https://dkswhdgur246.tistory.com/66)
   
-  [https://dkswhdgur246.tistory.com/66](https://dkswhdgur246.tistory.com/66)
-- [#4] 이메일 인증 기반 로그인/회원가입 소개
-
-  [https://dkswhdgur246.tistory.com/50](https://dkswhdgur246.tistory.com/50)
-- [#3] 테스트로 알아보는 컨트롤러의 HttpSession 주입 시점
+- [[#4] 이메일 인증 기반 로그인/회원가입 소개](https://dkswhdgur246.tistory.com/50)
   
-  [https://dkswhdgur246.tistory.com/57](https://dkswhdgur246.tistory.com/57)
-- [#2] 이메일 에러를 디버거로 코드를 분석 후, 해결
-
-  [https://dkswhdgur246.tistory.com/49](https://dkswhdgur246.tistory.com/49)
-- [#1] 20만 더미 데이터 삽입을 csv파일을 이용해서 DB connection timeout → 7초로 줄이기
-
-  [https://dkswhdgur246.tistory.com/47](https://dkswhdgur246.tistory.com/47)
+- [[#3] 테스트로 알아보는 컨트롤러의 HttpSession 주입 시점](https://dkswhdgur246.tistory.com/57)
+  
+- [[#2] 이메일 에러를 디버거로 코드를 분석 후, 해결](https://dkswhdgur246.tistory.com/49)
+  
+- [[#1] 20만 더미 데이터 삽입을 csv파일을 이용해서 DB connection timeout → 7초로 줄이기](https://dkswhdgur246.tistory.com/47)
 
 ## 프로젝트 중점사항
 - 결제 승인 실패시 트랜잭션 전파를 사용해서 DB 레코드 롤백
