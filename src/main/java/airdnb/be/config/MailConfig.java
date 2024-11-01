@@ -1,18 +1,35 @@
 package airdnb.be.config;
 
 import java.util.Properties;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.Executor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+@EnableAsync
 @Configuration
-public class MailConfig {
+@RequiredArgsConstructor
+public class MailConfig implements AsyncConfigurer {
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
+
+    @Override
+    @Bean
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(12);
+        executor.setMaxPoolSize(16);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("MailExecutor-");
+        executor.initialize();
+        return executor;
+    }
 
     @Bean
     public JavaMailSender javaMailSender() {
