@@ -10,12 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Slf4j
 @EnableAsync
+@EnableRetry
 @Configuration
 @RequiredArgsConstructor
 public class MailConfig implements AsyncConfigurer {
@@ -23,7 +25,7 @@ public class MailConfig implements AsyncConfigurer {
     private final Environment env;
 
     @Override
-    @Bean
+    @Bean(name = "mailExecutor")
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(12);
@@ -36,7 +38,7 @@ public class MailConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return (ex, method, params) -> log.error("[메일 쓰레드 풀 에러] 발생 위치={}", method.toGenericString());
+        return (ex, method, params) -> log.error("[MailExecutor 비동기 에러] 발생 위치={}", method.toGenericString());
     }
 
     @Bean
