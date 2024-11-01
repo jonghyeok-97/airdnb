@@ -3,6 +3,8 @@
 - 문서화, 테스트에 높은 우선순위를 두어 기능 추가 및 유지보수가 쉬운 프로젝트를 만들고자 합니다.
 
 ## Issue 해결 과정
+- [[#6] @Async로 이메일 전송 비동기 처리하기: 쓰레드 풀 설정과 API 응답 속도 개선](https://dkswhdgur246.tistory.com/68)
+
 - [[#5] 예약 ~ 결제 승인 / 결제 취소에 대한 프로세스(트랜잭션 전파/Facade패턴/동시성 제어/외부 API 호출 동기 or 비동기)](https://dkswhdgur246.tistory.com/66)
   
 - [[#4] 이메일 인증 기반 로그인/회원가입 소개](https://dkswhdgur246.tistory.com/50)
@@ -14,21 +16,24 @@
 - [[#1] 20만 더미 데이터 삽입을 csv파일을 이용해서 DB connection timeout → 7초로 줄이기](https://dkswhdgur246.tistory.com/47)
 
 ## 프로젝트 중점사항
-- 결제 승인 실패시 트랜잭션 전파를 사용해서 DB 레코드 롤백
-- 결제 승인 요청을 트랜잭션에서 분리하기 위해 Facade 패턴 사용
-- 유니크 제약조건을 사용한 예약 동시성 제어와 그에 따른 장단점
-- MySQL의 인덱스 설정과 실행계획 분석 후 쿼리 튜닝
-- 200여 개의 테스트 코드 작성, 100% 테스트 커버리지 달성
-- @SpringBootTest가 있는 추상클래스를 사용해서 전체 테스트 시간 5초 감소 
-- ApiResponse<T> 와 ErrorCode 를 사용한 일관된 API 응답 제공
-- Spring Mail을 활용한 이메일 인증 기반의 회원가입 구현
-- Custom Bean Validation을 활용한 이메일 유효성 범위 설정
+- 결제 승인 실패 시 트랜잭션 전파 설정을 통해 DB 레코드 롤백 처리
+- 결제 승인 요청을 트랜잭션과 분리하기 위해 Facade 패턴 적용
+- 유니크 제약 조건을 사용한 예약 동시성 제어 및 이에 따른 장단점 분석
+- MySQL 인덱스 설정 및 실행 계획 분석을 통한 쿼리 성능 튜닝
+- 200여 개의 테스트 코드 작성으로 100% 테스트 커버리지 달성
+- @SpringBootTest를 적용한 추상 클래스를 통해 전체 테스트 시간 5초 단축
+- ApiResponse<T>와 ErrorCode를 활용하여 일관된 API 응답 제공
+- Spring Mail을 활용한 이메일 인증 기반 회원가입 구현
+- @Async를 이용한 비동기 이메일 전송
+  - Jmeter를 이용한 API 응답 속도 개선 확인
+- Custom Bean Validation을 이용하여 이메일 유효성 검사 범위 중복 제거
 - 세션과 ArgumentResolver를 활용한 로그인 기능 구현
 - [Rest Docs를 활용한 API 자동 문서화](http://restdocs.s3-website.ap-northeast-2.amazonaws.com/)
-  - S3로 배포
-  - "필드명, 타입, 선택여부, 날짜 양식, 설명"을 API문서에 추가
-- Docker-Compose와 Prometheus와 Grafana를 사용해 로컬에 모니터링 서버 구축
-- Layer 간 참조 방향이 역행하지 않도록 ServiceDto 와 ControllerDto 분리
+  - S3에 배포하여 문서 접근성 강화
+  - "필드명, 타입, 선택 여부, 날짜 양식, 설명"을 포함한 상세 API 문서화
+- Docker-Compose, Prometheus, Grafana를 활용해 로컬 모니터링 서버 구축
+- Layer 간 참조 방향을 유지하기 위해 ServiceDto와 ControllerDto 분리
+- @Async를 이용한 비동기 이메일 전송 및 API응답 속도 개선 확인하기
 
 ## 결제 프로세스 과정
 ![image](https://github.com/user-attachments/assets/41871857-d94a-4175-9ce5-4c09f405ba53)
