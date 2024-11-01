@@ -3,6 +3,8 @@ package airdnb.be.config;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -12,6 +14,7 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+@Slf4j
 @EnableAsync
 @Configuration
 @RequiredArgsConstructor
@@ -29,6 +32,11 @@ public class MailConfig implements AsyncConfigurer {
         executor.setThreadNamePrefix("MailExecutor-");
         executor.initialize();
         return executor;
+    }
+
+    @Override
+    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+        return (ex, method, params) -> log.error("[메일 쓰레드 풀 에러] 발생 위치={}", method.toGenericString());
     }
 
     @Bean
