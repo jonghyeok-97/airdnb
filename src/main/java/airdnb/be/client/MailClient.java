@@ -1,5 +1,6 @@
 package airdnb.be.client;
 
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
@@ -20,10 +21,12 @@ public class MailClient {
     private final JavaMailSender javaMailSender;
 
     @Async("mailExecutor")
-    public void sendAuthenticationMail(String toEmail, String authenticationCode) {
+    public CompletableFuture<Void> sendAuthenticationMail(String toEmail, String authenticationCode) {
+
         SimpleMailMessage mail = createMailMessage(toEmail, authenticationCode);
         javaMailSender.send(mail);
         log.info("[메일] 메일 전송={}", toEmail);
+        return CompletableFuture.completedFuture(null);
     }
 
     private SimpleMailMessage createMailMessage(String memberEmail, String randomUUID) {
