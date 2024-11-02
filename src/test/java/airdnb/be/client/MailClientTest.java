@@ -24,7 +24,7 @@ class MailClientTest extends IntegrationTestSupport {
     @Test
     void sendAuthenticationMail() {
         // given when
-        mailClient.sendAuthenticationMail("test@naver.com", "13mxken34");
+        mailClient.sendAsyncAuthenticationMail("test@naver.com", "13mxken34");
 
         // then
         verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
