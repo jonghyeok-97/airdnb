@@ -1,7 +1,16 @@
+### 이메일 인증 번호가 맞는지 확인 API
 GET localhost:8080/member/email/authenticate
 Content-Type: application/json
 
 {
   "email": "123@naver.com",
   "authCode": "3655"
+}
+
+### 이메일로 인증 번호 보내는 API
+POST localhost:8080/member/email/authenticate
+Content-Type: application/json
+
+{
+  "email": "john@naver.com"
 }
