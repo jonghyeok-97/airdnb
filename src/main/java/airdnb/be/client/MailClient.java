@@ -1,11 +1,14 @@
 package airdnb.be.client;
 
-import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +23,21 @@ public class MailClient {
     private final Environment env;
     private final JavaMailSender javaMailSender;
 
+    /**
+     * @apiNote  메일 예외 발생 시, 1초마다 총 3회 재시도. 재시도 다 실패하면 로그 레벨 error 발생
+     */
     @Async("mailExecutor")
-    public CompletableFuture<Void> sendAuthenticationMail(String toEmail, String authenticationCode) {
-
+    @Retryable(retryFor = MailSendException.class, backoff = @Backoff(delay = 1000))
+    public void sendAsyncAuthenticationMail(String toEmail, String authenticationCode) {
         SimpleMailMessage mail = createMailMessage(toEmail, authenticationCode);
         javaMailSender.send(mail);
         log.info("[메일] 메일 전송={}", toEmail);
-        return CompletableFuture.completedFuture(null);
+    }
+
+    @Recover
+    private void occurMailServerError() {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        log.error("[메일] 메일 서버에 메일을 보내는 데 실패했습니다. 메서드명={}", methodName);
     }
 
     private SimpleMailMessage createMailMessage(String memberEmail, String randomUUID) {

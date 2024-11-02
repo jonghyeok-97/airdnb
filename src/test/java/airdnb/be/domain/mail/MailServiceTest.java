@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -50,7 +51,7 @@ class MailServiceTest extends IntegrationTestSupport {
                 dynamicTest("타겟 메일에 인증 코드를 보낸다", () -> {
                     // then
                     verify(mailClient, times(1))
-                            .sendAuthenticationMail(eq(request.email()), eq(request.authenticationCode()));
+                            .sendAsyncAuthenticationMail(eq(request.email()), eq(request.authenticationCode()));
                 }),
 
                 dynamicTest("타겟 메일과 인증 코드가 서버 내부에 저장된다", () -> {
@@ -79,7 +80,7 @@ class MailServiceTest extends IntegrationTestSupport {
 
         willThrow(MailSendException.class)
                 .given(mailClient)
-                .sendAuthenticationMail(anyString(), anyString());
+                .sendAsyncAuthenticationMail(anyString(), anyString());
 
         return List.of(
                 dynamicTest("메일 보내기에 실패하면 예외가 발생한다", () -> {
@@ -92,7 +93,7 @@ class MailServiceTest extends IntegrationTestSupport {
 
                 dynamicTest("메일 보내기 재시도는 총 3번 했다", () -> {
                     // then
-                    verify(mailClient, times(3)).sendAuthenticationMail(anyString(), anyString());
+                    verify(mailClient, times(3)).sendAsyncAuthenticationMail(anyString(), anyString());
                 }),
 
                 dynamicTest("사용자는 메일 인증에 실패한다", () -> {
