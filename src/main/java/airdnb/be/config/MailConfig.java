@@ -39,12 +39,7 @@ public class MailConfig implements AsyncConfigurer {
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return ((ex, method, params) -> {
-//             쓰레드 풀 고갈 or 외부 API 서버 다운이면 log.error를 통해 즉시 에러 호출
-//             if(cause instanceof 쓰레드풀 고갈 || cause instanceof 외부API서버 다운) {
-//                 log.error("[메일] 전송 불가 즉시 수정 요망:{}", ex.getCause());
-//                 return;
-//             }
-             log.warn("[메일] 전송 불가:{}, {}", ex, method);
+             log.warn("[MailExecutor] 메일 전송 불가:{}, {}", ex, method);
         });
     }
 
