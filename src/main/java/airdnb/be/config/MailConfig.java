@@ -38,9 +38,9 @@ public class MailConfig implements AsyncConfigurer {
 
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return ((ex, method, params) -> {
-             log.warn("[MailExecutor] 메일 전송 불가:{}, {}", ex, method);
-        });
+        return ((ex, method, params) ->
+                log.warn("[MailExecutor] 메일 전송 불가:{}, {}", ex, method)
+        );
     }
 
     @Bean
