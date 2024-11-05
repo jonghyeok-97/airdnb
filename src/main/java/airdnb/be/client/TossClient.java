@@ -4,9 +4,9 @@ import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.toss.TossPaymentDto;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class TossClient {
 
@@ -21,10 +22,6 @@ public class TossClient {
     private String secretApiKey;
 
     private final RestTemplate restTemplate;
-
-    public TossClient(RestTemplateBuilder builder) {
-        this.restTemplate = builder.build();
-    }
 
     public TossPaymentConfirm confirmPayment(String paymentKey, String orderId, String amount) {
         HttpHeaders headers = new HttpHeaders();
