@@ -1,8 +1,10 @@
 ## 프로젝트 목표
 - 에어비앤비 같은 숙소 예약 서비스를 구현하기 입니다.
-- 다양한 기술을 적용하며, Edge Case테스트에 높은 우선순위를 두어 기능 추가 및 유지보수가 쉬운 프로젝트를 만들고자 합니다.
+- 운영 중 발생하는 이슈를 고려하고, 운영 환경을 고려하며 기술을 학습하고 적용하는 프로젝트를 만들고자 합니다.
 
 ## Issue 해결 과정
+- [[#8] RestTemplate 로깅 중 404 응답에 대한 FileNotFoundException 해결](https://dkswhdgur246.tistory.com/70)
+
 - [[#7] 비동기 메일 전송 기능 고도화 : 재시도, 예외 처리, 테스트](https://dkswhdgur246.tistory.com/69)
 
 - [[#6] @Async로 이메일 전송 비동기 처리하기: 쓰레드 풀 설정과 API 응답 속도 개선](https://dkswhdgur246.tistory.com/68)
@@ -37,6 +39,7 @@
 - Docker-Compose, Prometheus, Grafana를 활용해 로컬 모니터링 서버 구축
 - Layer 간 참조 방향을 유지하기 위해 ServiceDto와 ControllerDto 분리
 - @Async를 이용한 비동기 이메일 전송 및 API응답 속도 개선 확인하기
+- RestTemplate 고도화: 로깅 추가 및 타임아웃 설정
 
 ## 결제 프로세스 과정
 ![image](https://github.com/user-attachments/assets/41871857-d94a-4175-9ce5-4c09f405ba53)
