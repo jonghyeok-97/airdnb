@@ -1,7 +1,6 @@
 package airdnb.be.exception;
 
 import airdnb.be.web.ApiResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +19,10 @@ public class ExceptionHandlers {
 
     private final ObjectMapper objectMapper;
 
-    /**
-     * TossPayment 로부터 결제에 실패 했을 떄
-     */
     @ExceptionHandler(HttpClientErrorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResponse<Void> handleHttpClientErrorException(HttpClientErrorException e) throws JsonProcessingException {
-        TossPaymentErrorResponse tossErrorResponse = convertToTossPaymentErrorResponse(e.getMessage());
-        log.warn("토스페이먼츠 결제 코드: {}, 결제 메시지: {}", tossErrorResponse.code(), tossErrorResponse.message());
-
-        return ApiResponse.badRequest(tossErrorResponse.code(), tossErrorResponse.message());
+    public ApiResponse<Void> handleHttpClientErrorException(HttpClientErrorException e) {
+        return ApiResponse.badRequest(e.getStatusCode().toString(), e.getMessage());
     }
 
     /**
@@ -73,11 +66,4 @@ public class ExceptionHandlers {
      "data" : null
      }
      */
-
-    private TossPaymentErrorResponse convertToTossPaymentErrorResponse(String message) throws JsonProcessingException {
-        String[] split = message.split(": ");
-        String jsonString = split[1].trim().replaceAll("^\"|\"$", "");
-
-        return objectMapper.readValue(jsonString, TossPaymentErrorResponse.class);
-    }
 }
