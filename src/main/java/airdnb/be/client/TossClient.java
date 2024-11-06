@@ -21,7 +21,7 @@ public class TossClient {
     @Value("${payment.toss.api.secret}")
     private String secretApiKey;
 
-    private final RestTemplate restTemplate;
+    private final RestTemplate tossRestTemplate;
 
     public TossPaymentConfirm confirmPayment(String paymentKey, String orderId, String amount) {
         HttpHeaders headers = new HttpHeaders();
@@ -29,7 +29,7 @@ public class TossClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> httpEntity = new HttpEntity<>(toJsonPayload(paymentKey, orderId, amount), headers);
 
-        return restTemplate.postForEntity(
+        return tossRestTemplate.postForEntity(
                 "https://api.tosspayments.com/v1/payments/confirm",
                 httpEntity,
                 TossPaymentConfirm.class
@@ -42,7 +42,7 @@ public class TossClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<?> httpEntity = new HttpEntity<>(createCancelReason(), headers);
-        return restTemplate.postForEntity(
+        return tossRestTemplate.postForEntity(
                 "https://api.tosspayments.com/v1/payments/{paymentKey}/cancel",
                 httpEntity,
                 TossPaymentDto.class,
