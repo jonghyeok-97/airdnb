@@ -62,6 +62,9 @@ dependencies {
 	// monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator' //actuator 추가
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// resilience
+	implementation("io.github.resilience4j:resilience4j-circuitbreaker:2.1.0")
 }
 
 ext {
