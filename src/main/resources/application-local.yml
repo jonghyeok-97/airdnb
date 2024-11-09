@@ -27,16 +27,3 @@ logging:
     org:
       hibernate:
         SQL: debug
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  server:
-    port: 9292
-
-server:
-  tomcat:
-    mbeanregistry:
-      enabled: true
