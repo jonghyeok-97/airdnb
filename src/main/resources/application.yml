@@ -3,6 +3,9 @@ spring:
     default: local, email, paymentKey
 
 server:
+  tomcat: # tomcat metric
+    mbeanregistry:
+      enabled: true
   servlet:
     session:
       tracking-modes: cookie
@@ -10,3 +13,12 @@ server:
         same-site: strict
         http-only: true
         secure: true
+
+# actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  server:
+    port: 9292
