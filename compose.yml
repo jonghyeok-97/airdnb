@@ -1,4 +1,16 @@
 services:
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pwd1234
+      MYSQL_DATABASE: airdnb
+      MYSQL_USER: gromit
+      MYSQL_PASSWORD: pwd1234
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
   airdnb-local-prometheus:
     image: prom/prometheus
     volumes:
@@ -10,3 +22,6 @@ services:
     image: grafana/grafana
     ports:
       - 3000:3000
+
+volumes:
+  mysql_data:
