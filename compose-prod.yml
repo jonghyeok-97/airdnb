@@ -1,15 +1,15 @@
 services:
-  airdnb-server:
-    image: dkswhdgur1209/airdnb:latest
+  boot:
+    build: . # DockerFile 로 이미지 생성해서 띄우겠다는 의미
     ports:
       - 8080:8080
     depends_on:
-      airdnb-db:
+      mysql:
         condition: service_healthy
-      airdnb-cache:
+      redis:
         condition: service_healthy
 
-  airdnb-db:
+  mysql:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -17,13 +17,13 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping"]
       interval: 5s
       retries: 10
 
-  airdnb-cache:
+  redis:
     image: redis
     ports:
       - 6379:6379
@@ -31,3 +31,6 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       retries: 10
+
+volumes:
+  mysql_data:
