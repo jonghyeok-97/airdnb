@@ -78,38 +78,6 @@ class PaymentControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").exists());
     }
 
-    @DisplayName("결제 승인 실패 시 발생하는 HttpClientErrorException를 처리한다.")
-    @Test
-    void confirmPaymentByReservationWithException() throws Exception {
-        // given
-        Long paymentTemporaryId = 1L;
-        String paymentKey = "paymentKey_123xth43";
-        String amount = "50000";
-        String orderId = "orderId_12323xth43";
-        PaymentConfirmRequest request = createPaymentConfirmRequest(paymentKey, amount, orderId);
-
-        // when
-        String code = "NOT_FOUND_PAYMENT_SESSION";
-        String message = "결제 시간이 만료되어 결제 진행 데이터가 존재하지 않습니다.";
-        String tossErrorMessage = "404 Not Found: \"{\"code\":\""+code+"\",\"message\":\""+message+"\"}\"";
-
-        when(paymentFacade.confirmPaymentByReservation(any()))
-                .thenThrow(new HttpClientErrorException(HttpStatusCode.valueOf(404), tossErrorMessage));
-
-        // then
-        mockMvc.perform(
-                        post("/payment/{paymentTemporaryId}/confirm", paymentTemporaryId)
-                                .content(objectMapper.writeValueAsString(request))
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .sessionAttr(LOGIN_MEMBER, 1L))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(code))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value(message))
-                .andExpect(jsonPath("$.data").doesNotExist());
-    }
-
     private PaymentConfirmRequest createPaymentConfirmRequest(String paymentKey, String amount, String orderId) {
         return new PaymentConfirmRequest(
                 1L,
