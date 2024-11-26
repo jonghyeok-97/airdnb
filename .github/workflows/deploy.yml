@@ -20,6 +20,7 @@ jobs:
 
       - name: 테스트 및 빌드하기
         run: |
+          echo "${{ secrets.APPLICATION_TEST_PROPERTIES }}" > ./src/main/resources/application-test.yml
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
