@@ -4,23 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.payment.entity.TossCancel;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.entity.TossPaymentStatus;
 import airdnb.be.domain.payment.toss.TossPaymentDto;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
-@RestClientTest(value = TossClient.class)
-class TossClientTest {
+class TossClientTest extends IntegrationTestSupport {
 
     @Autowired
     private TossClient tossClient;
@@ -29,7 +29,14 @@ class TossClientTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private RestTemplate tossRestTemplate;
+
     private MockRestServiceServer mockServer;
+
+    @BeforeEach
+    void setUp() {
+        mockServer = MockRestServiceServer.createServer(tossRestTemplate);
+    }
 
     @DisplayName("결제 승인 성공 시 토스페이먼츠API의 정상 JSON을 응답받는다")
     @Test
