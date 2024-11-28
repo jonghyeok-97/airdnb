@@ -4,11 +4,8 @@ import airdnb.be.client.TossClient;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import airdnb.be.domain.payment.service.response.PaymentReservationResponse;
-import airdnb.be.exception.BusinessException;
-import airdnb.be.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -32,15 +29,7 @@ public class PaymentFacade {
         TossPaymentConfirm tossPaymentConfirm = tossClient.confirmPayment(request.paymentKey(), request.orderId(),
                 request.amount());
 
-        try {
-            // 결제 및 예약 INSERT 에 대한 트랜잭션 시작
-            return paymentService.confirmReservation(tossPaymentConfirm, request.reservationId(), request.memberId());
-        } catch (DataIntegrityViolationException | BusinessException e) {
-            log.warn("예약 실패 이유: {}", e);
-
-            // 결제 취소 요청 보내기
-            tossClient.cancelPayment(request.paymentKey());
-            throw new BusinessException(ErrorCode.NOT_CONFIRM_RESERVATION);
-        }
+        // 결제 및 예약 INSERT 에 대한 트랜잭션 시작, 트랜잭션 롤백 시 결제 취소 이벤트 발행
+        return paymentService.confirmReservation(tossPaymentConfirm, request);
     }
 }

@@ -154,6 +154,12 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .requestedAt("결제 시간")
                 .build();
 
+        PaymentConfirmServiceRequest request = new PaymentConfirmServiceRequest(
+                1L,
+                1L,
+                1L, "paymentKey", "amount", "orderId"
+        );
+
         given(reservationServiceV2.confirmReservation(anyLong(), anyLong()))
                 .willReturn(new ReservationResponse(
                     1L,
@@ -166,7 +172,7 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 ));
 
         // when
-        PaymentReservationResponse response = paymentService.confirmReservation(tossPaymentConfirm, 1L, 1L);
+        PaymentReservationResponse response = paymentService.confirmReservation(tossPaymentConfirm, request);
 
         // then
         PaymentConfirmResponse paymentConfirmResponse = response.paymentConfirmResponse();
@@ -196,6 +202,12 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .status(TossPaymentStatus.READY)
                 .requestedAt("결제 시간")
                 .build();
+
+        PaymentConfirmServiceRequest request = new PaymentConfirmServiceRequest(
+                1L,
+                1L,
+                1L, "paymentKey", "amount", "orderId"
+        );
 
         given(reservationServiceV2.confirmReservation(anyLong(), anyLong()))
                 .willThrow(new RuntimeException());
