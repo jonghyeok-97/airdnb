@@ -10,6 +10,7 @@ import airdnb.be.IntegrationTestSupport;
 import airdnb.be.domain.payment.entity.PaymentTemporary;
 import airdnb.be.domain.payment.entity.TossPaymentConfirm;
 import airdnb.be.domain.payment.entity.TossPaymentStatus;
+import airdnb.be.domain.payment.event.PaymentEvent;
 import airdnb.be.domain.payment.service.PaymentService;
 import airdnb.be.domain.payment.service.request.PaymentConfirmServiceRequest;
 import airdnb.be.domain.payment.service.response.PaymentConfirmResponse;
@@ -27,7 +28,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 
+@RecordApplicationEvents
 class PaymentServiceTest extends IntegrationTestSupport {
 
     @Autowired
@@ -44,6 +48,9 @@ class PaymentServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private TossPaymentConfirmRepository tossPaymentConfirmRepository;
+
+    @Autowired
+    private ApplicationEvents events;
 
     @AfterEach
     void tearDown() {
@@ -213,11 +220,14 @@ class PaymentServiceTest extends IntegrationTestSupport {
                 .willThrow(new RuntimeException());
 
         // when
-        assertThatThrownBy(() -> paymentService.confirmReservation(tossPaymentConfirm, 1L, 1L))
+        assertThatThrownBy(() -> paymentService.confirmReservation(tossPaymentConfirm, request))
                 .isInstanceOf(RuntimeException.class);
 
         // then
         assertThat(tossPaymentConfirmRepository.findAll()).hasSize(0);
         assertThat(reservationRepository.findAll()).hasSize(0);
+
+        long count = events.stream(PaymentEvent.class).count();
+        assertThat(count).isEqualTo(1);
     }
 }
