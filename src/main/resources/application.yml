@@ -1,6 +1,6 @@
 spring:
   profiles:
-    default: local, email, paymentKey
+    default: dev, email, payment
 
 server:
   tomcat: # tomcat metric
