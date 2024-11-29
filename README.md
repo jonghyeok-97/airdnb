@@ -74,7 +74,8 @@
 - metric 학습
 
 ## 결제 프로세스 과정
-![image](https://github.com/user-attachments/assets/41871857-d94a-4175-9ce5-4c09f405ba53)
+<img src="https://github.com/user-attachments/assets/8f06de6c-3773-4313-81dd-38b7dd40fca5" alt="이미지 설명" width="600" />
+
 
 ## 개발환경
 * JDK17 / Spring Boot 3.X / Spring Rest Docs / Spring Mail
