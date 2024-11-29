@@ -1,9 +1,8 @@
 # 프로젝트 목표
-
-- 에어비앤비 같은 숙소 예약 서비스를 구현하기 입니다.
-- 운영 중 발생하는 이슈를 고려하고, 운영 환경을 고려하며 기술을 학습하고 적용하는 프로젝트를 만들고자 합니다.
+- 스프링이 제공하는 다양한 기술을 학습하며, 테스트 코드를 기반으로 정확하고 신뢰성 있는 학습을 목표로 삼았습니다.
 
 # Issue 해결 과정
+#### [- [#7] 트랜잭션 롤백 시 결제 취소 요청하기 - @TransactionalEventListener & ApplicationEventPublisher 모킹 이슈](https://dkswhdgur246.tistory.com/72)
 #### [- [#6] RestTemplate 로깅 중 404 응답에 대한 FileNotFoundException 해결](https://dkswhdgur246.tistory.com/70)
 #### [- [#5] @Async 이메일 전송 고도화 : 재시도, 예외 처리, 테스트](https://dkswhdgur246.tistory.com/69)
 #### [- [#4] 이메일 전송을 Async-NonBlocking 처리하기: 쓰레드 풀 설정과 API 응답 속도 99% 개선](https://dkswhdgur246.tistory.com/68)
@@ -16,7 +15,7 @@
 #### 데이터 정합성 확보
   - 스프링 AOP의 동작 원리를 학습해 트랜잭션 설계
   - 트랜잭션 전파를 사용하여 논리 트랜잭션 롤백 시 물리 트랜잭션도 롤백되도록 구현
-  - rollbackFor 속성을 이용해 DB IOException 발생 시 트랜잭션 롤백 처리
+  - 물리 트랜잭션 롤백 시 결제 취소 요청을 보내기 위해 @TransactionalEventListener 사용
 
 #### 동시 예약 및 결제 방지
   - DB 트랜잭션 격리 수준, JPA 낙관적/비관적 락 학습
@@ -39,13 +38,15 @@
 - 네트워크 오류로 인한 실패에 대해 재시도 로직 추가, @Recover를 활용해 복구 시 로그 기록
 - 큐 용량 초과 예외와 재시도 복구 예외를 구분하여 운영 혼란 방지
 - 비동기 처리, 재시도, 복구 로직의 테스트 중복 문제를 DynamicTest와 ParameterizedTest로 해결해 테스트 가독성을 향상
-![image](https://github.com/user-attachments/assets/d477ef8d-7d43-489c-aadf-52222a004151)
+<img src="https://github.com/user-attachments/assets/d477ef8d-7d43-489c-aadf-52222a004151" alt="이미지 설명" width="350" />
 
 ### ✅테스트
 #### 테스트 코드 작성
 - JUnit5와 Mockito를 활용해 210여 개의 테스트 코드 작성, 99% 테스트 커버리지 달성
 - 비동기, 재시도, 동시성, 외부 API 서버 호출을 포함한 전반적인 테스트 작성
-![image](https://github.com/user-attachments/assets/1cce4711-74bf-493f-9a90-bc8fcb4ca2f1)
+
+<img src="https://github.com/user-attachments/assets/1cce4711-74bf-493f-9a90-bc8fcb4ca2f1" alt="이미지 설명" width="300" />
+
 
 #### 테스트 최적화
 - @SpringBootTest를 사용해 테스트 환경에서 하나의 서버만 실행하도록 추상 클래스를 설계, 테스트 시간 5초 단축
@@ -75,13 +76,16 @@
 ## 결제 프로세스 과정
 ![image](https://github.com/user-attachments/assets/41871857-d94a-4175-9ce5-4c09f405ba53)
 
-
 ## 개발환경
 * JDK17 / Spring Boot 3.X / Spring Rest Docs / Spring Mail
 * JPA / MySQL / Redis
 * JUnit5 & Mockito
 * Docker / S3 / Prometheus / Grafana
 
+## 회고
+- 스프링이 제공하는 다양한 기능을 활용해 프로젝트를 고도화할 수 있었으며, 모든 테스트 코드를 작성함으로써 운영 중 버그가 없는 안정적인 코드를 작성할 자신감을 얻을 수 있었습니다.
+- 다만, 이번 프로젝트에서는 운영 환경에서 발생할 수 있는 로깅, 서버 비용 관리, 모니터링 결과 분석 등의 이슈를 이론적으로만 학습하고 실제 적용하지 못한 점이 아쉬웠습니다.
+다음 프로젝트에서는 꼭 운영 환경을 경험하며 이러한 부분을 실질적으로 적용해보고 싶습니다.
 
 
 
