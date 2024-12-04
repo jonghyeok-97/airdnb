@@ -22,5 +22,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Gradle build 수행
-        run: ./gradlew test --stacktrace
+        run: |
+          echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
+          ./gradlew test --stacktrace
 
