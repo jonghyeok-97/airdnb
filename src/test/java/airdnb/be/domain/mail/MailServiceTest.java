@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.verify;
 import airdnb.be.IntegrationTestSupport;
 import airdnb.be.client.MailClient;
 import airdnb.be.client.RedisClient;
+import airdnb.be.config.EmbeddedRedisConfig;
 import airdnb.be.domain.mail.request.EmailAuthenticationServiceRequest;
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +18,9 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 
+@Import(EmbeddedRedisConfig.class)
 class MailServiceTest extends IntegrationTestSupport {
 
     @Autowired
