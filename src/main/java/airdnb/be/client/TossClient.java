@@ -58,7 +58,7 @@ public class TossClient {
     }
 
     private String getEncodedKey() {
-        return Base64.getEncoder().encodeToString(secretApiKey.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString((secretApiKey + ":").getBytes(StandardCharsets.UTF_8));
     }
 
     private String createCancelReason() {

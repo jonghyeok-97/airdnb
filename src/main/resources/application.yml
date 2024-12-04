@@ -1,7 +1,9 @@
 spring:
   profiles:
-    default: dev
-    include: secret
+    group:
+      default: dev, secret
+      prod: prod, secret
+      test: test, secret
 
 
 server:
