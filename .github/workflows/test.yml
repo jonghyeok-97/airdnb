@@ -24,5 +24,7 @@ jobs:
       - name: Gradle build 수행
         run: |
           echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
+#          mkdir -p build/generated-snippets
+          ./gradlew build -x test
           ./gradlew test --stacktrace
 
