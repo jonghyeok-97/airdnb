@@ -1,7 +1,4 @@
 spring:
-  config:
-    import: classpath:application-secret.yml
-
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:~/airbnb_test
