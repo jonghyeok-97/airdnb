@@ -80,7 +80,7 @@ public class ReviewControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").exists())
-                .andDo(document("/review/review-add",
+                .andDo(document("review/review-add",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(

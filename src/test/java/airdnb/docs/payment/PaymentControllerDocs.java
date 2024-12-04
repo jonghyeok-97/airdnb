@@ -72,7 +72,7 @@ public class PaymentControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").exists())
-                .andDo(document("/payment/payment-temporary-create",
+                .andDo(document("payment/payment-temporary-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -122,7 +122,7 @@ public class PaymentControllerDocs extends RestDocsSupport {
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.message").value("OK"))
                 .andExpect(jsonPath("$.data").exists())
-                .andDo(document("/payment/payment-confirm-create",
+                .andDo(document("payment/payment-confirm-create",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
