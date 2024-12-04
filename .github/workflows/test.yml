@@ -22,5 +22,5 @@ jobs:
         run: chmod +x gradlew
 
       - name: Gradle build 수행
-        run: ./gradlew test -i
+        run: ./gradlew test --stacktrace
 
