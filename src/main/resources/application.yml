@@ -1,6 +1,9 @@
 spring:
   profiles:
-    default: dev, email, payment
+    group:
+      prod: prod, secret
+    default: dev, secret
+
 
 server:
   tomcat: # tomcat metric
