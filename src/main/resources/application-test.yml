@@ -1,6 +1,6 @@
 spring:
-  config:
-    import: classpath:/config/application-payment.yml, classpath:/config/application-email.yml
+#  config:
+#    import: classpath:/config/application-payment.yml, classpath:/config/application-email.yml
 
   datasource:
     driver-class-name: org.h2.Driver
