@@ -3,6 +3,7 @@
 - 스프링이 제공하는 다양한 기술을 학습하며, 테스트 코드를 기반으로 정확하고 신뢰성 있는 학습을 목표로 삼았습니다.
 
 # Issue 해결 과정
+#### [- [#8] Github Actions 으로 CI 테스트 자동화 중 겪은 이슈 정리 (Embedded Redis, Profile, Spring Rest Docs)](https://dkswhdgur246.tistory.com/73)
 #### [- [#7] 트랜잭션 롤백 시 결제 취소 요청하기 - @TransactionalEventListener & ApplicationEventPublisher 모킹 이슈](https://dkswhdgur246.tistory.com/72)
 #### [- [#6] RestTemplate 로깅 중 404 응답에 대한 FileNotFoundException 해결](https://dkswhdgur246.tistory.com/70)
 #### [- [#5] @Async 이메일 전송 고도화 : 재시도, 예외 처리, 테스트](https://dkswhdgur246.tistory.com/69)
