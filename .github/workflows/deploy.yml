@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
           chmod +x ./gradlew
-          ./gradlew build -x test
+          ./gradlew build
 
       - name: IAM설정 후, AWS 인가 부여
         uses: aws-actions/configure-aws-credentials@v4
