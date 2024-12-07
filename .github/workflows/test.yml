@@ -1,9 +1,12 @@
-name: 테스트 CI
+name: CI 테스트 자동화
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
-      - feat/#49
+      - feat/**
 
 jobs:
   test:
@@ -24,5 +27,5 @@ jobs:
       - name: Gradle build 수행
         run: |
           echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
-          ./gradlew test --stacktrace
+          ./gradlew test
 
