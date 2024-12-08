@@ -22,8 +22,6 @@ jobs:
         run: |
           echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
           echo "${{ secrets.ENV_FILE }}" > ./.env
-          pwd
-          ls
           chmod +x ./gradlew
           ./gradlew build
 
@@ -52,10 +50,13 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "docker-prod.yml,.env"
+          source: "./compose-prod.yml,./.env"
           target: "."
 
       - name: SSH로 EC2 접속
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: airbnb
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -63,5 +64,6 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            sudo docker pull $REGISTRY/$REPOSITORY:latest
-            sudo docker compose up -d
+            docker pull $REGISTRY/$REPOSITORY:latest
+            docker tag $REGISTRY/$REPOSITORY airbnb:latest
+            docker compose -f compose-prod.yml up -d
