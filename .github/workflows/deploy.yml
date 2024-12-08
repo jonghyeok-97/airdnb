@@ -20,8 +20,8 @@ jobs:
 
       - name: 빌드하기
         run: |
-          echo ${{ secrets.APPLICATION_SECRET_PROPERTIES }} > ./src/main/resources/application-secret.yml
-          echo ${{ secrets.ENV_FILE }} > ./.env
+          echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
+          echo "${{ secrets.ENV_FILE }}" > ./.env
           pwd
           ls
           chmod +x ./gradlew
@@ -51,7 +51,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: "docker-prod.yml,.env"
           target: "."
 
