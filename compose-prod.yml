@@ -1,6 +1,6 @@
 services:
   boot:
-    build: . # DockerFile 로 이미지 생성해서 띄우겠다는 의미
+    image: airbnb:latest
     ports:
       - 8080:8080
     depends_on:
