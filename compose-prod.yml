@@ -1,6 +1,6 @@
 services:
   boot:
-    image: airbnb:latest
+    image: ${BOOT_IMAGE}
     ports:
       - 8080:8080
     depends_on:

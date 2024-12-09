@@ -44,7 +44,7 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:latest .
           docker push $REGISTRY/$REPOSITORY:latest
 
-      - name: Docker Compose 파일 전송
+      - name: Docker Compose 와 환경변수 파일 전송
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -54,9 +54,6 @@ jobs:
           target: "."
 
       - name: SSH로 EC2 접속
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: airbnb
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -64,6 +61,5 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            docker pull $REGISTRY/$REPOSITORY:latest
-            docker tag $REGISTRY/$REPOSITORY airbnb:latest
-            docker compose -f compose-prod.yml up -d
+            docker compose -f compose-prod.yml pull
+            docker compose -f compose-prod.yml up --build -d
