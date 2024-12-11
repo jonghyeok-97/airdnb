@@ -1,7 +1,6 @@
 services:
   boot:
     image: ${BOOT_IMAGE}
-    container_name: boot-1
     ports:
       - 8080:8080
     depends_on:
@@ -12,7 +11,6 @@ services:
 
   mysql:
     image: mysql
-    container_name: mysql-1
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -29,7 +27,6 @@ services:
 
   redis:
     image: redis
-    container_name: redis-1
     ports:
       - 6379:6379
     healthcheck:
