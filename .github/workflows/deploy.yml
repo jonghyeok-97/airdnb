@@ -61,5 +61,6 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+            docker compose -f compose-prod.yml down
             docker compose -f compose-prod.yml pull
             docker compose -f compose-prod.yml up --build -d
