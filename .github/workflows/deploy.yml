@@ -11,56 +11,56 @@ jobs:
     steps:
       - name: Github Repo 불러오기
         uses: actions/checkout@v4
-
-      - name: JDK 17 설치
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - name: 빌드하기
-        run: |
-          echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
-          echo "${{ secrets.ENV_FILE }}" > ./.env
-          chmod +x ./gradlew
-          ./gradlew build
-
-      - name: IAM설정 후, AWS 인가 부여
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ap-northeast-2
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: ECR 로그인
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: 도커 이미지 만들고 ECR에 PUSH
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: airbnb
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:latest .
-          docker push $REGISTRY/$REPOSITORY:latest
-
-      - name: Docker Compose 와 환경변수 파일 전송
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "./compose-prod.yml,./.env"
-          target: "."
-
-      - name: SSH로 EC2 접속
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            docker compose -f compose-prod.yml down
-            docker pull ${{ steps.login-ecr.outputs.registry }}/airbnb:latest
-            docker compose -f compose-prod.yml up -d
+#
+#      - name: JDK 17 설치
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: temurin
+#          java-version: 17
+#
+#      - name: 빌드하기
+#        run: |
+#          echo "${{ secrets.APPLICATION_SECRET_PROPERTIES }}" > ./src/main/resources/application-secret.yml
+#          echo "${{ secrets.ENV_FILE }}" > ./.env
+#          chmod +x ./gradlew
+#          ./gradlew build
+#
+#      - name: IAM설정 후, AWS 인가 부여
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-region: ap-northeast-2
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#
+#      - name: ECR 로그인
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v2
+#
+#      - name: 도커 이미지 만들고 ECR에 PUSH
+#        env:
+#          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          REPOSITORY: airbnb
+#        run: |
+#          docker build -t $REGISTRY/$REPOSITORY:latest .
+#          docker push $REGISTRY/$REPOSITORY:latest
+#
+#      - name: Docker Compose 와 환경변수 파일 전송
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          key: ${{ secrets.EC2_PRIVATE_KEY }}
+#          source: "./compose-prod.yml,./.env"
+#          target: "."
+#
+#      - name: SSH로 EC2 접속
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ${{ secrets.EC2_USERNAME }}
+#          key: ${{ secrets.EC2_PRIVATE_KEY }}
+#          script_stop: true
+#          script: |
+#            docker compose -f compose-prod.yml down
+#            docker pull ${{ steps.login-ecr.outputs.registry }}/airbnb:latest
+#            docker compose -f compose-prod.yml up -d
