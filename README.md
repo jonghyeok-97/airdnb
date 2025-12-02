@@ -62,7 +62,7 @@
 - 인덱스 활용 시 WHERE 조건 비교를 동등 비교(IN절)로 변경하여 쿼리 수행 시간을 0.9초 단축
 
 #### API 문서화
-- Spring Rest Docs 를 활용한 API 문서 자동화 및 S3 를 통한 배포 [**(Link)**](http://restdocs.s3-website.ap-northeast-2.amazonaws.com/)
+- Spring Rest Docs 를 활용한 API 문서 자동화 및 S3 를 통한 배포
 
 #### 코드 중복 제거 및 유지보수성 향상
 - ArgumentResolver 를 활용해 로그인 확인 로직 중복 제거
